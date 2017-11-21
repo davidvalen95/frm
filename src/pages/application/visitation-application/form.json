@@ -1,0 +1,56 @@
+[
+  {
+    title: 'Visitor Information',
+    isOpen:false,
+    baseForms:[
+      {
+        name: "visitorCategory",
+        label: "Visitor Category",
+        type: "text",
+        rules: {
+          required: true
+        },
+      },
+      {
+        name: "visitorCountry",
+        label: "Visitor Country",
+        type: "text",
+        rules: {
+          required: true
+        },
+      }
+
+    ]
+
+
+  },
+
+
+  {
+    title: 'Vechile Information',
+    isOpen:false,
+    baseForms:[
+      {
+        name: "vechileType",
+        label: "Vechile Type",
+        type: "text",
+        rules: {
+          required: true,
+          minlength:5,
+          pattern:'[a-z]+',
+          patternInformation:'Small word only'
+        },
+      },
+      {
+        name: "visitorCountry",
+        label: "Visitor Country",
+        type: "text",
+        rules: {
+          required: true
+        },
+      }
+
+    ]
+  }
+
+]

@@ -1,16 +1,30 @@
 <ion-menu [content]="content">
   <ion-header>
-    <ion-toolbar>
+    <ion-toolbar  >
       <ion-title>Menu</ion-title>
     </ion-toolbar>
   </ion-header>
 
   <ion-content>
-    <ion-list>
-      <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
-        {{p.title}}
-      </button>
+
+    <ion-list *ngFor="let menu of this.menus">
+      <ion-list-header (click)="menu.isOpen = !menu.isOpen">
+        <ion-icon  *ngIf="menu.isOpen" name="arrow-down"></ion-icon>
+        <ion-icon  *ngIf="!menu.isOpen" name="arrow-up"></ion-icon>
+        {{menu.title}}
+
+      </ion-list-header>
+
+
+      <div *ngIf="menu.isOpen">
+         <ion-item menuClose=""  *ngFor="let child of menu.child" (click)="openPage(child.page)">
+          {{child.title}}
+        </ion-item>
+      </div>
+
+
     </ion-list>
+
   </ion-content>
 
 </ion-menu>

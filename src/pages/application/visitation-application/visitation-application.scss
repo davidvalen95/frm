@@ -1,0 +1,19 @@
+page-visitation-application {
+  .ionContent{
+    *{
+      font-size: 14px !important;
+    }
+  }
+  ion-list{
+    * {
+    }
+  }
+  ion-label{
+    margin:0 !important;
+  }
+  .error-container{
+    margin:0 0 0 16px!important;
+  }
+  input{
+  }
+}

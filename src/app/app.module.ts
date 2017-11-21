@@ -8,22 +8,34 @@ import { ListPage } from '../pages/list/list';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import {VisitationApplicationPage} from "../pages/application/visitation-application/visitation-application";
+import {ArrowOpenDirective} from "../directives/arrow-open/arrow-open";
+import {FloatingInputComponent} from "../components/Forms/floating-input/floating-input";
+import {FormsModule} from "@angular/forms";
+import {FormErrorMessageComponent} from "../components/Forms/form-error-message/form-error-message";
 
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
-    ListPage
+    ListPage,
+    VisitationApplicationPage,
+    ArrowOpenDirective,
+    FloatingInputComponent,
+    FormErrorMessageComponent
   ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
+    FormsModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
     HomePage,
-    ListPage
+    ListPage,
+    VisitationApplicationPage,
+
   ],
   providers: [
     StatusBar,

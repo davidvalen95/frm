@@ -1,0 +1,34 @@
+
+<ion-item>
+  <ion-label floating="">{{baseForm.label}} </ion-label>
+  <ion-input
+  ngModel       = ""
+  #model        = "ngModel"
+  [name]        = "baseForm.name"
+  [value]       = "baseForm.defaultValue || ''"
+  [placeholder] = "baseForm.placeholder || ''"
+  [required]    = "baseForm.rules.required"
+  [minlength]   = "baseForm.rules.minLength"
+  [maxlength]   = "baseForm.rules.maxLength"
+  [pattern]     = "baseForm.rules.pattern">
+  </ion-input>
+
+
+</ion-item>
+<p class="error-container" *ngIf="!model.valid && (model.dirty || model.touched || parentForm.submitted)" >
+  <form-error-message  [baseForm]="baseForm" [model]="model"></form-error-message>
+</p>
+
+
+<!--<label >{{currentBaseForm.label}}</label>-->
+<!--<input-->
+  <!--ngModel="" #model="ngModel"-->
+  <!--[name]        = "currentBaseForm.name"-->
+  <!--[value]       = "currentBaseForm.defaultValue || ''"-->
+  <!--[placeholder] = "currentBaseForm.placeholder || ''"-->
+  <!--[required]    = "currentBaseForm.rules.required"-->
+  <!--[minlength]   = "currentBaseForm.rules.minLength"-->
+  <!--[maxlength]   = "currentBaseForm.rules.maxLength"-->
+  <!--[pattern]     = "currentBaseForm.rules.pattern"-->
+<!--/>-->
+

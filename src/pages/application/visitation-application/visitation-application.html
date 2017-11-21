@@ -1,0 +1,94 @@
+<!--
+  Generated template for the VisitationApplicationPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header >
+  <ion-navbar >
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Visitation Application</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <ion-segment [(ngModel)]="pet">
+    <ion-segment-button value="apply">
+      Apply
+    </ion-segment-button>
+    <ion-segment-button value="list">
+        List
+        <ion-badge item-end="" color="primary">3</ion-badge>
+    </ion-segment-button>
+  </ion-segment>
+
+  <div [ngSwitch]="pet">
+
+
+
+    <div *ngSwitchCase="'apply'">
+      <form #visitationForm="ngForm" (submit)="formSubmit(visitationForm)">
+        <ion-list>
+          <ion-item-group class="ionContent" *ngFor="let form of this.forms">
+
+            <ion-item-divider style="margin-top:16px;" color="light" (click)="form.isOpen = !form.isOpen">
+              <ion-icon name="arrow-up" *ngIf="!form.isOpen"></ion-icon>
+              <ion-icon name="arrow-down" *ngIf="form.isOpen"></ion-icon>
+              {{form.title}}
+            </ion-item-divider>
+
+            <span *ngIf="form.isOpen">
+              <floating-input  style='padding-left:16px'*ngFor="let currentBaseForm of form.baseForms" [parentForm]="visitationForm" [baseForm]="currentBaseForm"></floating-input>
+            </span>
+          </ion-item-group>
+        </ion-list>
+
+
+        <button ion-button="" block="" color="primary">Submit</button>
+      </form>
+
+    </div>
+
+
+
+
+
+
+    <div *ngSwitchCase="'list'">
+      <ion-card *ngFor="let visit of visitList">
+        <ion-card-header arrow-open="" (click)="visit.isOpen = !visit.isOpen">
+          <ion-item no-padding="">
+            <h1>{{visit.purpose}}</h1>
+            <span item-end="">
+              <ion-icon name="arrow-down" *ngIf="visit.isOpen"></ion-icon>
+              <ion-icon name="arrow-up" *ngIf="!visit.isOpen"></ion-icon>
+            </span>
+          </ion-item>
+          <p><small>{{visit.status}}</small></p>
+        </ion-card-header>
+
+        <ion-list *ngIf="visit.isOpen" class="ionContent">
+          <ion-item>
+            Created Date
+            <span item-end="">{{visit.createdDate}}</span>
+          </ion-item>
+          <ion-item>
+            Visit Date
+            <span item-right="">{{visit.visitDate}}</span>
+          </ion-item>
+          <ion-item>
+            Visit Time
+            <span item-right="">{{visit.visitTime}}</span>
+          </ion-item>
+        </ion-list>
+      </ion-card>
+    </div>
+
+  </div>
+
+</ion-content>
