@@ -15,9 +15,9 @@
 </ion-header>
 
 
-<ion-content padding>
+<ion-content >
 
-  <ion-segment [(ngModel)]="pet">
+  <ion-segment style='margin-top:16px;'[(ngModel)]="pet">
     <ion-segment-button value="apply">
       Apply
     </ion-segment-button>
@@ -27,9 +27,7 @@
     </ion-segment-button>
   </ion-segment>
 
-  <div [ngSwitch]="pet">
-
-
+  <div padding [ngSwitch]="pet">
 
     <div *ngSwitchCase="'apply'">
       <form #visitationForm="ngForm" (submit)="formSubmit(visitationForm)">
