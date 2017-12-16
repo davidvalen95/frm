@@ -5,8 +5,7 @@ page-visitation-application {
     }
   }
   ion-list{
-    * {
-    }
+
   }
   ion-label{
     margin:0 !important;
@@ -15,5 +14,12 @@ page-visitation-application {
     margin:0 0 0 16px!important;
   }
   input{
+
+  }
+  .slider-pager {
+    top: 20px;
+    height:20px;
   }
 }
+
+

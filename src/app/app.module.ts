@@ -13,34 +13,64 @@ import {ArrowOpenDirective} from "../directives/arrow-open/arrow-open";
 import {FloatingInputComponent} from "../components/Forms/floating-input/floating-input";
 import {FormsModule} from "@angular/forms";
 import {FormErrorMessageComponent} from "../components/Forms/form-error-message/form-error-message";
+import {HeaderColor} from "@ionic-native/header-color";
+import { UserProvider } from '../providers/user/user';
+import {HttpClientModule} from "@angular/common/http";
+import { ApiProvider } from '../providers/api/api';
+import {DatePicker} from "@ionic-native/date-picker";
+import {SearchBarPage} from "../pages/search-bar/search-bar";
+import {shim} from "promise.prototype.finally";
+import {VisitationDetailPage} from "../pages/visitation-detail/visitation-detail";
+import {PipesModule} from "../pipes/pipes.module";
+import {ContainerInPage} from "../pages/container-in/container-in";
+import {VisitationFormComponent} from "../components/visitation-form/visitation-form";
+import {LoginPage} from "../pages/login/login";
 
 @NgModule({
   declarations: [
-    MyApp,
+    ArrowOpenDirective,
+    FormErrorMessageComponent,
+    FloatingInputComponent,
+    VisitationFormComponent,
     HomePage,
     ListPage,
+    MyApp,
+    SearchBarPage,
+    VisitationDetailPage,
     VisitationApplicationPage,
-    ArrowOpenDirective,
-    FloatingInputComponent,
-    FormErrorMessageComponent
+    ContainerInPage,
+    LoginPage,
+
   ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
-    FormsModule
+    FormsModule,
+    HttpClientModule,
+    PipesModule,
+
+
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp,
     HomePage,
     ListPage,
+    MyApp,
+    SearchBarPage,
     VisitationApplicationPage,
+    VisitationDetailPage,
+    ContainerInPage,
+    LoginPage,
 
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    HeaderColor,
+    UserProvider,
+    ApiProvider,
+    DatePicker
   ]
 })
 export class AppModule {}

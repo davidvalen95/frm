@@ -1,0 +1,47 @@
+
+
+<ion-content padding style="background-color:#E5E5E5;">
+
+
+
+  <div class='wrapper' style="max-width:250px;" class="center-div" text-center="" >
+    <h5>WELCOME TO</h5>
+
+    <img class="img-responsive" src="assets/imgs/logohrms.png" />
+    <form  [hidden]="this.userProvider.userSession.isLoggedIn" class="ionContent myForm" #loginFormId="ngForm" (submit)="loginFormSubmit(loginFormId)">
+      <!--<ion-list no-padding="">-->
+    <div class='formControl' *ngFor="let currentBaseForm of loginForms">
+
+      <!--<div style="display:inline-block; max-width: 50px;height 100%">-->
+              <!--<ion-img  class="img-responsive" src="assets/imgs/logohrms.png"></ion-img>-->
+
+      <!--</div>-->
+      <!--<div style="display:inline-block;max-width: 190px">-->
+              <!--<floating-input padding="10" no-padding="" [baseForm]="currentBaseForm" [parentForm]="loginFormId"></floating-input>-->
+      <!--</div>-->
+
+
+      <div class="img">
+        <img class="img-responsive" src="assets/imgs/logohrms.png"/>
+      </div>
+      <div class="input">
+              <input [type]="currentBaseForm.getInputTypeText()" [placeholder]="currentBaseForm.placeholder" [name]="currentBaseForm.name" ngModel=""/>
+      </div>
+    </div>
+
+      <!--</ion-list>-->
+
+      <button class="loginButton" >Login</button>
+    </form>
+  </div>
+
+
+
+  <span *ngIf="this.userProvider.userSession.isLoggedIn">
+    <h2>Logged in</h2>
+    <p>Hello {{userProvider.userSession.name}}</p>
+    <button ion-button="" menuToggle="" color="primary">Open Side Menu</button>
+  </span>
+</ion-content>
+
+

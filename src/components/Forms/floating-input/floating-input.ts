@@ -1,6 +1,10 @@
-import {Component, Input, ViewChild} from '@angular/core';
-import {BaseForm} from "../base-form";
-import {NgForm, NgModel} from "@angular/forms";
+import {
+  Component, ElementRef, Injectable, Input, ViewChild
+} from '@angular/core';
+import {BaseForm, InputType, LabelType} from "../base-form";
+import {NgForm, NgModel, ValidationErrors} from "@angular/forms";
+import {Label, NavController} from "ionic-angular";
+import {ParamSearchBarPage, SearchBarPage} from "../../../pages/search-bar/search-bar";
 
 /**
  * Generated class for the FloatingInputComponent component.
@@ -12,16 +16,85 @@ import {NgForm, NgModel} from "@angular/forms";
   selector: 'floating-input',
   templateUrl: 'floating-input.html'
 })
+
+@Injectable()
 export class FloatingInputComponent {
 
   @Input() public baseForm:BaseForm ;
-  @Input() public parentForm: NgForm;
-  @ViewChild('model') public model:NgModel;
-  constructor() {
+  @Input() public parentForm: NgForm ;
+
+  // public model:NgModel;
+  // @ViewChild('model') public set content(content:NgModel){
+  //   this.model = model;
+  //   this.parentForm.addControl(this.model);
+  //
+  // };
+
+  @ViewChild('ionInputModel') public ionInputModel:NgModel;
+  @ViewChild('ionSelectModel') public ionSelectModel:NgModel;
+  @ViewChild('ionDateModel')  public ionDateModel:NgModel;
+  public finalModel:NgModel;
+  public inputType;
+  public labelType;
+  constructor(public navController:NavController) {
+    this.baseForm = null;
   }
   ngOnInit(){
-    this.parentForm.addControl(this.model);
-    console.log(this.model);
+    this.baseForm.changeListener.subscribe(((model:NgModel)=>{
+      // this.parentForm.tes.setDirty()
+      if(this.baseForm.inputType == InputType.number){
+        console.log('listenerNumber val:', model.value, 'baseform: ', this.baseForm);
+        if(this.baseForm.rules.max < Number(model.value)){
+          // console.log('listenerNumber catch error max', this.baseForm.rules.max, Number(model.value ))
+          this.parentForm.getControl(this.finalModel).setErrors(["max"])
+
+        }
+        if(this.baseForm.rules.min > Number(model.value)){
+          this.parentForm.getControl(this.finalModel).setErrors(["min"])
+
+        }
+      }
+
+    }))
   }
+
+  ngAfterContentInit(){
+    switch(this.baseForm.inputType){
+      case InputType.text:
+      case InputType.password:
+      case InputType.email:
+      case InputType.number:
+      case InputType.searchBar:
+        this.finalModel = this.ionInputModel;
+        break;
+      case InputType.select:
+        this.finalModel = this.ionSelectModel;
+        break;
+      case InputType.date:
+        this.finalModel = this.ionDateModel;
+    }
+    this.parentForm.addControl(this.finalModel);
+    this.inputType = InputType[this.baseForm.inputType];
+    this.labelType = LabelType[this.baseForm.labelType];
+
+    if(this.inputType==InputType.searchBar){
+      this.inputType = "text"
+    }
+  }
+  debug(){
+    console.log('debug');
+  }
+
+  onFieldClicked(ev){
+    if(this.baseForm.inputType == InputType.searchBar){
+      var param:ParamSearchBarPage = {
+        baseForm: this.baseForm
+      }
+      console.log('onFieldClicked');
+      this.navController.push(SearchBarPage, param)
+
+    }
+  }
+
 
 }

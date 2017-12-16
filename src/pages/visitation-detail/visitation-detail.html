@@ -1,0 +1,45 @@
+<!--
+  Generated template for the VisitationDetailPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{title}}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+
+
+  <ion-grid *ngIf="visitationDetailObject; let result">
+    <ion-row no-padding="">
+      <ion-col *ngIf="isCanAcknowledge"   text- (click)="acknowledge(result)">
+        <button  no-padding="" block ion-button="" clear="" small="">Acknowledge this</button>
+      </ion-col>
+      <ion-col *ngIf="!isCanAcknowledge && !visitationDetailObject.acknowledged" >
+        <button no-padding="" block  color="danger"   ion-button="" clear="" small="">Cannot Ack</button>
+      </ion-col>
+      <ion-col *ngIf="visitationDetailObject.acknowledged" >
+        <button  no-padding="" block  color="success"   ion-button="" clear="" small="">Already Acknowledged</button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+  <ion-list>
+    <span  *ngFor="let currentDetail of visitationDetailKeyValue" >
+      <ion-item *ngIf="currentDetail.value !== null">
+        <ion-label>{{currentDetail.key | ucWord}}</ion-label>
+        <ion-input readonly="" [value]="currentDetail.value"></ion-input>
+
+      </ion-item>
+    </span>
+
+  </ion-list>
+
+</ion-content>

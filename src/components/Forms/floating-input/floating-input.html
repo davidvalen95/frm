@@ -1,34 +1,102 @@
 
-<ion-item>
-  <ion-label floating="">{{baseForm.label}} </ion-label>
+
+<ion-item no-padding="" [hidden]="baseForm.isHidden===true "  >
+
+  <ion-label stacked="" *ngIf="this.labelType == 'stacked'">{{baseForm.label}} </ion-label>
+  <ion-label inline="" *ngIf="this.labelType == 'inline'">{{baseForm.label}} </ion-label>
+
+  <!--<span *ngIf="baseForm.type=='text';then ionInput else ionSelect"></span>-->
+
   <ion-input
-  ngModel       = ""
-  #model        = "ngModel"
-  [name]        = "baseForm.name"
-  [value]       = "baseForm.defaultValue || ''"
-  [placeholder] = "baseForm.placeholder || ''"
-  [required]    = "baseForm.rules.required"
-  [minlength]   = "baseForm.rules.minLength"
-  [maxlength]   = "baseForm.rules.maxLength"
-  [pattern]     = "baseForm.rules.pattern">
+    [hidden]="this.inputType=='select' || this.inputType=='date'"
+
+    [(ngModel)]="baseForm.value"
+    #ionInputModel = "ngModel"
+    [type]         = "this.inputType"
+    [name]        = "baseForm.name"
+    [placeholder] = "baseForm.placeholder || ''"
+    [required]    = "baseForm.rules.required"
+    [minlength]   = "baseForm.rules.minlength"
+    [maxlength]   = "baseForm.rules.maxlength"
+    [pattern]     = "baseForm.rules.pattern"
+    [readonly]    = "baseForm.isReadOnly"
+    [max]         = "baseForm.rules.max"
+    [min]         = "baseForm.rules.min"
+    (ionChange)   = "baseForm.changeListener.next(ionInputModel)"
+
+    (focus)="onFieldClicked($event)"
+
+  >
+
   </ion-input>
 
 
-</ion-item>
-<p class="error-container" *ngIf="!model.valid && (model.dirty || model.touched || parentForm.submitted)" >
-  <form-error-message  [baseForm]="baseForm" [model]="model"></form-error-message>
-</p>
+  <ion-select
+    [hidden]="this.inputType != 'select'"
+    [(ngModel)]   = "baseForm.value"
+    #ionSelectModel="ngModel"
+    [name]        = "baseForm.name"
+    [placeholder] = "baseForm.placeholder || ''"
+    [required]    = "baseForm.rules.required"
+    [minlength]   = "baseForm.rules.minlength"
+    [maxlength]   = "baseForm.rules.maxlength"
+    [pattern]     = "baseForm.rules.pattern"
+    (ionChange)   = "baseForm.changeListener.next(ionSelectModel)"
 
+  >
+    <ion-option *ngFor="let option of baseForm.selectOptions" [value]="option.value">{{option.key}}</ion-option>
+  </ion-select>
+
+
+  <ion-datetime
+    #ionDateModel   = "ngModel"
+    [hidden]        = "this.inputType != 'date'"
+    [(ngModel)]       = "baseForm.value"
+    [name]          = "baseForm.name"
+    [placeholder]   = "baseForm.placeholder || ''"
+    [required]      = "baseForm.rules.required"
+    [minlength]     = "baseForm.rules.minlength"
+    [maxlength]     = "baseForm.rules.maxlength"
+    [pattern]       = "baseForm.rules.pattern"
+    [displayFormat] = "baseForm.dateSetting.displayFormat"
+    [pickerFormat] = "baseForm.dateSetting.displayFormat"
+    [min]           = "baseForm.dateSetting.min"
+    [max]           = "baseForm.dateSetting.max"
+    (ionChange)   = "baseForm.changeListener.next(ionDateModel)"
+    [hourValues] = baseForm.hourValues
+
+  ></ion-datetime>
+
+
+
+
+
+</ion-item >
+<div [hidden]="baseForm.isHidden" *ngIf="finalModel">
+  <!--<span>{{debug()}}</span>-->
+  <p  class="error-container" *ngIf="!finalModel.valid && (finalModel.dirty || finalModel.touched || parentForm.submitted)" >
+
+    <form-error-message  [baseForm]="baseForm" [model]="finalModel"></form-error-message>
+  </p>
+</div>
+
+<ng-template #ionInput>
+
+</ng-template>
+
+<ng-template #ionSelect>
+
+</ng-template>
 
 <!--<label >{{currentBaseForm.label}}</label>-->
 <!--<input-->
   <!--ngModel="" #model="ngModel"-->
   <!--[name]        = "currentBaseForm.name"-->
-  <!--[value]       = "currentBaseForm.defaultValue || ''"-->
+  <!--[value]       = "currentBaseForm.value || ''"-->
   <!--[placeholder] = "currentBaseForm.placeholder || ''"-->
   <!--[required]    = "currentBaseForm.rules.required"-->
-  <!--[minlength]   = "currentBaseForm.rules.minLength"-->
-  <!--[maxlength]   = "currentBaseForm.rules.maxLength"-->
+  <!--[minlength]   = "currentBaseForm.rules.minlength"-->
+  <!--[maxlength]   = "currentBaseForm.rules.maxlength"-->
   <!--[pattern]     = "currentBaseForm.rules.pattern"-->
 <!--/>-->
 

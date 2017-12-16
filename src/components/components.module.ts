@@ -4,10 +4,12 @@ import {IonicModule} from "ionic-angular";
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import { FormErrorMessageComponent } from './Forms/form-error-message/form-error-message';
+import { VisitationFormComponent } from './visitation-form/visitation-form';
 @NgModule({
 	declarations: [,
     FloatingInputComponent,
-    FormErrorMessageComponent],
+    FormErrorMessageComponent,
+    VisitationFormComponent],
 	imports: [
     IonicModule,
     CommonModule,
@@ -15,6 +17,7 @@ import { FormErrorMessageComponent } from './Forms/form-error-message/form-error
   ],
 	exports: [
     FloatingInputComponent,
-    FormErrorMessageComponent]
+    FormErrorMessageComponent,
+    VisitationFormComponent]
 })
 export class ComponentsModule {}
