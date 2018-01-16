@@ -2,8 +2,9 @@ floating-input {
 
   .error-container{
     padding:0;
-    margin-left:16px;
     margin-bottom:12px;
+    text-align:left;
+
   }
 
   .error-message{
@@ -18,10 +19,55 @@ floating-input {
   input{
     //border-bottom: 1px solid #d8d8d8 !important;
 
+    -webkit-user-select: text !important;
+    user-select: text !important;
+    -moz-user-select: text !important;
+  -ms-user-select: text !important;
   }
 
   ion-label{
     color:map_get($colors,'dark') !important;
 
+
+  }
+  .required{
+    &::after{
+      content: '*';
+      color: tomato;
+    }
+  }
+  //.readOnly{
+  //  &::before{
+  //    content: '(read-only) ';
+  //    color: #5e5e5e;
+  //  }
+  //}
+
+  .myIonSelect{
+    &::before{
+      content: 'Select  ';
+    }
+  }
+  .myIonSelect{
+    &::before{
+      content: 'Select  ';
+    }
+  }
+
+  .infoBottom{
+    margin-top:-5px;
+    color: #5e5e5e;;
+  }
+
+  .readOnlyInfo{
+    p{
+      //padding-left:12px;
+    }
+    .label{
+      color: #999999;
+    }
+    .value{
+      color:black;
+    }
   }
 }

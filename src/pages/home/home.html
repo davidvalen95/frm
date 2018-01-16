@@ -19,7 +19,8 @@
   <span>
     <h2>Logged in</h2>
     <p>Hello {{userProvider.userSession.name}}</p>
-    <button ion-button="" menuToggle="" color="primary">Open Side Menu</button>
+    <button ion-button="" block="" menuToggle="" color="primary">Open Side Menu</button>
+    <button ion-button="" block="" (click)="this.logout()" color="danger">Logout</button>
   </span>
 </ion-content>
 

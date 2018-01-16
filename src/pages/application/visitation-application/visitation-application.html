@@ -5,204 +5,258 @@
   Ionic pages and navigation.
 -->
 <ion-header >
-  <ion-navbar >
-    <button ion-button menuToggle>
+  <ion-navbar #navbar  >
+    <button ion-button menuToggle *ngIf="!this.rootParam.isPartial" >
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Visitation Application</ion-title>
+    <ion-title text-center="" >{{this.title}}</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
-<ion-content >
+<ion-content padding="" [ngClass]="{'partial':this.rootParam.isPartial}">
 
-  <ion-segment (ionChange)="ionSegmentChange()"  style='margin-top:16px;'[(ngModel)]="segmentValue">
-    <ion-segment-button value="apply">
-      Apply
-    </ion-segment-button>
-    <ion-segment-button value="list">
-        List
-        <ion-badge item-end="" color="primary">3</ion-badge>
-    </ion-segment-button>
-  </ion-segment>
-
-  <div padding [ngSwitch]="segmentValue">
-
-    <div *ngSwitchCase="'apply'">
+  <!--<ion-segment (ionChange)="ionSegmentChange()"  style='margin-top:16px;'[(ngModel)]="segmentValue">-->
+    <!--<ion-segment-button value="apply" *ngIf="!this.isApprover" >-->
+      <!--Apply-->
+    <!--</ion-segment-button>-->
+    <!--<ion-segment-button value="list" [hidden]="pageParam.isEditing">-->
+        <!--List-->
+        <!--<ion-badge *ngIf="this.visitationData[0];let result" item-end="" color="primary">{{result.totalRecord || 0}}</ion-badge>-->
+    <!--</ion-segment-button>-->
+  <!--</ion-segment>-->
 
 
-      <ion-slides  #formSlides pager="true"  >
-        <ion-slide padding style="min-height:100%;background: tomato;">
-          <h3 style="color:white">Please Fill the form to apply visitation</h3>
-          <img src="assets/imgs/forms.png" style="width:100px;" text-center="" align-self-center="" />
+  <!---->
 
-          <button ion-button="" color="light" (click)="slideNext()">Start Fill!</button>
-        </ion-slide>
+  <!--<div padding [ngSwitch]="segmentValue">-->
 
 
-        <ion-slide *ngFor="let form of this.identityForms" >
-          <h2>{{form.title}}</h2>
-            <form #identityForm="ngForm" (submit)="identityFormSubmit(identityForm)">
-                <ion-list  class="ionContent" >
-                      <floating-input  *ngFor="let currentBaseForm of form.baseForms" [parentForm]="identityForm" [baseForm]="currentBaseForm"></floating-input>
-
-
-                </ion-list>
-
-
-                <button ion-button="" align-items-center="" color="primary">Search</button>
-              </form>
-        </ion-slide>
+  <!--</div>-->
 
 
 
-        <ion-slide   *ngIf="!this.identityInformationForm.isHidden" [hidden]="this.identityInformationForm.isHidden">
-          <h2>{{this.identityInformationForm.title}}</h2>
-          <form class="ionContent" #idIdentityInformationForm="ngForm"  (submit)="completionFormSubmit(idIdentityInformationForm)">
-            <ion-list *ngFor="let currentBaseForm of this.identityInformationForm.baseForms" >
-              <floating-input [parentForm]="idIdentityInformationForm" [baseForm]="currentBaseForm"></floating-input>
-            </ion-list>
-            <button  ion-button=""  type="button" (click)="slidePrevious()" color="light">Previous</button>
-            <button  ion-button=""  color="primary">Next</button>
-
-          </form>
-        </ion-slide>
-
-        <ion-slide  *ngIf="!this.identityForEmployeeForm.isHidden" [hidden]="this.identityForEmployeeForm.isHidden" >
-          <h2>{{this.identityForEmployeeForm.title}}</h2>
-          <form class="ionContent" #idIdentityForEmployee="ngForm"  (submit)="completionFormSubmit(idIdentityForEmployee)">
-            <ion-list *ngFor="let currentBaseForm of this.identityForEmployeeForm.baseForms" >
-              <floating-input [parentForm]="idIdentityForEmployee" [baseForm]="currentBaseForm"></floating-input>
-            </ion-list>
-            <button  ion-button=""  type="button" (click)="slidePrevious()" color="light">Previous</button>
-            <button  ion-button=""  color="primary">Confirm!</button>
-
-          </form>
-        </ion-slide>
+  <div *ngIf="pageParam.isApply || pageParam.isEditing" >
+    <ion-grid >
+      <ion-row >
 
 
+        <!--<ion-col *ngIf="pageParam.isEditing" col-12="" >-->
+        <!--<button  (click)="this.navCtrl.pop()" no-padding="" block     ion-button="" clear="" small="">Cancel Edit</button>-->
+        <!--</ion-col>-->
+      </ion-row>
+    </ion-grid>
+
+    <ion-slides  #formSlides pager="true"  >
+      <!--<ion-slide padding style="min-height:100%;background: tomato;">-->
+      <!--<h3 style="color:white">Please Fill the form to apply visitation</h3>-->
+      <!--<img src="assets/imgs/forms.png" style="width:100px;" text-center="" align-self-center="" />-->
+
+      <!--<button ion-button="" color="light" (click)="slideNext()">Start Fill!</button>-->
+      <!--</ion-slide>-->
+
+
+      <ion-slide *ngFor="let form of this.identityForms" >
+        <h2>{{form.title}}</h2>
+        <form #identityForm="ngForm" (submit)="identityFormSubmit(identityForm)">
+          <ion-list  class="ionContent" >
+            <floating-input  *ngFor="let currentBaseForm of form.baseForms" [parentForm]="identityForm" [baseForm]="currentBaseForm"></floating-input>
+
+
+          </ion-list>
+
+
+          <button ion-button="" align-items-center="" color="primary">Next</button>
+        </form>
+      </ion-slide>
 
 
 
-        <ion-slide >
-          <h2>{{this.vechileForm.title}}</h2>
-            <form class="ionContent" #idVechileForm="ngForm"  (submit)="completionFormSubmit(idVechileForm)">
-              <ion-list *ngFor="let currentBaseForm of this.vechileForm.baseForms" >
-                    <floating-input [parentForm]="idVechileForm" [baseForm]="currentBaseForm"></floating-input>
-              </ion-list>
+      <ion-slide   *ngIf="!this.identityInformationForm.isHidden" [hidden]="this.identityInformationForm.isHidden">
+        <h2>{{this.identityInformationForm.title}}</h2>
+        <form class="ionContent" #idIdentityInformationForm="ngForm"  (submit)="completionFormSubmit(idIdentityInformationForm)">
+          <ion-list *ngFor="let currentBaseForm of this.identityInformationForm.baseForms" >
+            <floating-input [parentForm]="idIdentityInformationForm" [baseForm]="currentBaseForm"></floating-input>
+          </ion-list>
+          <button  ion-button=""  type="button" (click)="slidePrevious()" color="light">Previous</button>
+          <button  ion-button=""  color="primary">Next</button>
 
-              <button  ion-button=""  type="button" (click)="slidePrevious()" color="light">Previous</button>
-              <button  ion-button=""  color="primary">Next</button>
-            </form>
-        </ion-slide>
+        </form>
+      </ion-slide>
 
+      <ion-slide  *ngIf="!this.identityForEmployeeForm.isHidden" [hidden]="this.identityForEmployeeForm.isHidden" >
+        <h2>{{this.identityForEmployeeForm.title}}</h2>
+        <form class="ionContent" #idIdentityForEmployee="ngForm"  (submit)="completionFormSubmit(idIdentityForEmployee)">
+          <ion-list *ngFor="let currentBaseForm of this.identityForEmployeeForm.baseForms" >
+            <floating-input [parentForm]="idIdentityForEmployee" [baseForm]="currentBaseForm"></floating-input>
+          </ion-list>
+          <button  ion-button=""  type="button" (click)="slidePrevious()" color="light">Previous</button>
+          <button  ion-button=""  color="primary">Next</button>
 
-          <ion-slide *ngIf="isNeedHost">
-            <h2>{{hostForm.title}}</h2>
-            <form class="ionContent" #idHostForm="ngForm" (submit)="completionFormSubmit(idHostForm)">
-              <ion-list *ngFor="let currentBaseForm of hostForm.baseForms">
-                <floating-input  [parentForm]="idHostForm" [baseForm]="currentBaseForm"></floating-input>
-              </ion-list>
-              <button  ion-button=""  type="button" (click)="slidePrevious()" color="light">Previous</button>
-              <button  ion-button="" color="primary">Next</button>
-            </form>
-
-          </ion-slide>
-
-        <ion-slide >
-
-          <h2>{{visitationDetailForm.title}}</h2>
-          <form class="ionContent" #idVisitationDetailForm="ngForm"  (submit)="completionFormSubmit(idVisitationDetailForm)">
-            <ion-list *ngFor="let currentBaseForm of visitationDetailForm.baseForms">
-              <floating-input  [parentForm]="idVisitationDetailForm" [baseForm]="currentBaseForm"></floating-input>
-            </ion-list>
-            <button  ion-button=""  type="button" (click)="slidePrevious()" color="light">Previous</button>
-            <button  ion-button="" color="primary">Next</button>
-          </form>
-        </ion-slide>
+        </form>
+      </ion-slide>
 
 
-        <ion-slide >
 
-          <h2>{{additionalForm.title}}</h2>
-          <form class="ionContent" #idAdditionalForm="ngForm"  (submit)="completionFormSubmit(idAdditionalForm)">
-            <ion-list *ngFor="let currentBaseForm of additionalForm.baseForms">
-              <floating-input  [parentForm]="idAdditionalForm" [baseForm]="currentBaseForm"></floating-input>
-            </ion-list>
-            <button  ion-button=""  type="button" (click)="slidePrevious()" color="light">Previous</button>
-            <button  ion-button="" color="primary">Submit</button>
 
-            <!--<pre style="font-size:12px">{{this.formValues | json}}</pre>-->
 
-          </form>
-        </ion-slide>
+      <ion-slide >
+        <h2>{{this.vechileForm.title}}</h2>
+        <form class="ionContent" #idVechileForm="ngForm"  (submit)="completionFormSubmit(idVechileForm)">
+          <ion-list *ngFor="let currentBaseForm of this.vechileForm.baseForms" >
+            <floating-input [parentForm]="idVechileForm" [baseForm]="currentBaseForm"></floating-input>
+          </ion-list>
 
-        <!--<ion-slide>-->
-          <!--<h1>Prototype submit</h1>-->
-          <!--<h2>Value to be submited to server</h2>-->
+          <button  ion-button=""  type="button" (click)="slidePrevious()" color="light">Previous</button>
+          <button  ion-button=""  color="primary">Next</button>
+        </form>
+      </ion-slide>
+
+
+      <ion-slide *ngIf="isNeedHost">
+        <h2>{{hostForm.title}}</h2>
+        <form class="ionContent" #idHostForm="ngForm" (submit)="completionFormSubmit(idHostForm)">
+          <ion-list *ngFor="let currentBaseForm of hostForm.baseForms">
+            <floating-input  [parentForm]="idHostForm" [baseForm]="currentBaseForm"></floating-input>
+          </ion-list>
+          <!--<button type="button" block="" ion-button="" color="success" (click)="addAnotherHost()">Add Another Host</button>-->
+          <button type="button"  ion-button=""  type="button" (click)="slidePrevious()" color="light">Previous</button>
+          <button  ion-button="" color="primary">Next</button>
+        </form>
+
+      </ion-slide>
+
+      <ion-slide >
+
+        <h2>{{visitationDetailForm.title}}</h2>
+        <form class="ionContent" #idVisitationDetailForm="ngForm"  (submit)="completionFormSubmit(idVisitationDetailForm)">
+          <ion-list *ngFor="let currentBaseForm of visitationDetailForm.baseForms">
+            <floating-input  [parentForm]="idVisitationDetailForm" [baseForm]="currentBaseForm"></floating-input>
+          </ion-list>
+          <button  ion-button=""  type="button" (click)="slidePrevious()" color="light">Previous</button>
+          <button  ion-button="" color="primary">Next</button>
+        </form>
+      </ion-slide>
+
+
+      <ion-slide >
+
+        <h2>{{additionalForm.title}}</h2>
+        <form class="ionContent" #idAdditionalForm="ngForm"  (submit)="completionFormSubmit(idAdditionalForm)">
+          <ion-list *ngFor="let currentBaseForm of additionalForm.baseForms">
+            <floating-input  [parentForm]="idAdditionalForm" [baseForm]="currentBaseForm"></floating-input>
+          </ion-list>
+          <button  ion-button=""  type="button" (click)="slidePrevious()" color="light">Previous</button>
+          <button  ion-button="" color="primary">Submit</button>
+
           <!--<pre style="font-size:12px">{{this.formValues | json}}</pre>-->
 
-        <!--</ion-slide>-->
-      </ion-slides>
+        </form>
+      </ion-slide>
+
+      <!--<ion-slide>-->
+      <!--<h1>Prototype submit</h1>-->
+      <!--<h2>Value to be submited to server</h2>-->
+      <!--<pre style="font-size:12px">{{this.formValues | json}}</pre>-->
+
+      <!--</ion-slide>-->
+    </ion-slides>
 
 
-    </div>
+  </div>
 
 
 
 
 
 
-    <div *ngSwitchCase="'list'">
+  <div *ngIf="!pageParam.isApply && !pageParam.isEditing">
+
+      <button   (click)="newApply()" ion-button="" block="" color="primary">Apply</button>
 
 
-      <ion-list>
-        <ion-item>
-          <ion-label>Year</ion-label>
-          <ion-select (ionChange)="filterChanged()" [(ngModel)]="filter.cmbYear" interface="popover">
-            <ion-option value="" selected="">-all-</ion-option>
-            <ion-option *ngFor="let i of '123456789'.split('')" [value]="2018-i">{{2018-i}}</ion-option>
-          </ion-select>
-        </ion-item>
-        <ion-item>
-          <ion-label>Month</ion-label>
-          <ion-select (ionChange)="filterChanged()" [(ngModel)]="filter.cmbMonth" interface="popover">
-            <ion-option value="" selected="">-all-</ion-option>
+    <ion-list>
 
-            <ion-option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]" [value]="i" >{{i}}</ion-option>
-          </ion-select>
-        </ion-item>
-        <ion-item>
-          <ion-label>Status</ion-label>
-          <ion-select (ionChange)="filterChanged()" [(ngModel)]="filter.acknowledged" interface="popover">
-            <ion-option value="" selected="">-all-</ion-option>
-
-            <ion-option *ngFor="let object of [{name:'Pending Acknowledged',value:'f'},{name:'Acknowledged',value:'t'}]" [value]="object.value" >{{object.name}}</ion-option>
-          </ion-select>
-        </ion-item>
-
-      </ion-list>
-
-      <ion-grid>
-        <ion-row *ngFor="let currentVisitationData of visitationData">
-          <p>page: {{currentVisitationData.page}}/{{currentVisitationData.maxpage}}</p>
-          <ion-col col-12="" col-sm-6="" col-md-4="" *ngFor="let record of currentVisitationData.records">
-            <ion-card >
-              <ion-card-header  (click)="record.isOpen = !record.isOpen">
-                <ion-item no-padding="">
-                  <h2>{{record.visitorcategory_name}}</h2>
-                  <span item-end="">
-              <ion-icon name="arrow-down" *ngIf="record.isOpen"></ion-icon>
-              <ion-icon name="arrow-up" *ngIf="!record.isOpen"></ion-icon>
+      <ion-item (click)="filter.isOpen = !filter.isOpen">
+        <h3>Search for Visitation Application</h3>
+        <span item-end="">
+              <ion-icon name="arrow-down" *ngIf="filter.isOpen"></ion-icon>
+              <ion-icon name="arrow-up" *ngIf="!filter.isOpen"></ion-icon>
             </span>
+      </ion-item>
+
+      <span *ngIf="filter.isOpen" class="animation-expand-bottom">
+          <ion-item>
+            <ion-label>Year</ion-label>
+            <ion-select (ionChange)="filterChanged()" [(ngModel)]="filter.cmbYear" interface="popover">
+              <ion-option value="" selected="">--All--</ion-option>
+              <ion-option *ngFor="let i of this.getYearRange()" [value]="i">{{i}}</ion-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-label>Month</ion-label>
+            <ion-select (ionChange)="filterChanged()" [(ngModel)]="filter.cmbMonth" interface="popover">
+              <ion-option value="" selected="">--All--</ion-option>
+
+              <ion-option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]" [value]="i" >{{i}}</ion-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-label>Status</ion-label>
+            <ion-select (ionChange)="filterChanged()" [(ngModel)]="filter.cmbStatus" interface="popover">
+              <ion-option *ngFor="let object of this.statusFilter" [selected]="true" [value]="object.value" >{{object.name}}</ion-option>
+            </ion-select>
+          </ion-item>
+
+
+
+          <ion-item>
+            <ion-label>Acknowledge</ion-label>
+            <ion-select (ionChange)="filterChanged()" [(ngModel)]="filter.acknowledged" interface="popover">
+              <ion-option value="" selected="">--All--</ion-option>
+
+              <ion-option *ngFor="let object of [{name:'Pending Acknowledged',value:'f'},{name:'Acknowledged',value:'t'}]" [value]="object.value" >{{object.name}}</ion-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item>
+            <button (click)="getVisitation()" ion-button="" block="">Search</button>
+          </ion-item>
+
+        </span>
+
+    </ion-list>
+
+    <p padding="" *ngIf="this.visitationData[0]; let result"><span *ngIf="  result.records.length == 0">No record</span></p>
+    <ion-grid>
+      <ion-row *ngFor="let currentVisitationData of visitationData">
+        <!--<p>page: {{currentVisitationData.page}}/{{currentVisitationData.maxpage}}</p>-->
+        <ion-col col-12="" col-sm-6="" col-md-4="" *ngFor="let record of currentVisitationData.records">
+          <ion-card >
+            <ion-card-header  (click)="record.isOpen = !record.isOpen">
+              <ion-item no-padding="">
+                <h2>{{record.visitorcategory_name}}</h2>
+                <!--<span item-end="">-->
+                <!--<ion-icon name="arrow-down" *ngIf="record.isOpen"></ion-icon>-->
+                <!--<ion-icon name="arrow-up" *ngIf="!record.isOpen"></ion-icon>-->
+                <!--</span>-->
+              </ion-item>
+              <!--<p><small>{{record.status}}</small></p>-->
+            </ion-card-header>
+
+
+            <!--<div *ngIf="record.isOpen" ngClass=" animation-expand-bottom">-->
+            <div ngClass=" animation-expand-bottom">
+
+
+              <ion-list ngClass="ionContent" >
+
+                <ion-item>
+                  status
+                  <span  [style.color]="this.getStatusColor(record.status)" item-end="">{{record.status}} </span>
                 </ion-item>
-                <p><small>{{record.status}}</small></p>
-              </ion-card-header>
 
-
-              <div *ngIf="record.isOpen" ngClass=" animation-expand-bottom">
-                <ion-list ngClass="ionContent" >
                 <ion-item>
                   Created Date
                   <span item-end="">{{record.created_date}}</span>
@@ -220,10 +274,10 @@
 
               <ion-row no-padding>
                 <!--<ion-col>-->
-                  <!--<button ion-button clear small color="danger" icon-start>-->
-                    <!--<ion-icon name='close-circle'></ion-icon>-->
-                    <!--Reject-->
-                  <!--</button>-->
+                <!--<button ion-button clear small color="danger" icon-start>-->
+                <!--<ion-icon name='close-circle'></ion-icon>-->
+                <!--Reject-->
+                <!--</button>-->
                 <!--</ion-col>-->
                 <ion-col (click)="pushVisitationDetail(record)" text-center="">
                   <button ion-button clear small color="primary" icon-center>
@@ -232,30 +286,28 @@
                   </button>
                 </ion-col>
                 <!--<ion-col text-right>-->
-                  <!--<button ion-button clear small color="primary" icon-start>-->
-                    <!--<ion-icon name='checkmark-circle'></ion-icon>-->
-                    <!--Approve-->
-                  <!--</button>-->
+                <!--<button ion-button clear small color="primary" icon-start>-->
+                <!--<ion-icon name='checkmark-circle'></ion-icon>-->
+                <!--Approve-->
+                <!--</button>-->
                 <!--</ion-col>-->
 
               </ion-row>
-              </div>
+            </div>
 
 
 
-            </ion-card>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
 
 
-      <ion-infinite-scroll [enabled]="this.isInfiniteEnable" (ionInfinite)="doInfinite($event)">
-        <ion-infinite-scroll-content>Loading</ion-infinite-scroll-content>
-      </ion-infinite-scroll>
-
-    </div>
-
+    <ion-infinite-scroll [enabled]="this.isInfiniteEnable" (ionInfinite)="doInfinite($event)">
+      <ion-infinite-scroll-content>Loading</ion-infinite-scroll-content>
+    </ion-infinite-scroll>
 
   </div>
+
 
 </ion-content>

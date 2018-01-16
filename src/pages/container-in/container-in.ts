@@ -10,6 +10,7 @@ import {BaseForm, InputType, KeyValue, LabelType} from "../../components/Forms/b
 import {SearchBarPage} from "../search-bar/search-bar";
 import {VisitationDetailPageParam, VisitationDetailPage} from "../visitation-detail/visitation-detail";
 import {HttpParams} from "@angular/common/http";
+import {RootParamsProvider} from "../../providers/root-params/root-params";
 
 /**
  * Generated class for the ContainerInPage page.
@@ -49,6 +50,7 @@ export class ContainerInPage {
   public additionalForm:PageForm;
   public hostForm: PageForm;
   public isNeedHost: boolean         = true;
+  public ngForms:NgForm[] = [];
   @ViewChild('infiniteScroll') public infiniteScroll: InfiniteScroll;
 
   // @ViewChild('segment') public segment:Segment
@@ -69,7 +71,7 @@ export class ContainerInPage {
   public formValues: object        = {};
   public categoryCountryRules: any = {}
 
-  constructor(public navCtrl: NavController, public alertController:AlertController, public navParams: NavParams, public apiProvider:ApiProvider, public userProvider:UserProvider) {
+  constructor(public navCtrl: NavController, public alertController:AlertController, public navParams: NavParams, public apiProvider:ApiProvider, public userProvider:UserProvider, public rootParam:RootParamsProvider) {
     this.dataList.push({
       theCase:"containerIn",
       isInfiniteEnable:true,
@@ -111,6 +113,9 @@ export class ContainerInPage {
         this.formValues[key] = form.value[key];
       }
       console.log('completionFormSubmit', this.formValues);
+      this.ngForms.push(form);
+
+
       if (this.formSlides.isEnd()) {
         console.log('submit form', this.formValues);
         this.formValues['outsider_specify'] = ""
@@ -124,6 +129,10 @@ export class ContainerInPage {
           message                = data["message"]
           var isSuccess: boolean = data["success"];
           if (isSuccess) {
+            this.ngForms.forEach((currentForm:NgForm)=>{
+              currentForm.resetForm();
+              currentForm.reset();
+            })
             setTimeout(() => {
               this.segmentValue = "containerIn";
             }, 1000)
@@ -139,6 +148,7 @@ export class ContainerInPage {
         })
       }
       this.slideNext();
+
 
     }
     else {
@@ -174,7 +184,11 @@ export class ContainerInPage {
 
   pushVisitationDetail(visitationData: VisitationDataRecordsInterface) {
 
-    var param: VisitationDetailPageParam = {visitationData: visitationData,title:"Container In"}
+    var param: VisitationDetailPageParam = {visitationData: visitationData,title:"Container In",
+    actionOnPop:()=>{
+
+    }
+    }
     this.navCtrl.push(VisitationDetailPage, param)
   }
 
@@ -220,7 +234,7 @@ export class ContainerInPage {
     visitationDateFrom.setInputTypeDate({min: BaseForm.getCurrentDate(),max:BaseForm.getAdvanceDate(720), displayFormat: "DD MMM YYYY"});
     var visitationDateTo = new BaseForm("Until","until_date")
     visitationDateTo.setInputTypeDate({});
-    visitationDateFrom.changeListener.subscribe((model:NgModel)=>{
+    visitationDateFrom.changeListener.subscribe((model:BaseForm)=>{
 
       if(model.value == "" || model.value == null){
         return
@@ -234,6 +248,7 @@ export class ContainerInPage {
     })
     var visitationTime:BaseForm = new BaseForm("Visitation Time","visitation_time");
     visitationTime.setInputTypeTime();
+    visitationTime.setDateTimezone(8);
 
     var deliveryType:BaseForm = new BaseForm("Delivery Type","delivery_type");
     deliveryType.setInputTypeSelect([{key:"Export Cargo",value:"export"},{key:"Import Cargo",value:"import"}]);
@@ -276,7 +291,7 @@ export class ContainerInPage {
       isOpen: false,
       baseForms:[containerSize, containerName, containerNo,containerSealNo]
     }
-    deliveryType.changeListener.subscribe((model:NgModel)=>{
+    deliveryType.changeListener.subscribe((model:BaseForm)=>{
       if(model.value.toLowerCase() == 'export'){
         this.exportCargoForm.isHidden = false;
         this.importCargoForm.isHidden = true;
@@ -295,10 +310,10 @@ export class ContainerInPage {
     }, {key: "Other as the host", value: 'false'}];
 
 
-    var hostIdSearch: BaseForm  = new BaseForm("Employee ID / Name", "");
+    var hostIdSearch: BaseForm    = new BaseForm("Employee ID / Name", "");
     //# http://hrms.dxn2u.com:8888/hrm_test2/s/EmployeeList?autocomplete=true&loc_id=FnF&keyword=my&val=my
-    hostIdSearch.rules.required = false;
-    var httpParams: HttpParams  = new HttpParams().set('autocomplete', 'true').set('loc_id', 'FnF');
+    hostIdSearch.rules.isRequired = false;
+    var httpParams: HttpParams    = new HttpParams().set('autocomplete', 'true').set('loc_id', 'FnF');
 
     hostIdSearch.setInputTypeSearchBar("s/EmployeeList", httpParams, ["keyword", "val"], ((serverResponse: any) => {
       var selectOptions: KeyValue[] = [];
@@ -309,32 +324,31 @@ export class ContainerInPage {
     }));
     hostIdSearch.isHidden = true;
 
-    var hostId: BaseForm          = new BaseForm("Employee ID", "host_id");
-    hostId.labelType              = LabelType.inline;
-    hostId.isReadOnly             = true;
-    var hostName: BaseForm        = new BaseForm("Employee name", "host_name");
-    hostName.labelType            = LabelType.inline;
-    hostName.isReadOnly           = true;
-    hostName.isHidden             = true;
-    hostName.rules.required       = false;
-    var hostDepartment: BaseForm  = new BaseForm("Department", "host_department");
-    hostDepartment.labelType      = LabelType.inline;
-    hostDepartment.isReadOnly     = true;
-    hostDepartment.isHidden       = true;
-    hostDepartment.rules.required = false;
-    var hostSection: BaseForm     = new BaseForm("Section", "host_section");
-    hostSection.labelType         = LabelType.inline;
-    hostSection.isReadOnly        = true;
-    hostSection.isHidden          = true;
-    hostSection.rules.required    = false;
+    var hostId: BaseForm            = new BaseForm("Employee ID", "host_id");
+    hostId.labelType                = LabelType.inline;
+    hostId.isReadOnly               = true;
+    var hostName: BaseForm          = new BaseForm("Employee name", "host_name");
+    hostName.labelType              = LabelType.inline;
+    hostName.isReadOnly             = true;
+    hostName.isHidden               = true;
+    hostName.rules.isRequired       = false;
+    var hostDepartment: BaseForm    = new BaseForm("Department", "host_department");
+    hostDepartment.labelType        = LabelType.inline;
+    hostDepartment.isReadOnly       = true;
+    hostDepartment.isHidden         = true;
+    hostDepartment.rules.isRequired = false;
+    var hostSection: BaseForm       = new BaseForm("Section", "host_section");
+    hostSection.labelType           = LabelType.inline;
+    hostSection.isReadOnly          = true;
+    hostSection.isHidden            = true;
+    hostSection.rules.isRequired    = false;
 
-    hostType.changeListener.subscribe((model: NgModel) => {
+    hostType.changeListener.subscribe((model: BaseForm) => {
       hostName.isHidden = hostIdSearch.isHidden = hostDepartment.isHidden = hostSection.isHidden = true;
-      console.log((<boolean>model.value));
       hostId.value = "";
       if (model.value === 'true') {
         //#emp id is the host
-        hostId.value = this.formValues["emp_id"];
+        hostId.value = this.userProvider.userSession.empId;
         console.log('enter here ');
 
       } else if (model.value === 'false') {
@@ -347,7 +361,7 @@ export class ContainerInPage {
 
     });
 
-    hostIdSearch.changeListener.subscribe((model: NgModel) => {
+    hostIdSearch.changeListener.subscribe((model: BaseForm) => {
       this.apiProvider.getEmployeeInformation(model.value, true).then((serverResponse: EmployeeInformationInterface) => {
         hostId.value         = serverResponse.emp_id;
         hostName.value       = serverResponse.emp_name;
@@ -375,8 +389,8 @@ export class ContainerInPage {
     };
 
 
-    var remark:BaseForm = new BaseForm("Remark", "remark");
-    remark.rules.required = false;
+    var remark:BaseForm     = new BaseForm("Remark", "remark");
+    remark.rules.isRequired = false;
 
     this.additionalForm = {
       title: "Additional Form",
@@ -394,7 +408,7 @@ export class ContainerInPage {
   }
 
   filterChanged(currentList:DataList) {
-    console.log(currentList.filter);
+    console.log("filterChanged",currentList.filter);
     currentList.visitationData   = [];
     // this.infiniteScroll.enable(true);
     currentList.isInfiniteEnable = true;
@@ -448,6 +462,14 @@ export class ContainerInPage {
     } else {
 
     }
+  }
+  public  getYearRange(){
+    var currentYear =  new Date().getFullYear();
+    var year:string[] = [];
+    for(var i = 5 ; i>=0 ; i--){
+      year.push('' + (<number>currentYear - i))
+    }
+    return year;
   }
 
 }

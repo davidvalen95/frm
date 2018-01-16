@@ -1,4 +1,4 @@
-<ion-menu [content]="content" *ngIf="userProvider.userSession.isLoggedIn" >
+<ion-menu [content]="content" *ngIf="userProvider.userSession.isLoggedIn && !rootParams.isPartial" >
   <ion-header>
     <ion-toolbar  >
       <ion-title>Menu</ion-title>

@@ -5,6 +5,7 @@ import {BaseForm, InputType, LabelType} from "../base-form";
 import {NgForm, NgModel, ValidationErrors} from "@angular/forms";
 import {Label, NavController} from "ionic-angular";
 import {ParamSearchBarPage, SearchBarPage} from "../../../pages/search-bar/search-bar";
+import {isDefined} from "ionic-angular/util/util";
 
 /**
  * Generated class for the FloatingInputComponent component.
@@ -40,46 +41,55 @@ export class FloatingInputComponent {
     this.baseForm = null;
   }
   ngOnInit(){
-    this.baseForm.changeListener.subscribe(((model:NgModel)=>{
-      // this.parentForm.tes.setDirty()
-      if(this.baseForm.inputType == InputType.number){
-        console.log('listenerNumber val:', model.value, 'baseform: ', this.baseForm);
-        if(this.baseForm.rules.max < Number(model.value)){
-          // console.log('listenerNumber catch error max', this.baseForm.rules.max, Number(model.value ))
-          this.parentForm.getControl(this.finalModel).setErrors(["max"])
 
-        }
-        if(this.baseForm.rules.min > Number(model.value)){
-          this.parentForm.getControl(this.finalModel).setErrors(["min"])
-
-        }
-      }
-
-    }))
   }
 
   ngAfterContentInit(){
-    switch(this.baseForm.inputType){
-      case InputType.text:
-      case InputType.password:
-      case InputType.email:
-      case InputType.number:
-      case InputType.searchBar:
-        this.finalModel = this.ionInputModel;
-        break;
-      case InputType.select:
-        this.finalModel = this.ionSelectModel;
-        break;
-      case InputType.date:
-        this.finalModel = this.ionDateModel;
-    }
-    this.parentForm.addControl(this.finalModel);
-    this.inputType = InputType[this.baseForm.inputType];
-    this.labelType = LabelType[this.baseForm.labelType];
+    if(this.baseForm){
+      this.baseForm.changeListener.subscribe(((model:BaseForm)=>{
+        // this.parentForm.tes.setDirty()
+        if(this.baseForm.inputType == InputType.number){
+          console.log('listenerNumber val:', model.value, 'baseform: ', this.baseForm);
+          if(this.baseForm.rules.max < Number(model.value)){
+            // console.log('listenerNumber catch error max', this.baseForm.rules.max, Number(model.value ))
+            this.parentForm.getControl(this.finalModel).setErrors(["max"])
 
-    if(this.inputType==InputType.searchBar){
-      this.inputType = "text"
+          }
+          if(this.baseForm.rules.min > Number(model.value)){
+            this.parentForm.getControl(this.finalModel).setErrors(["min"])
+
+          }
+        }
+
+      }))
+      switch(this.baseForm.inputType){
+        case InputType.text:
+        case InputType.password:
+        case InputType.email:
+        case InputType.number:
+        case InputType.searchBar:
+          this.finalModel = this.ionInputModel;
+          break;
+        case InputType.select:
+          this.finalModel = this.ionSelectModel;
+          break;
+        case InputType.date:
+          this.finalModel = this.ionDateModel;
+      }
+      this.parentForm.addControl(this.finalModel);
+      this.inputType = InputType[this.baseForm.inputType];
+      this.labelType = LabelType[this.baseForm.labelType];
+      if(this.inputType==InputType.searchBar){
+        this.inputType = "text";
+        // this.isSearchBar = true;//# to disable read-only attr
+      }
+
+
+
     }
+
+
+    // this.baseForm.isHidden = false;
   }
   debug(){
     console.log('debug');

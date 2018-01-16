@@ -7,39 +7,68 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>{{title}}</ion-title>
+    <ion-title text-center="">{{title}}</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
-<ion-content>
+<ion-content [ngClass]="{'partial':this.rootParam.isPartial}">
 
 
-  <ion-grid *ngIf="visitationDetailObject; let result">
-    <ion-row no-padding="">
-      <ion-col *ngIf="isCanAcknowledge"   text- (click)="acknowledge(result)">
-        <button  no-padding="" block ion-button="" clear="" small="">Acknowledge this</button>
-      </ion-col>
-      <ion-col *ngIf="!isCanAcknowledge && !visitationDetailObject.acknowledged" >
-        <button no-padding="" block  color="danger"   ion-button="" clear="" small="">Cannot Ack</button>
-      </ion-col>
-      <ion-col *ngIf="visitationDetailObject.acknowledged" >
-        <button  no-padding="" block  color="success"   ion-button="" clear="" small="">Already Acknowledged</button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+
 
 
   <ion-list>
-    <span  *ngFor="let currentDetail of visitationDetailKeyValue" >
-      <ion-item *ngIf="currentDetail.value !== null">
-        <ion-label>{{currentDetail.key | ucWord}}</ion-label>
-        <ion-input readonly="" [value]="currentDetail.value"></ion-input>
+    <span  *ngFor="let currentContainer of this.keyValueContainer" >
 
-      </ion-item>
+      <div (click)="currentContainer.isOpen = !currentContainer.isOpen">
+        <h5 style="display: inline-block">{{currentContainer.name}}</h5>
+          <ion-icon  *ngIf="currentContainer.isOpen" name="arrow-down"></ion-icon>
+          <ion-icon  *ngIf="!currentContainer.isOpen" name="arrow-up"></ion-icon>
+
+      </div>
+      <div *ngIf="currentContainer.isOpen" class="animation-expand-bottom">
+        <ion-item *ngFor="let currentDetail of currentContainer.value">
+          <ion-label stacked="">{{currentDetail.key | ucWord}}</ion-label>
+          <ion-input readonly="" [value]="currentDetail.value !== '' ? currentDetail.value : '-'"></ion-input>
+
+        </ion-item>
+      </div>
+
     </span>
 
   </ion-list>
+
+
+
+  <ion-grid >
+    <ion-row *ngIf=" isCanApprove  " no-padding="">
+
+      <ion-col  col-6=""    (click)="this.approval(visitationDetailObject,'AP')">
+        <button  no-padding="" block ion-button="" >Approve</button>
+      </ion-col>
+      <!--<ion-col *ngIf="!isCanApprove && !visitationDetailObject.acknowledged" >-->
+      <!--<button no-padding="" block  color="danger"   ion-button="" clear="" small="">Cannot Ack</button>-->
+      <!--</ion-col>-->
+      <ion-col  col-6="" >
+        <button  (click)="this.approval(visitationDetailObject,'RE')" no-padding="" block  color="danger"   ion-button="" >Reject</button>
+      </ion-col>
+
+    </ion-row>
+    <ion-row >
+
+      <ion-col *ngIf="isCanAcknowledge" col-12="" >
+        <button  (click)="this.acknowledge(visitationDetailObject)" no-padding="" block  color="success"   ion-button="" >Acknowledge</button>
+      </ion-col>
+
+      <ion-col *ngIf="isCanEdit" col-6="" >
+        <button  (click)="this.edit()" no-padding="" block     ion-button="" clear="" >Edit</button>
+      </ion-col>
+      <ion-col *ngIf="isCanEdit" col-6="" >
+        <button  (click)="this.delete()" no-padding="" block   color="danger"  ion-button="">Delete</button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
 </ion-content>

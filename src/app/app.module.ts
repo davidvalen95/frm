@@ -23,15 +23,15 @@ import {shim} from "promise.prototype.finally";
 import {VisitationDetailPage} from "../pages/visitation-detail/visitation-detail";
 import {PipesModule} from "../pipes/pipes.module";
 import {ContainerInPage} from "../pages/container-in/container-in";
-import {VisitationFormComponent} from "../components/visitation-form/visitation-form";
 import {LoginPage} from "../pages/login/login";
+import { RootParamsProvider } from '../providers/root-params/root-params';
+import {EmptyPage} from "../pages/empty/empty";
 
 @NgModule({
   declarations: [
     ArrowOpenDirective,
     FormErrorMessageComponent,
     FloatingInputComponent,
-    VisitationFormComponent,
     HomePage,
     ListPage,
     MyApp,
@@ -40,6 +40,7 @@ import {LoginPage} from "../pages/login/login";
     VisitationApplicationPage,
     ContainerInPage,
     LoginPage,
+    EmptyPage
 
   ],
   imports: [
@@ -61,6 +62,7 @@ import {LoginPage} from "../pages/login/login";
     VisitationDetailPage,
     ContainerInPage,
     LoginPage,
+    EmptyPage,
 
   ],
   providers: [
@@ -70,7 +72,8 @@ import {LoginPage} from "../pages/login/login";
     HeaderColor,
     UserProvider,
     ApiProvider,
-    DatePicker
+    DatePicker,
+    RootParamsProvider
   ]
 })
 export class AppModule {}

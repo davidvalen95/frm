@@ -1,30 +1,41 @@
 
 
-<ion-item no-padding="" [hidden]="baseForm.isHidden===true "  >
+<ion-item no-padding="" [hidden]="baseForm.isHidden===true " (click)="baseForm.labelClickListener.next(this.finalModel)" >
 
-  <ion-label stacked="" *ngIf="this.labelType == 'stacked'">{{baseForm.label}} </ion-label>
-  <ion-label inline="" *ngIf="this.labelType == 'inline'">{{baseForm.label}} </ion-label>
+  <ion-label [hidden]="baseForm.isReadOnly" [ngClass]="{'required':baseForm.rules.isRequired,'myIonSelect':(this.inputType =='select')}" stacked="" *ngIf="this.labelType == 'stacked'">{{baseForm.label}} </ion-label>
+  <ion-label  [hidden]="baseForm.isReadOnly" [ngClass]="{'required':baseForm.rules.isRequired,'myIonSelect':(this.inputType =='select')}" inline="" *ngIf="this.labelType == 'inline'" >{{baseForm.label}} </ion-label>
 
   <!--<span *ngIf="baseForm.type=='text';then ionInput else ionSelect"></span>-->
 
-  <ion-input
-    [hidden]="this.inputType=='select' || this.inputType=='date'"
+  <!--only fordisplay-->
+  <!--<ion-input-->
+    <!--type="text"-->
+    <!--[(ngModel)] = "baseForm.value"-->
+  <!--&gt;-->
+  <!--  </ion-input>
+-->
 
+
+
+  <ion-input
+    [hidden]="this.inputType=='select' || this.inputType=='date' || baseForm.isReadOnly"
+    [disabled] = "baseForm.isDisabled"
     [(ngModel)]="baseForm.value"
     #ionInputModel = "ngModel"
     [type]         = "this.inputType"
     [name]        = "baseForm.name"
     [placeholder] = "baseForm.placeholder || ''"
-    [required]    = "baseForm.rules.required"
+    [required]    = "baseForm.rules.isRequired"
     [minlength]   = "baseForm.rules.minlength"
     [maxlength]   = "baseForm.rules.maxlength"
     [pattern]     = "baseForm.rules.pattern"
     [readonly]    = "baseForm.isReadOnly"
     [max]         = "baseForm.rules.max"
     [min]         = "baseForm.rules.min"
-    (ionChange)   = "baseForm.changeListener.next(ionInputModel)"
+    (ionChange)   = "baseForm.broadcast(ionInputModel)"
 
     (focus)="onFieldClicked($event)"
+    (click) = "baseForm.inputClickListener.next(ionInputModel)"
 
   >
 
@@ -32,16 +43,19 @@
 
 
   <ion-select
-    [hidden]="this.inputType != 'select'"
+    [hidden]="this.inputType != 'select' || baseForm.isReadOnly"
+    interface="popover"
     [(ngModel)]   = "baseForm.value"
     #ionSelectModel="ngModel"
     [name]        = "baseForm.name"
     [placeholder] = "baseForm.placeholder || ''"
-    [required]    = "baseForm.rules.required"
+    [required]    = "baseForm.rules.isRequired "
     [minlength]   = "baseForm.rules.minlength"
     [maxlength]   = "baseForm.rules.maxlength"
     [pattern]     = "baseForm.rules.pattern"
-    (ionChange)   = "baseForm.changeListener.next(ionSelectModel)"
+    (ionChange)   = "baseForm.broadcast(ionSelectModel)"
+    [disabled]    = "baseForm.isReadOnly || baseForm.isDisabled"
+    (click) = "baseForm.inputClickListener.next(ionSelectModel)"
 
   >
     <ion-option *ngFor="let option of baseForm.selectOptions" [value]="option.value">{{option.key}}</ion-option>
@@ -49,12 +63,13 @@
 
 
   <ion-datetime
+    [disabled] = "baseForm.isDisabled "
     #ionDateModel   = "ngModel"
-    [hidden]        = "this.inputType != 'date'"
+    [hidden]        = "this.inputType != 'date' || baseForm.isReadOnly"
     [(ngModel)]       = "baseForm.value"
     [name]          = "baseForm.name"
     [placeholder]   = "baseForm.placeholder || ''"
-    [required]      = "baseForm.rules.required"
+    [required]      = "baseForm.rules.isRequired "
     [minlength]     = "baseForm.rules.minlength"
     [maxlength]     = "baseForm.rules.maxlength"
     [pattern]       = "baseForm.rules.pattern"
@@ -62,20 +77,30 @@
     [pickerFormat] = "baseForm.dateSetting.displayFormat"
     [min]           = "baseForm.dateSetting.min"
     [max]           = "baseForm.dateSetting.max"
-    (ionChange)   = "baseForm.changeListener.next(ionDateModel)"
+    (ionChange)   = "baseForm.broadcast(ionDateModel)"
     [hourValues] = baseForm.hourValues
+    (click) = "baseForm.inputClickListener.next(ionDateModel)"
 
   ></ion-datetime>
 
+  <span class="readOnlyInfo" item-left="" [hidden] = "!baseForm.isReadOnly || baseForm.isHidden">
+    <p class="label">{{baseForm.label}} </p>
+    <p class="value"  style="float:left;text-align:left;margin-top:-0px;"  >{{baseForm.getReadOnlyValue()}}</p>
+  </span>
 
-
+  <button [hidden]="baseForm.buttonRight.isHidden" (click)="baseForm.buttonRight.clickListener.next(this.baseForm)" type="button" item-right="" ion-button="" color="primary">{{baseForm.buttonRight.label}}</button>
 
 
 </ion-item >
+
+<!--for display onlu-->
+
+
+<p class="infoBottom">{{baseForm.infoBottom}}</p>
+
 <div [hidden]="baseForm.isHidden" *ngIf="finalModel">
   <!--<span>{{debug()}}</span>-->
-  <p  class="error-container" *ngIf="!finalModel.valid && (finalModel.dirty || finalModel.touched || parentForm.submitted)" >
-
+  <p style="text-align:left;margin-left:-0px;" class="error-container" *ngIf="!finalModel.valid && (finalModel.dirty || finalModel.touched || parentForm.submitted)" >
     <form-error-message  [baseForm]="baseForm" [model]="finalModel"></form-error-message>
   </p>
 </div>
@@ -94,7 +119,7 @@
   <!--[name]        = "currentBaseForm.name"-->
   <!--[value]       = "currentBaseForm.value || ''"-->
   <!--[placeholder] = "currentBaseForm.placeholder || ''"-->
-  <!--[required]    = "currentBaseForm.rules.required"-->
+  <!--[isRequired]    = "currentBaseForm.rules.isRequired"-->
   <!--[minlength]   = "currentBaseForm.rules.minlength"-->
   <!--[maxlength]   = "currentBaseForm.rules.maxlength"-->
   <!--[pattern]     = "currentBaseForm.rules.pattern"-->

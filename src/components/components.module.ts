@@ -4,12 +4,13 @@ import {IonicModule} from "ionic-angular";
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import { FormErrorMessageComponent } from './Forms/form-error-message/form-error-message';
-import { VisitationFormComponent } from './visitation-form/visitation-form';
+import { ToggleOpenComponent } from './toggle-open/toggle-open';
 @NgModule({
 	declarations: [,
     FloatingInputComponent,
     FormErrorMessageComponent,
-    VisitationFormComponent],
+    ToggleOpenComponent,
+    ],
 	imports: [
     IonicModule,
     CommonModule,
@@ -18,6 +19,7 @@ import { VisitationFormComponent } from './visitation-form/visitation-form';
 	exports: [
     FloatingInputComponent,
     FormErrorMessageComponent,
-    VisitationFormComponent]
+    ToggleOpenComponent,
+    ]
 })
 export class ComponentsModule {}

@@ -10,26 +10,39 @@ export class BaseForm {
   public labelType: LabelType = LabelType.stacked;
   public inputType: InputType = InputType.text;
 
-  public placeholder: string                    = "";
-  public selectOptions: KeyValue[]              = [];
-  public rules: InputRules                      = {required: true, min: 0};
-  public isHidden: boolean                      = false;
-  public styling: InputStyle                    = {};
-  public value: string                          = "";
-  public isReadOnly: boolean                    = false;
-  public dateSetting: DateSetting               = {min: "1900-01-01", max: BaseForm.getCurrentDate()};
-  public changeListener: ReplaySubject<NgModel> = new ReplaySubject(5);
-  public searchBarSetting?: SearchBarSetting    = null;
+  public placeholder: string                        = "";
+  public selectOptions: KeyValue[]                  = [];
+  public rules: InputRules                          = {isRequired: true, min: 0};
+  public isHidden: boolean                          = false;
+  public styling: InputStyle                        = {};
+  public value: string                              = "";
+  public isReadOnly: boolean                        = false;
+  public dateSetting: DateSetting                   = {min: "1900-01-01", max: BaseForm.getCurrentDate()};
+  public changeListener: ReplaySubject<BaseForm>     = new ReplaySubject(10);
+  public inputClickListener: ReplaySubject<BaseForm> = new ReplaySubject(10);
+  public labelClickListener: ReplaySubject<BaseForm> = new ReplaySubject(10);
+  public buttonRightClickListener: ReplaySubject<NgModel> = new ReplaySubject(10);
+  public searchBarSetting?: SearchBarSetting        = null;
+  public isSearchBar: boolean                       = false;
+  public isDisabled: boolean                        = false;
+  public buttonRight: FloatingRightButton           = {
+    label: "",
+    isHidden: true,
+    clickListener: new ReplaySubject(10)
+  };
+  private isSelectProcessing: boolean = false;
+
   constructor(public label: string,
               public name?: string,) {
+    this.placeholder = `Enter ${this.label}`;
 
 
     // var promise: Promise<any> = Promise.resolve("tes");
-    this.changeListener.subscribe((model: NgModel) => {
+    this.changeListener.subscribe((model: BaseForm) => {
       if (this.inputType == InputType.number && this.rules.max) {
-        if ((model.value as number) > this.rules.max) {
-          // model.
-        }
+        // if ((model.value as number) > this.rules.max) {
+        //   // model.
+        // }
 
         var test;
       }
@@ -43,8 +56,22 @@ export class BaseForm {
 
   }
 
+  public setDateAdvance1Day(param: string) {
+    if (param == null || param == "") {
+      return;
+    }
+    try {
+      var date = new Date(param);
+      date.setDate(date.getDate() + 1);
+      this.value = date.toISOString();
+    } catch (error) {
+
+    }
+
+  }
 
   public setInputTypeDate(dateSetting: DateSetting) {
+    this.placeholder = `Select ${this.label}`;
     this.inputType = InputType.date;
     // Return today's date and time
 
@@ -55,14 +82,14 @@ export class BaseForm {
     if (dateSetting.max == null)
       dateSetting.max = BaseForm.getCurrentDate();
 
-    if(dateSetting.displayFormat == null){
+    if (dateSetting.displayFormat == null) {
       dateSetting.displayFormat = "DD MMM YYYY";
     }
 
-    if(dateSetting.min instanceof  Date){
+    if (dateSetting.min instanceof Date) {
       dateSetting.min = (<Date>dateSetting.min).toISOString()
     }
-    if(dateSetting.max instanceof  Date){
+    if (dateSetting.max instanceof Date) {
       dateSetting.max = (<Date>dateSetting.max).toISOString()
     }
 
@@ -72,38 +99,63 @@ export class BaseForm {
 
   }
 
-  public setInputTypeTime(){
-    var dateSetting:DateSetting = {};
-    dateSetting.displayFormat = "HH:mm";
-    this.inputType = InputType.date;
-    dateSetting.min = '00:00';
-    dateSetting.max = "23:59";
-    dateSetting.hourValues = "";
-    var prefix = "";
+  public setDateTimezone(timezone: number = 8): string {
 
-    for(var i=0;i<24;i++){
+    console.log('setDateTimezone', this.dateSetting)
+    this.value = new Date((new Date().getTime() - new Date().getTimezoneOffset()) + timezone * 3600 * 1000).toISOString();
+    return this.value;
+  }
+
+  public static setDateTimezone(date: Date, timezone: number): Date {
+    return new Date((date.getTime() - date.getTimezoneOffset()) + timezone * 3600 * 1000);
+  }
+
+  public setInputTypeTime() {
+    this.placeholder = `Select ${this.label}`;
+
+    var dateSetting: DateSetting = {};
+    dateSetting.displayFormat    = "HH:mm";
+    this.inputType               = InputType.date;
+    dateSetting.min              = '00:00';
+    dateSetting.max              = "23:59";
+    dateSetting.hourValues       = "";
+    var prefix                   = "";
+
+    for (var i = 0; i < 24; i++) {
       dateSetting.hourValues += prefix;
-      dateSetting.hourValues += (""+'0'+i).slice(-2);
+      dateSetting.hourValues += ("" + '0' + i).slice(-2);
 
       prefix = ",";
     }
 
-    console.log('timesetting',dateSetting);
+    console.log('timesetting', dateSetting);
     this.dateSetting = dateSetting;
 
   }
 
   public setInputTypeSelect(options: KeyValue[]) {
-    this.inputType     = InputType.select;
-    this.selectOptions = options;
+    if(!this.isSelectProcessing){
+      this.selectOptions = [];
+      this.isSelectProcessing = true;
+      this.placeholder = `Select ${this.label}`;
+      this.inputType     = InputType.select;
+      this.selectOptions = options;
 
-    var text:string = "sdoifjiojdf";
+      var text: string = "sdoifjiojdf";
+
+      this.isSelectProcessing = false;
+
+
+    }
 
   }
 
   public setInputTypeSelectChain(observable: Observable<any>, processData: (data: object[]) => KeyValue[]) {
+    this.placeholder = `Select ${this.label}`;
+
     this.inputType = InputType.select;
 
+    // parsing as key value
     observable.subscribe((data: object[]) => {
       this.selectOptions = processData(data)
       console.log('selectOptions', this.selectOptions)
@@ -113,17 +165,22 @@ export class BaseForm {
   }
 
   public setInputTypeSearchBar(url: string, httpParams: HttpParams, paramBindEvent: string[], processData: (serverResponse: any) => KeyValue[]) {
+    // this.placeholder = `Search ${this.label}`;
+
+    this.isSearchBar      = true;
     this.inputType        = InputType.searchBar;
-    this.isReadOnly       = true
+    // this.isReadOnly       = true
     this.searchBarSetting = {
       url: url,
       httpParams: httpParams,
       httpParamBindEvent: paramBindEvent,
       processData: processData
     }
+    this.placeholder = "Click here to search " + this.label;
   }
 
   public setRulesPatternNumberOnly() {
+    this.inputType                = InputType.number;
     this.rules.pattern            = "[0-9]+";
     this.rules.patternInformation = "Only number";
   }
@@ -146,13 +203,49 @@ export class BaseForm {
     return currentTime.toISOString()
   }
 
-  public static getAdvanceDate(advance:number, from = new Date(), ){
+  public static getAdvanceDate(advance: number, from = new Date(),) {
     from.setDate(from.getDate() + advance);
     return from.toISOString();
   }
-  public getInputTypeText():string{
+
+  public getInputTypeText(): string {
     console.log('getInputTypeText', InputType[this.inputType])
     return InputType[this.inputType];
+  }
+
+  public broadcast(ngModel: NgModel) {
+    if (ngModel == null || ngModel.value == null) {
+      return;
+    }
+    this.changeListener.next(this)
+  }
+
+  public getReadOnlyValue(): string{
+
+    switch(this.inputType){
+      case InputType.date:
+      case InputType.email:
+      case InputType.number:
+      case InputType.password:
+      case InputType.searchBar:
+      case InputType.text:
+        return this.value !=='' ? this.value : "-";
+      case InputType.select:
+
+        var bank:string = "";
+
+        //# get the label(key) if type select
+        this.selectOptions.map((keyValue)=>{
+          if(keyValue.value == this.value){
+            bank =  keyValue.key
+          }
+        });
+        return bank;
+
+      default:
+        return this.value;
+    }
+
   }
 
 }
@@ -164,7 +257,7 @@ export interface KeyValue {
 }
 
 export interface InputRules {
-  required?: boolean,
+  isRequired?: boolean,
   minlength?: number,
   maxlength?: number,
   pattern?: string,
@@ -193,7 +286,7 @@ export interface DateSetting {
   min?: string | Date;
   max?: string | Date;
   displayFormat?: string;
-  hourValues?:string;
+  hourValues?: string;
 }
 
 export interface SearchBarSetting {
@@ -203,3 +296,8 @@ export interface SearchBarSetting {
   httpParamBindEvent: string[];
 }
 
+export interface FloatingRightButton{
+  label:string;
+  clickListener: ReplaySubject<BaseForm>;
+  isHidden: boolean;
+}

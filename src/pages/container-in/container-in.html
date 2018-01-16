@@ -4,9 +4,9 @@
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-<ion-header >
-  <ion-navbar >
-    <button ion-button menuToggle>
+<ion-header *ngIf="!this.rootParam.isPartial" >
+  <ion-navbar  >
+    <button  ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title>Container</ion-title>
@@ -15,7 +15,7 @@
 </ion-header>
 
 
-<ion-content >
+<ion-content [ngClass]="{'partial':this.rootParam.isPartial}" >
 
   <ion-segment (ionChange)="ionSegmentChange()"  style='margin-top:16px;'[(ngModel)]="segmentValue">
     <ion-segment-button value="apply">
@@ -37,12 +37,12 @@
 
 
       <ion-slides  #formSlides pager="true"  >
-        <ion-slide padding style="min-height:100%;background: tomato;">
-          <h3 style="color:white">Container In</h3>
-          <img src="assets/imgs/forms.png" style="width:100px;" text-center="" align-self-center="" />
+        <!--<ion-slide padding style="min-height:100%;background: tomato;">-->
+          <!--<h3 style="color:white">Container In</h3>-->
+          <!--<img src="assets/imgs/forms.png" style="width:100px;" text-center="" align-self-center="" />-->
 
-          <button ion-button="" color="light" (click)="slideNext()">Start Fill!</button>
-        </ion-slide>
+          <!--<button ion-button="" color="light" (click)="slideNext()">Start Fill!</button>-->
+        <!--</ion-slide>-->
 
         <ion-slide >
 
@@ -102,7 +102,7 @@
               <floating-input  [parentForm]="idAdditionalForm" [baseForm]="currentBaseForm"></floating-input>
             </ion-list>
             <button  ion-button=""  type="button" (click)="slidePrevious()" color="light">Previous</button>
-            <button  ion-button="" color="primary">Next</button>
+            <button  ion-button="" color="primary">Submit</button>
           </form>
 
         </ion-slide>
@@ -129,15 +129,15 @@
         <ion-list>
               <ion-item>
                 <ion-label>Year</ion-label>
-                <ion-select (ionChange)="filterChanged()" [(ngModel)]="currentList.filter.cmbYear" interface="popover">
-                  <ion-option value="" selected="">-all-</ion-option>
-                  <ion-option *ngFor="let i of '123456789'.split('')" [value]="2018-i">{{2018-i}}</ion-option>
+                <ion-select (ionChange)="filterChanged(currentList)" [(ngModel)]="currentList.filter.cmbYear" interface="popover">
+                  <ion-option value="" selected="">--All--</ion-option>
+                  <ion-option *ngFor="let i of this.getYearRange()" [value]="i">{{i}}</ion-option>
                 </ion-select>
               </ion-item>
               <ion-item>
                 <ion-label>Month</ion-label>
                 <ion-select (ionChange)="filterChanged(currentList)" [(ngModel)]="currentList.filter.cmbMonth" interface="popover">
-                  <ion-option value="" selected="">-all-</ion-option>
+                  <ion-option value="" selected="">--All--</ion-option>
 
                   <ion-option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]" [value]="i" >{{i}}</ion-option>
                 </ion-select>
@@ -145,7 +145,7 @@
               <ion-item>
                 <ion-label>Status</ion-label>
                 <ion-select (ionChange)="filterChanged(currentList)" [(ngModel)]="currentList.filter.cmbStatus" interface="popover">
-                  <ion-option value="" selected="">-all-</ion-option>
+                  <ion-option value="" selected="">--All--</ion-option>
                   <ion-option *ngFor="let object of statusKeyValue" [value]="object.value" >{{object.key}}</ion-option>
                 </ion-select>
               </ion-item>
@@ -153,7 +153,7 @@
               <ion-item>
                 <ion-label>Acknowledged</ion-label>
                 <ion-select (ionChange)="filterChanged(currentList)" [(ngModel)]="currentList.filter.acknowledged" interface="popover">
-                  <ion-option value="" selected="">-all-</ion-option>
+                  <ion-option value="" selected="">--All--</ion-option>
 
                   <ion-option *ngFor="let object of [{name:'Pending Acknowledged',value:'f'},{name:'Acknowledged',value:'t'}]" [value]="object.value" >{{object.name}}</ion-option>
                 </ion-select>
