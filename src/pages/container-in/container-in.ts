@@ -70,7 +70,6 @@ export class ContainerInPage {
   public dataList:DataList[] = [];
   public formValues: object        = {};
   public categoryCountryRules: any = {}
-
   constructor(public navCtrl: NavController, public alertController:AlertController, public navParams: NavParams, public apiProvider:ApiProvider, public userProvider:UserProvider, public rootParam:RootParamsProvider) {
     this.dataList.push({
       theCase:"containerIn",
@@ -142,7 +141,6 @@ export class ContainerInPage {
           message = rejected["message"]
           console.log('submit rejected', rejected);
         }).finally(() => {
-          this.apiProvider.dismissLoader();
           this.apiProvider.presentToast(message)
 
         })
@@ -231,7 +229,7 @@ export class ContainerInPage {
     this.formValues["visitorcategory_code"] = "CONT"
 
     var visitationDateFrom = new BaseForm("Visitation Date From", "visitation_date");
-    visitationDateFrom.setInputTypeDate({min: BaseForm.getCurrentDate(),max:BaseForm.getAdvanceDate(720), displayFormat: "DD MMM YYYY"});
+    visitationDateFrom.setInputTypeDate({min: BaseForm.getCurrentDate(),max:BaseForm.getAdvanceDate(720).toISOString(), displayFormat: "DD MMM YYYY"});
     var visitationDateTo = new BaseForm("Until","until_date")
     visitationDateTo.setInputTypeDate({});
     visitationDateFrom.changeListener.subscribe((model:BaseForm)=>{
@@ -244,7 +242,7 @@ export class ContainerInPage {
 
       // visitationDateTo.setInputTypeDate({min:model.value,max:(BaseForm.getAdvanceDate(60,new Date(model.value)))})
       visitationDateTo.value = ""
-      visitationDateTo.setInputTypeDate({min: model.value, max: BaseForm.getAdvanceDate(60,new Date(model.value))})
+      visitationDateTo.setInputTypeDate({min: model.value, max: BaseForm.getAdvanceDate(60,new Date(model.value)).toISOString()})
     })
     var visitationTime:BaseForm = new BaseForm("Visitation Time","visitation_time");
     visitationTime.setInputTypeTime();
@@ -373,7 +371,6 @@ export class ContainerInPage {
 
 
       }).finally(() => {
-        this.apiProvider.dismissLoader()
       })
     });
 
@@ -426,7 +423,10 @@ export class ContainerInPage {
         console.log('cnotainertrue', data);
         currentList.visitationData.push(data);
         return Promise.resolve(true);
-      });
+      }).catch((rejected)=>{
+          console.log(rejected);
+        });
+
     }
 
     if( currentList.theCase =='containerOut'){
@@ -437,7 +437,9 @@ export class ContainerInPage {
         currentList.visitationData.push(data);
         console.log('containerOut',currentList);
 ;        return Promise.resolve(true);
-      });
+      }).catch((rejected)=>{
+        console.log(rejected);
+      });;
 
 
     }

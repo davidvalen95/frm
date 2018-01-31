@@ -20,20 +20,58 @@
 
 
   <ion-list>
-    <span  *ngFor="let currentContainer of this.keyValueContainer" >
+    <span class="detailKeyValue"   *ngFor="let currentContainer of this.keyValueContainer" >
 
-      <div (click)="currentContainer.isOpen = !currentContainer.isOpen">
-        <h5 style="display: inline-block">{{currentContainer.name}}</h5>
-          <ion-icon  *ngIf="currentContainer.isOpen" name="arrow-down"></ion-icon>
-          <ion-icon  *ngIf="!currentContainer.isOpen" name="arrow-up"></ion-icon>
+      <span [hidden]="currentContainer.isHidden === true">
+        <div class='title' (click)="currentContainer.isOpen = !currentContainer.isOpen">
+          <h5 style="display: inline-block">{{currentContainer.name}}</h5>
+            <ion-icon  *ngIf="currentContainer.isOpen" name="arrow-down"></ion-icon>
+            <ion-icon  *ngIf="!currentContainer.isOpen" name="arrow-up"></ion-icon>
+
+        </div>
+        <div *ngIf="currentContainer.isOpen" class="animation-expand-bottom">
+
+
+          <div ion-grid="">
+
+            <ion-row class="keyValue"  *ngFor="let currentDetail of currentContainer.value">
+              <ion-col class="key" style="" col-4="" >{{currentDetail.key | ucWord}}</ion-col>
+              <ion-col class="value" col-8=""  >{{currentDetail.value !== '' ? currentDetail.value : '-'}}</ion-col>
+
+            </ion-row>
+          </div>
+
+
+        </div>
+      </span>
+
+    </span>
+
+
+
+
+    <!--for history-->
+    <span class=""   >
+
+      <div class='title' (click)="historyContainer.isOpen = !historyContainer.isOpen">
+        <h5 style="display: inline-block">{{historyContainer.name}}</h5>
+          <ion-icon  *ngIf="historyContainer.isOpen" name="arrow-down"></ion-icon>
+          <ion-icon  *ngIf="!historyContainer.isOpen" name="arrow-up"></ion-icon>
 
       </div>
-      <div *ngIf="currentContainer.isOpen" class="animation-expand-bottom">
-        <ion-item *ngFor="let currentDetail of currentContainer.value">
-          <ion-label stacked="">{{currentDetail.key | ucWord}}</ion-label>
-          <ion-input readonly="" [value]="currentDetail.value !== '' ? currentDetail.value : '-'"></ion-input>
+      <div *ngIf="historyContainer.isOpen" class="animation-expand-bottom">
 
-        </ion-item>
+
+        <div style="margin-bottom: 16px;" ion-grid=""  *ngFor="let currentKeyValueContainer of historyContainer.keyValue;">
+
+          <ion-row class="keyValue"  *ngFor="let currentDetail of currentKeyValueContainer">
+            <ion-col class="key" style="" col-3="" >{{currentDetail.key | ucWord}}</ion-col>
+            <ion-col class="value" col-9=""  >: {{currentDetail.value !== '' ? currentDetail.value : '-'}}</ion-col>
+
+          </ion-row>
+        </div>
+
+
       </div>
 
     </span>
@@ -41,18 +79,40 @@
   </ion-list>
 
 
+<div>
+  <form [hidden]="this.additionalForm.isHidden" class="" #idAdditionalForm="ngForm"  (submit)="completionFormSubmit(idAdditionalForm)">
+    <ion-list *ngFor="let currentBaseForm of additionalForm.baseForms">
+      <floating-input  [parentForm]="idAdditionalForm" [baseForm]="currentBaseForm"></floating-input>
+    </ion-list>
 
+    <!--<pre style="font-size:12px">{{this.formValues | json}}</pre>-->
+  </form>
+</div>
   <ion-grid >
+    <ion-row>
+      <ion-col col-12="">
+        <ion-list>
+
+
+
+
+
+        </ion-list>
+      </ion-col>
+
+    </ion-row>
     <ion-row *ngIf=" isCanApprove  " no-padding="">
 
-      <ion-col  col-6=""    (click)="this.approval(visitationDetailObject,'AP')">
-        <button  no-padding="" block ion-button="" >Approve</button>
-      </ion-col>
+
       <!--<ion-col *ngIf="!isCanApprove && !visitationDetailObject.acknowledged" >-->
       <!--<button no-padding="" block  color="danger"   ion-button="" clear="" small="">Cannot Ack</button>-->
       <!--</ion-col>-->
       <ion-col  col-6="" >
         <button  (click)="this.approval(visitationDetailObject,'RE')" no-padding="" block  color="danger"   ion-button="" >Reject</button>
+      </ion-col>
+
+      <ion-col  col-6=""    (click)="this.approval(visitationDetailObject,'AP')">
+        <button  no-padding="" block ion-button="" >Approve</button>
       </ion-col>
 
     </ion-row>
@@ -63,10 +123,12 @@
       </ion-col>
 
       <ion-col *ngIf="isCanEdit" col-6="" >
-        <button  (click)="this.edit()" no-padding="" block     ion-button="" clear="" >Edit</button>
-      </ion-col>
-      <ion-col *ngIf="isCanEdit" col-6="" >
         <button  (click)="this.delete()" no-padding="" block   color="danger"  ion-button="">Delete</button>
+      </ion-col>
+
+
+      <ion-col *ngIf="isCanEdit" col-6="" >
+        <button  (click)="this.edit()" no-padding="" block     ion-button=""  >Edit</button>
       </ion-col>
     </ion-row>
   </ion-grid>

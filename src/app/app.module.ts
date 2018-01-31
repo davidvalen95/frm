@@ -26,6 +26,7 @@ import {ContainerInPage} from "../pages/container-in/container-in";
 import {LoginPage} from "../pages/login/login";
 import { RootParamsProvider } from '../providers/root-params/root-params';
 import {EmptyPage} from "../pages/empty/empty";
+import {AndroidPermissions} from "@ionic-native/android-permissions";
 
 @NgModule({
   declarations: [
@@ -73,7 +74,9 @@ import {EmptyPage} from "../pages/empty/empty";
     UserProvider,
     ApiProvider,
     DatePicker,
-    RootParamsProvider
+    RootParamsProvider,
+    AndroidPermissions,
+
   ]
 })
 export class AppModule {}

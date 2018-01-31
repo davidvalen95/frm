@@ -18,6 +18,7 @@ import {ContainerInPage} from "../pages/container-in/container-in";
 import {LoginPage} from "../pages/login/login";
 import {RootParamsProvider} from "../providers/root-params/root-params";
 import {EmptyPage} from "../pages/empty/empty";
+import {AndroidPermissions} from "@ionic-native/android-permissions";
 @Component({
   templateUrl: 'app.html'
 })
@@ -26,17 +27,21 @@ export class MyApp {
   rootPage: any = LoginPage;
   homeMenu:MenusApiInterface[] = [];
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, private headerColor:HeaderColor, public userProvider:UserProvider, public rootParams:RootParamsProvider, public toastController:ToastController) {
+  constructor(public platform: Platform, private androidPermissions: AndroidPermissions,public statusBar: StatusBar, public splashScreen: SplashScreen, private headerColor:HeaderColor, public userProvider:UserProvider, public rootParams:RootParamsProvider, public toastController:ToastController) {
     shim();
     this.initializeApp();
     this.headerColor.tint('#112244');
     // used for an example of ngFor and navigation
     this.homeMenu = userProvider.homeMenu;
+    this.checkPermission();
 
-    this.toastController.create({
-      duration: 4000,
-      message: `version: ${this.rootParams.version}, isPartial: ${this.rootParams.isPartial}`
-    }).present();
+
+
+    //
+    // this.toastController.create({
+    //   duration: 4000,
+    //   message: `version: ${this.rootParams.version}, isPartial: ${this.rootParams.isPartial}`
+    // }).present();
 
     if(this.rootParams.isPartial){
 
@@ -88,12 +93,12 @@ export class MyApp {
           this.rootParams.visitationApplicationParam = params;
           this.rootPage = VisitationApplicationPage;
           break;
-        case "containerIn":
-        case "container":
-          this.rootPage = ContainerInPage
-          break;
-        case "containerOut":
-          break;
+        // case "containerIn":
+        // case "container":
+        //   this.rootPage = ContainerInPage
+        //   break;
+        // case "containerOut":
+        //   break;
         case "visitation_approval":
         case "visitationApproval":
         case "approvalVisitation":
@@ -107,6 +112,9 @@ export class MyApp {
           break;
         case "home":
           this.rootPage = HomePage
+          break;
+        default:
+          this.rootPage = HomePage;
           break;
       }
     },100)
@@ -123,6 +131,31 @@ export class MyApp {
 
   }
 
+
+  private checkPermission() {
+
+    if (!this.rootParams.isLive) {
+      // return;
+    }
+    this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.READ_EXTERNAL_STORAGE).then(result => {
+      console.log('Has permission?', result.hasPermission)
+
+      if (!result.hasPermission) {
+        this.androidPermissions.requestPermissions([this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE, this.androidPermissions.PERMISSION.READ_EXTERNAL_STORAGE]).then(data => {
+
+          if (!data.hasPermission) {
+            this.checkPermission();
+          }
+          console.log('permission', data)
+        }).catch(rejected => {
+          this.checkPermission();
+        });
+      }
+    }).catch(err => {
+
+
+    });
+  }
 }
 
 export class StorageKey{

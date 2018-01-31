@@ -20,6 +20,24 @@ page-visitation-application {
     top: 20px;
     height:20px;
   }
+
+
+  .submitButton{
+
+
+    display: inline-block;
+    width: 47%;
+
+
+  }
+  
+  .visitationMini{
+    ion-item{
+      span{
+        text-align: right;
+      }
+    }
+  }
 }
 
 

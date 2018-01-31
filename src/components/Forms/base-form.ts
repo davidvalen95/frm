@@ -4,6 +4,8 @@ import {Observable} from "rxjs/Observable";
 import {ApiProvider} from "../../providers/api/api";
 import {NgModel} from "@angular/forms";
 import {ReplaySubject} from "rxjs/ReplaySubject";
+import {FileJsonFormat, MyHelper} from "../../app/MyHelper";
+import {File} from "@ionic/app-scripts";
 
 @Injectable()
 export class BaseForm {
@@ -15,22 +17,33 @@ export class BaseForm {
   public rules: InputRules                          = {isRequired: true, min: 0};
   public isHidden: boolean                          = false;
   public styling: InputStyle                        = {};
-  public value: string                              = "";
+  public value: any                              = "";
   public isReadOnly: boolean                        = false;
   public dateSetting: DateSetting                   = {min: "1900-01-01", max: BaseForm.getCurrentDate()};
-  public changeListener: ReplaySubject<BaseForm>     = new ReplaySubject(10);
-  public inputClickListener: ReplaySubject<BaseForm> = new ReplaySubject(10);
-  public labelClickListener: ReplaySubject<BaseForm> = new ReplaySubject(10);
-  public buttonRightClickListener: ReplaySubject<NgModel> = new ReplaySubject(10);
-  public searchBarSetting?: SearchBarSetting        = null;
-  public isSearchBar: boolean                       = false;
-  public isDisabled: boolean                        = false;
-  public buttonRight: FloatingRightButton           = {
+  public changeListener: ReplaySubject<BaseForm>          = new ReplaySubject(0);
+  public inputClickListener: ReplaySubject<BaseForm>      = new ReplaySubject(0);
+  public labelClickListener: ReplaySubject<BaseForm>      = new ReplaySubject(0);
+  public buttonRightClickListener: ReplaySubject<NgModel> = new ReplaySubject(0);
+  public searchBarSetting?: SearchBarSetting              = null;
+  public isSearchBar: boolean                             = false;
+  public isDisabled: boolean                              = false;
+  public isInitializeState:boolean = false;
+  public infoBottom:string = "";
+  public fileCallbackEvent: (event)=>void;
+  private lastBroadcast: number;
+  private lastBroadcastWithNumber: number = -1;
+  public buttonRightSuccess: ButtonSettingInterface       = {
     label: "",
     isHidden: true,
-    clickListener: new ReplaySubject(10)
+    clickListener: new ReplaySubject(1)
   };
-  private isSelectProcessing: boolean = false;
+  public buttonRightDanger: ButtonSettingInterface        = {
+    label: "",
+    isHidden: true,
+    clickListener: new ReplaySubject(1)
+  };
+
+  private isSelectProcessing: boolean                     = false;
 
   constructor(public label: string,
               public name?: string,) {
@@ -56,13 +69,13 @@ export class BaseForm {
 
   }
 
-  public setDateAdvance1Day(param: string) {
+  public setDateAdvanceDay(param: string, day:number = 1) {
     if (param == null || param == "") {
       return;
     }
     try {
       var date = new Date(param);
-      date.setDate(date.getDate() + 1);
+      date.setDate(date.getDate() + day);
       this.value = date.toISOString();
     } catch (error) {
 
@@ -70,6 +83,11 @@ export class BaseForm {
 
   }
 
+  public setInputTypeFile(callbackEvent:(event)=>void){
+    this.inputType = InputType.file;
+    // this.value = "0 ";
+    this.fileCallbackEvent = callbackEvent;
+  }
   public setInputTypeDate(dateSetting: DateSetting) {
     this.placeholder = `Select ${this.label}`;
     this.inputType = InputType.date;
@@ -133,6 +151,11 @@ export class BaseForm {
 
   }
 
+  public setInputTypeText(){
+    this.inputType = InputType.text;
+    this.placeholder = `Enter ${this.label}`;
+
+  }
   public setInputTypeSelect(options: KeyValue[]) {
     if(!this.isSelectProcessing){
       this.selectOptions = [];
@@ -162,6 +185,12 @@ export class BaseForm {
     })
 
 
+  }
+
+  public activateButtonRightDanger(label:string):ReplaySubject<BaseForm>{
+    this.buttonRightDanger.label = label;
+    this.buttonRightDanger.isHidden = false;
+    return this.buttonRightDanger.clickListener;
   }
 
   public setInputTypeSearchBar(url: string, httpParams: HttpParams, paramBindEvent: string[], processData: (serverResponse: any) => KeyValue[]) {
@@ -205,7 +234,8 @@ export class BaseForm {
 
   public static getAdvanceDate(advance: number, from = new Date(),) {
     from.setDate(from.getDate() + advance);
-    return from.toISOString();
+
+    return from;
   }
 
   public getInputTypeText(): string {
@@ -213,11 +243,44 @@ export class BaseForm {
     return InputType[this.inputType];
   }
 
-  public broadcast(ngModel: NgModel) {
-    if (ngModel == null || ngModel.value == null) {
+  public broadcastIonChange(event) {
+    if (this.value == null) {
       return;
     }
-    this.changeListener.next(this)
+   // if(this.lastBroadcast && new Date().getTime() - this.lastBroadcast < 1000 ){
+   //    return;
+    this.lastBroadcastWithNumber++;
+    if(this.lastBroadcastWithNumber%2>0){
+      return;
+    }
+    this.lastBroadcast = new Date().getTime();
+    this.changeListener.next(this) //# my BaseForm
+
+
+  }
+
+  public broadcastNgChange(event){
+
+    if(this.inputType == InputType.text){
+      this.changeListener.next(this);
+    }
+
+    if(this.inputType == InputType.file){
+
+      if(!event.target.files[0]){
+        return;
+      }
+      // var test:File = event.target.files[0];
+      // event.target.value = "C:\\fakepath\\Screen Shot 2018-01-19 at 2.22.22 PM.png";
+      console.log('broadcastTheEvent',event);
+
+      this.fileCallbackEvent(event);
+
+      // MyHelper.readFile(event,(result)=>{
+      //   // console.log(result);
+      //   this.fileCallback(result);
+      // })
+    }
   }
 
   public getReadOnlyValue(): string{
@@ -253,7 +316,7 @@ export class BaseForm {
 export interface KeyValue {
   value?: any,
   key: string,
-
+  order?:number,
 }
 
 export interface InputRules {
@@ -273,7 +336,7 @@ export interface InputStyle {
 }
 
 export enum InputType {
-  text, select, password, email, date, number, searchBar
+  text, select, password, email, date, number, searchBar,textarea,file
 }
 
 export enum LabelType {
@@ -296,7 +359,7 @@ export interface SearchBarSetting {
   httpParamBindEvent: string[];
 }
 
-export interface FloatingRightButton{
+export interface ButtonSettingInterface{
   label:string;
   clickListener: ReplaySubject<BaseForm>;
   isHidden: boolean;

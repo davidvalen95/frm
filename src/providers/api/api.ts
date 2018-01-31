@@ -16,9 +16,24 @@ import {BaseForm} from "../../components/Forms/base-form";
 @Injectable()
 export class ApiProvider {
 
+  // // # TEST URL
   public static BASE_URL: string = "http://hrms.dxn2u.com:8888/hrm_test2/";
+  public static URL_PHP: string = "http://hrms.dxn2u.com/hrmsphptest/";
+
+  // http://hrms.dxn2u.com/hrmsphptest/app.php
+
+
+  //# LOCAL URL
   // public static BASE_URL: string = "http://10.26.5.74:8080/hrm2/";
-  public loader                  = this.loadingController.create({});
+
+
+  //# LIVE URL
+  // public static BASE_URL: string = "http://hrms.dxn2u.com:8888/hrm_live/";
+  // public static URL_PHP: string = "http://hrms.dxn2u.com/hrmsphplive/";
+
+
+
+
 
   constructor(public httpClient: HttpClient, private loadingController: LoadingController, public toastController: ToastController,) {
   }
@@ -68,7 +83,6 @@ export class ApiProvider {
   //region ============= VisitationApplication ================
   getVisitationDetail(user: UserSessionApiInterface, tid: string): Promise<any> {
 
-    this.presentLoading("Fetching Data");
     var httpParams: HttpParams = new HttpParams().set('user_id', user.empId).set('cmd', 'edit').set('tid', tid);
     // this.httpClient.get(ApiProvider.BASE_URL + "s/VisitationApplication_top",{params:httpParams}).subscribe((data:any)=>{
     //   data["data"]
@@ -81,35 +95,37 @@ export class ApiProvider {
 
   getVisitationFormRules(ctId: string, visitorCategoryCode: string): Observable<any> {
     var httpParams: HttpParams = new HttpParams().set('requisition_type', 'appointment')
-                                                 .set('reqtype', 'visitation_rules')
-                                                 .set('ct_id', ctId)
-                                                 .set('visitorcategory_code', visitorCategoryCode);
+      .set('reqtype', 'visitation_rules')
+      .set('ct_id', ctId)
+      .set('visitorcategory_code', visitorCategoryCode);
 
 
     console.log('rulesParam', httpParams);
     return this.httpClient.get(ApiProvider.BASE_URL + "s/VisitationRulesList", {params: httpParams})
   }
 
-  getCompanyInformation(outsiderCode:string):Promise<CompanyInformation>{
+  getCompanyInformation(outsiderCode: string): Promise<CompanyInformation> {
     // http://hrms.dxn2u.com:8888/hrm_test2/s/VisitationRulesList?reqtype=outsider&outsider_code=C001
-    var httpParams:HttpParams = new HttpParams().set('reqtype','outsider').set('outsider_code',outsiderCode);
-    return this.httpClient.get<CompanyInformation>(ApiProvider.BASE_URL + 's/VisitationRulesList',{params:httpParams}).toPromise();
+    var httpParams: HttpParams = new HttpParams().set('reqtype', 'outsider').set('outsider_code', outsiderCode);
+    return this.httpClient.get<CompanyInformation>(ApiProvider.BASE_URL + 's/VisitationRulesList', {params: httpParams}).toPromise();
   }
 
-  submitVisitationAplyForm(post: object, url: string): Promise<any> {
-    this.presentLoading("Submiting Form");
+  submitVisitationAplyForm(originalPost: object, url: string): Promise<any> {
+    var post                     = {...originalPost};
     post                         = this.preprocessingDate(post, ["visitor_birth_date", "visitation_date", "until_date"]);
-    post = this.preprocessingTime(post,["visitation_time"]);
-    post ["mobile"] = true;
+    post                         = this.preprocessingTime(post, ["visitation_time"]);
+    post ["mobile"]              = true;
     var httpHeaders: HttpHeaders = new HttpHeaders();
     var formData: FormData       = new FormData();
     for (var key in post) {
       formData.append(key, post[key])
 
     }
-    console.log('submitFormdata', formData);
+    console.log('submitFormdata', formData, post);
+    // httpHeaders.set("Content-Type", 'multipart/form-data').set("Access-Control-Allow-Origin","* always");
     httpHeaders.set("Content-Type", 'multipart/form-data');
-    return this.httpClient.post(ApiProvider.BASE_URL + url, formData,
+    httpHeaders.append("Origin","null");
+    return this.httpClient.post( url, formData,
       {headers: httpHeaders},
     ).toPromise()
   }
@@ -119,17 +135,20 @@ export class ApiProvider {
    * @param {{year; month; acknowledge; status}} filters
    * @returns {Promise<Object>}
    */
-  getVisitationContainer(filters: VisitationFilterApi, userSession: UserSessionApiInterface, isContainer: boolean = false, page: number = 1, isContainerOut: boolean = false): Promise<VisitationDataApiInterface> {
+  getVisitationContainer(filters: VisitationFilterApi, userSession: UserSessionApiInterface, isContainer: boolean = false, page: number = 1, isContainerOut: boolean = false, isBadge: boolean = false): Promise<VisitationDataApiInterface> {
 
     var visitationUrl: string = ApiProvider.BASE_URL + 's/VisitationApplication_active';
-    if(isContainerOut){
+    if (isContainerOut) {
       visitationUrl = ApiProvider.BASE_URL + 's/VisitationApplicationContainerout_active'
     }
-    var body: any             = filters;
-    body["activepage"]        = [page, 5];
-    body["inactivepage"]      = [1, 1];
-    body["container"]         = isContainer;
-    body["user_id"]           = userSession.empId;
+    var body: any        = filters;
+    body["activepage"]   = [page, 5];
+    body["inactivepage"] = [1, 1];
+    body["container"]    = isContainer;
+    body["user_id"]      = userSession.empId;
+    body["cmbYearList"]  = ["" + ((<number>new Date().getUTCFullYear()) - 1), (new Date().getUTCFullYear())];
+    body["isBadge"]      = isBadge;
+    // body["isBadge"] = true
     console.log('filters', body);
     return this.httpClient.get<VisitationDataApiInterface>(visitationUrl, {params: body}).toPromise();
     // return this.httpClient.post<any>(visitationUrl,body).toPromise();
@@ -140,20 +159,55 @@ export class ApiProvider {
 
   }
 
-  getApprovalVisitationContainer(filters: VisitationFilterApi,page,userSession:UserSessionApiInterface):Promise<VisitationDataApiInterface>{
-    var body: any             = filters;
-    body["activepage"]        = [page, 5];
+  getBadgeVisitationPendingAcknowledge(userSession: UserSessionApiInterface) {
+    var visitationUrl: string = ApiProvider.BASE_URL + 's/VisitationApplication_active';
+    var body: any             = {};
+    body["activepage"]        = [1, 5];
     body["inactivepage"]      = [1, 1];
-    body["container"]         = false;
     body["user_id"]           = userSession.empId;
+    body["cmbYearList"]       = ["" + ((<number>new Date().getUTCFullYear()) - 1), (new Date().getUTCFullYear())];
+    body["isBadge"]           = true;
+
+
+    return this.httpClient.get<BadgeApiInterface>(visitationUrl, {params: body}).toPromise();
+  }
+
+  getBadgeVisitationApproval(userSession: UserSessionApiInterface, setting: { isContainer: boolean } = {isContainer: false}) {
+    var body: any         = {};
+    body["activepage"]    = [1, 5];
+    body["inactivepage"]  = [1, 1];
+    // body["container"]     = setting.isContainer;
+    body["user_id"]       = userSession.empId;
+    body["filter_by"]     = "emp_name";
+    body["keyword"]       = '';
+    body['cmbStatus']        = "PA";
+    body['cmbSection']    = "";
+    body['cmbDepartment'] = "";
+    body["cmbYearList"]   = ["" + ((<number>new Date().getUTCFullYear()) - 1), (new Date().getUTCFullYear())];
+
+    console.log('filters', body);
+    var url = ApiProvider.BASE_URL + "s/VisitationApplicationApproval_active";
+    return this.httpClient.get<VisitationDataApiInterface>(url, {params: body}).toPromise();
+  }
+
+
+  getApprovalVisitationContainer(filters: VisitationFilterApi, page, userSession: UserSessionApiInterface): Promise<VisitationDataApiInterface> {
+    var body: any        = filters;
+    body["activepage"]   = [page, 5];
+    body["inactivepage"] = [1, 1];
+    body["container"]    = false;
+    body["user_id"]      = userSession.empId;
+    body["cmbYearList"]  = ["" + ((<number>new Date().getUTCFullYear()) - 1), (new Date().getUTCFullYear())];
+
     console.log('filters', body);
     var url = ApiProvider.BASE_URL + "s/VisitationApplicationApproval_active";
 
 
-    return  this.httpClient.get<VisitationDataApiInterface>(url,{params:body}).toPromise();
+    return this.httpClient.get<VisitationDataApiInterface>(url, {params: body}).toPromise();
 
   }
-  getSelectOptionsVisitation(userProvider:UserProvider): Observable<object[]> {
+
+  getSelectOptionsVisitation(userProvider: UserProvider): Observable<object[]> {
     console.log('obser');
     var params: any = {user_id: userProvider.userSession.empId, cmd: "add"};
     return this.httpClient.get<object[]>(ApiProvider.BASE_URL + "s/VisitationApplication_top",
@@ -162,41 +216,36 @@ export class ApiProvider {
 
   }
 
-  acknowledge(tid: string, remark:string): Promise<any> {
-    this.presentLoading("Acknowledging");
-    var httpParams: HttpParams = new HttpParams().set('tid', tid).set('requisition_type', 'appointment').set('acknowledge_remark',remark);
+  acknowledge(tid: string, remark: string): Promise<any> {
+    var httpParams: HttpParams = new HttpParams().set('tid', tid).set('requisition_type', 'appointment').set('acknowledge_remark', remark);
     return this.httpClient.get<any>(ApiProvider.BASE_URL + "s/VisitationApplicationAcknowledge_op", {params: httpParams}).toPromise()
   }
 
-  visitationApproval(params:any):Promise<any>{
-    this.presentLoading("Updating Status");
-    var body:any = params;
-    body["test"] = "";
-    console.log('visitationApproval,body',body);
-    var url:string = ApiProvider.BASE_URL + "s/VisitationApplicationApproval_op";
+  visitationApproval(params: any): Promise<any> {
+
+    var body: any = params;
+    body["test"]  = "";
+    console.log('visitationApproval,body', body);
+    var url: string = ApiProvider.BASE_URL + "s/VisitationApplicationApproval_op";
     // var httpParams: HttpParams = new HttpParams().set('tid', tid).set('requisition_type', 'appointment');
 
-    return this.httpClient.get(url,{params:body}).toPromise();
+    return this.httpClient.get(url, {params: body}).toPromise();
 
   }
 
   //endregion =
 
 
-  presentLoading(message?: string) {
-    if (message) {
-      this.loader = this.loadingController.create();
-      this.loader.setContent(message);
-      this.loader.present();
-    }
+
+  presentLoadingV2(message?: string) {
+     var loader = this.loadingController.create();
+    loader.setContent(message);
+    loader.present();
+
+    return loader;
   }
 
-  dismissLoader() {
-    if (this.loader != null) {
-      this.loader.dismiss();
-      this.loader = null;
-    }
-  }
+
 
   presentToast(message?: string) {
     if (message) {
@@ -230,15 +279,15 @@ export class ApiProvider {
     return formValues;
   }
 
-  private preprocessingTime(formValues:object, shouldProcess:string[]){
+  private preprocessingTime(formValues: object, shouldProcess: string[]) {
     for (var key in formValues) {
       if (typeof(formValues[key]) == "string") {
         try {
           var date = new Date(formValues[key]);
           if (!isNaN(date.getFullYear()) && shouldProcess.find((value: string) => {
-            if(value == key){
-              console.log("preprocessingTime", date , formValues[key]);
-            }
+              if (value == key) {
+                console.log("preprocessingTime", date, formValues[key]);
+              }
 
               return value == key
             })) {
@@ -266,10 +315,12 @@ export class ApiProvider {
 }//class
 
 export interface MenusApiInterface {
+  hasSubmenu?:boolean;
   menu?: MenusApiInterface[];
-  menu_name;
-  menu_id;
+  name;
+  id;
   isOpen: boolean;
+  image?: string;
 }
 
 export interface UserSessionApiInterface {
@@ -286,20 +337,20 @@ export interface UserSessionApiInterface {
   st_id?;//KDH
   user_type?;//E
   isLoggedIn: boolean;
-  isFnF?:boolean;
-  isFnFReady?:boolean;
+  isFnF?: boolean;
+  isFnFReady?: boolean;
 }
 
 export class VisitationFilterApi {
-  cmbYear: string      = "" + new Date().getFullYear();
-  cmbMonth: string     = "";
-  cmbStatus: string    = "";
-  acknowledged: string = "";
-  cmbDepartment:string = "" ;//# for Approver
-  cmbSection:string = "" ;//# for Approver
-  filter_by:string = "emp_name" ;//# for Approver
-  keyword:string = "" ;//# for Approver
-  isOpen:boolean = false;
+  cmbYear: string       = "" + new Date().getFullYear();
+  cmbMonth: string      = "";
+  cmbStatus: string     = "";
+  acknowledged: string  = "";
+  cmbDepartment: string = "";//# for Approver
+  cmbSection: string    = "";//# for Approver
+  filter_by: string     = "emp_name";//# for Approver
+  keyword: string       = "";//# for Approver
+  isOpen: boolean       = false;
 
 
 }
@@ -311,18 +362,29 @@ export interface VisitationDataApiInterface {
   page: number;
   records: VisitationDataRecordsInterface[];
   totalRecord: number;
+  badgeContainerApproval?:number;//for Approval
+  badgeAppointmentApproval?:number;//# for approval
+
 }
 
 export interface VisitationDataRecordsInterface {
   created_date: string;
+  emp_name?: string;
+  emp_id?: string;
+  employee?: string; //# union from empid emp name but not always availagle
   id: string;
   port_name: string;
+  purpose: string;
   status: string;
   status_str: string;
   visitation_date: string;
   visitation_time: string;
   visitor_id: string;
+  visitor_name: string;
   visitorcategory_name: string;
+  group_by: string;
+  host_id: string;
+  host_name: string;
   isOpen: boolean;
 }
 
@@ -344,7 +406,7 @@ export interface VisitationDataDetailInterface {
   emp_id?: string;
   host_ext?: string;
   host_id?: string;
-  host_type?:string;
+  host_type?: string;
   other_host_id?: string;
   outsider_code?: string;
   outsider_specify?: string;
@@ -371,7 +433,7 @@ export interface VisitationDataDetailInterface {
   visitor_name?: string;
   visitor_no?: string;
   visitor_pass?: string;
-  mobile_no?:string;
+  mobile_no?: string;
   visitorcategory_code?: string;
 }
 
@@ -390,10 +452,27 @@ export interface EmployeeInformationInterface {
   emp_id: string;
 }
 
-export interface CompanyInformation{
-  ct_id?:string;
-  ic_no?:string;
-  gender?:string;
-  contact_person?:string;
-  specify?:boolean;
+export interface CompanyInformation {
+  ct_id?: string;
+  ic_no?: string;
+  gender?: string;
+  contact_person?: string;
+  specify?: boolean;
+}
+
+export interface VisitationHistoryInterface {
+  date?: string;
+  emp_name?: string;
+  remark?: string;
+  emp_id?: string;
+  status?: string;
+}
+
+export interface BadgeApiInterface {
+  //{"badgeVisitation":1,"badge":6,"badgeContainerOut":5,"badgeContainerIn":0}
+
+  badgeVisitation?: number;
+  badge?: number;
+  badgeContainerOut?: number;
+  badgeContainerIn?: number;
 }

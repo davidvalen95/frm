@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {ApiProvider, MenusApiInterface, UserSessionApiInterface} from "../api/api";
-import {NavController} from "ionic-angular";
+import {Loading, NavController} from "ionic-angular";
 import {LoginPage} from "../../pages/login/login";
 import {RootParamsProvider} from "../root-params/root-params";
 import {StorageKey} from "../../app/app.component";
@@ -21,12 +21,12 @@ export class UserProvider {
 
   public homeMenu:MenusApiInterface[] = [{
     isOpen: false,
-    menu_id: "authorization",
-    menu_name: "Authorization",
+    id: "authorization",
+    name: "Authorization",
     menu: [{
       isOpen:false,
-      menu_id: "home",
-      menu_name:"Home",
+      id: "home",
+      name:"Home",
     }],
 
   }];
@@ -37,7 +37,7 @@ export class UserProvider {
     this.userSession.isFnF = false;
     this.userSession.isFnFReady = false;
     console.log('Hello UserProvider Provider');
-    // this.homeMenu.push({isOpen:false,menu_id:"test",menu_name:"re"})
+    // this.homeMenu.push({isOpen:false,id:"test",name:"re"})
     if(rootParam.isPartial){
       // this.userSession.empId = localStorage.getItem(StorageKey.USER_ID) || "MY080127";
       // this.userSession.userId = this.userSession.empId;
@@ -64,7 +64,7 @@ export class UserProvider {
   }
 
   login(username:string, password:string, loginListener?:(isLoggedIn:boolean)=>void) {
-    this.api.presentLoading("Logging in");
+    var loading = this.api.presentLoadingV2("Logging in");
 
     this.api.login(username, password).then((data: UserSessionApiInterface) => {
       if(data["status"] =="ok"){
@@ -82,10 +82,10 @@ export class UserProvider {
       this.homeMenu.splice(0,this.homeMenu.length);
       // this.concatArray(this.homeMenu,data["parent_menu"]);
       // this.homeMenu[2].menu.push(
-      //   {menu:[],menu_id:"containerIn",menu_name:"Container",isOpen:true},
+      //   {menu:[],id:"containerIn",name:"Container",isOpen:true},
       //
       // );
-      // this.homeMenu[this.homeMenu.length - 1].menu.push({menu_id:"logout",menu_name:"Logout",isOpen:false});
+      // this.homeMenu[this.homeMenu.length - 1].menu.push({id:"logout",name:"Logout",isOpen:false});
 
       // console.log(data["parent_menu"]);
 
@@ -95,18 +95,18 @@ export class UserProvider {
       console.log('menu',data);
       // this.homeMenu.push({
       //   isOpen: false,
-      //   menu_id: "",
-      //   menu_name: "My Application",
+      //   id: "",
+      //   name: "My Application",
       //   menu: [{
       //     isOpen:false,
-      //     menu_id:"visitationApplication",
-      //     menu_name:"Visitation Application"
+      //     id:"visitationApplication",
+      //     name:"Visitation Application"
       //   }]
       // });
     }).catch(rejected=>{
       this.api.presentToast(rejected.toString());
     }).finally(()=>{
-      this.api.dismissLoader();
+      loading.dismiss();
     });
 
   }
@@ -125,63 +125,163 @@ export class UserProvider {
   hardCodeMenu(){
 
     this.homeMenu.push({
-      menu_name:"Home",
-      menu_id:"home",
-      menu:[{
-        menu_name:"Home",
-        menu_id:"home",
-        menu:[],
-        isOpen:false,
-      }],
+      name:"Home",
+      id:"home",
+      menu:[],
       isOpen:false
-    })
+    });
 
     this.homeMenu.push({
-      menu_name:"Application",
-      menu_id:"application",
-      menu:[{
-        menu_name:"Visitation",
-        menu_id:"visitation",
+      name:"My Calender",
+      id:"myCalender",
+      image:"assets/imgs/menu-calendar.png",
+      menu:[],
+      isOpen:false
+    });
+
+
+
+    this.homeMenu.push({
+      name:"Application",
+      id:"application",
+      image: "assets/imgs/menu-myapplication.png",
+      menu:[
+        {
+          name:"Leave Application",
+          id:"leaveApplication",
+          menu:[],
+          isOpen:false,
+        },{
+          name:"Overtime Application",
+          id:"overtimeApplication",
+          menu:[],
+          isOpen:false,
+        },{
+          name:"Work Outside Office",
+          id:"workOutsideOffice",
+          menu:[],
+          isOpen:false,
+        },{
+          name:"Exchange Alt. Off",
+          id:"exchangeAltOff",
+          menu:[],
+          isOpen:false,
+        },{
+        name:"Visitation",
+        id:"visitation",
         menu:[],
         isOpen:false,
       },{
-        menu_name:"Container",
-        menu_id:"container",
+        name:"Container",
+        id:"container",
         menu:[],
         isOpen:false,
       }],
       isOpen:false
     })
 
+
     this.homeMenu.push({
-      menu_name:"Approval",
-      menu_id:"approval",
+      name:"My Attendance",
+      id:"",
+      image: "assets/imgs/menu-attendance.png",
       menu:[{
-        menu_name:"Visitation",
-        menu_id:"visitation_approval",
+        name:"Incomplete Record",
+        id:"incompleteRecord",
+        menu:[],
+        isOpen:false,
+      },{
+        name:"Absence Record",
+        id:"absenceRecord",
         menu:[],
         isOpen:false,
       }],
       isOpen:false
     })
 
+
     this.homeMenu.push({
-      menu_name:"Account",
-      menu_id:"account",
-      menu:[{
-        menu_name:"Logout",
-        menu_id:"logout",
+      name:"Approval",
+      id:"approval",
+      image: "assets/imgs/menu-approval.png",
+      menu:[
+        {
+          name:"Attendance Approval",
+          id:"attendanceApproval",
+          menu:[],
+          isOpen:false,
+        },{
+          name:"Leave Approval",
+          id:"leaveApproval",
+          menu:[],
+          isOpen:false,
+        },{
+          name:"Overtime Approval",
+          id:"overtimeAPproval",
+          menu:[],
+          isOpen:false,
+        },{
+          name:"Work Outside Approval",
+          id:"workOutsideApproval",
+          menu:[],
+          isOpen:false,
+        },{
+          name:"Exchange Alt. Off Approval",
+          id:"exchangeAltOffApproval",
+          menu:[],
+          isOpen:false,
+        },{
+        name:"Visitation Approval",
+        id:"visitation_approval",
         menu:[],
         isOpen:false,
-      }],
+        },{
+          name:"Container Approval",
+          id:"containerApproval",
+          menu:[],
+          isOpen:false,
+        },
+      ],
       isOpen:false
     })
+
+    this.homeMenu.push({
+      name:"My Profile",
+      id:"",
+      image:"assets/imgs/menu-profile.png",
+      menu:[
+        {
+          name: "Profile Information",
+          id: "profileInformation",
+          menu:[],
+          isOpen:false
+        },{
+          name: "Change My Password",
+          id: "changeMyPassword",
+          menu:[],
+          isOpen:false
+        },
+      ],
+      isOpen:false
+    });
+
+
+    this.homeMenu.push({
+      name:"Logout",
+      id:"logout",
+      image:"assets/imgs/menu-logout.png",
+      menu:[],
+      isOpen:false
+    });
   }
 
   private getFnf(){
+
+    var loading:Loading = this.api.presentLoadingV2("Loading status");
     this.api.getSelectOptionsVisitation(this).subscribe((data)=>{
       this.userSession.isFnF = (<string>data["loc_id"]).toLowerCase() == "fnf"
       this.userSession.isFnFReady = true;
+      loading.dismiss();
       this.watchFnF.next(true);
     })
   }

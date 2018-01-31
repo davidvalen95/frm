@@ -17,7 +17,6 @@ import {isDefined} from "ionic-angular/util/util";
   selector: 'floating-input',
   templateUrl: 'floating-input.html'
 })
-
 @Injectable()
 export class FloatingInputComponent {
 
@@ -34,6 +33,8 @@ export class FloatingInputComponent {
   @ViewChild('ionInputModel') public ionInputModel:NgModel;
   @ViewChild('ionSelectModel') public ionSelectModel:NgModel;
   @ViewChild('ionDateModel')  public ionDateModel:NgModel;
+  @ViewChild('ionTextareaModel')  public ionTextareaModel:NgModel;
+  @ViewChild('fileModel')  public fileModel:NgModel;
   public finalModel:NgModel;
   public inputType;
   public labelType;
@@ -75,6 +76,13 @@ export class FloatingInputComponent {
           break;
         case InputType.date:
           this.finalModel = this.ionDateModel;
+          break;
+        case InputType.textarea:
+          this.finalModel = this.ionTextareaModel;
+          break;
+        case InputType.file:
+          this.finalModel = this.fileModel;
+          break;
       }
       this.parentForm.addControl(this.finalModel);
       this.inputType = InputType[this.baseForm.inputType];

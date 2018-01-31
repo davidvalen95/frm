@@ -2,8 +2,8 @@
 
 <ion-item no-padding="" [hidden]="baseForm.isHidden===true " (click)="baseForm.labelClickListener.next(this.finalModel)" >
 
-  <ion-label [hidden]="baseForm.isReadOnly" [ngClass]="{'required':baseForm.rules.isRequired,'myIonSelect':(this.inputType =='select')}" stacked="" *ngIf="this.labelType == 'stacked'">{{baseForm.label}} </ion-label>
-  <ion-label  [hidden]="baseForm.isReadOnly" [ngClass]="{'required':baseForm.rules.isRequired,'myIonSelect':(this.inputType =='select')}" inline="" *ngIf="this.labelType == 'inline'" >{{baseForm.label}} </ion-label>
+  <ion-label [hidden]="baseForm.isReadOnly" [ngClass]="{'required':baseForm.rules.isRequired}" stacked="" *ngIf="this.labelType == 'stacked'">{{baseForm.label}} </ion-label>
+  <ion-label  [hidden]="baseForm.isReadOnly" [ngClass]="{'required':baseForm.rules.isRequired}" inline="" *ngIf="this.labelType == 'inline'" >{{baseForm.label}} </ion-label>
 
   <!--<span *ngIf="baseForm.type=='text';then ionInput else ionSelect"></span>-->
 
@@ -17,24 +17,52 @@
 
 
 
-  <ion-input
-    [hidden]="this.inputType=='select' || this.inputType=='date' || baseForm.isReadOnly"
+  <ion-textarea
+    [hidden]="this.inputType!='textarea' || baseForm.isReadOnly"
     [disabled] = "baseForm.isDisabled"
     [(ngModel)]="baseForm.value"
-    #ionInputModel = "ngModel"
+    #ionTextareaModel = "ngModel"
     [type]         = "this.inputType"
     [name]        = "baseForm.name"
     [placeholder] = "baseForm.placeholder || ''"
-    [required]    = "baseForm.rules.isRequired"
+    [required]    = "baseForm.rules.isRequired && this.inputType !='file'"
     [minlength]   = "baseForm.rules.minlength"
     [maxlength]   = "baseForm.rules.maxlength"
     [pattern]     = "baseForm.rules.pattern"
     [readonly]    = "baseForm.isReadOnly"
     [max]         = "baseForm.rules.max"
     [min]         = "baseForm.rules.min"
-    (ionChange)   = "baseForm.broadcast(ionInputModel)"
+    (ionChange)   = "baseForm.broadcastIonChange(ionTextAreaModel,event)"
 
-    (focus)="onFieldClicked($event)"
+    (focus)="onFieldClicked(event)"
+    (click) = "baseForm.inputClickListener.next(ionTextAreaModel)"
+
+  >
+
+  </ion-textarea>
+
+
+
+
+
+
+  <ion-input
+    [hidden]="this.inputType=='select' || this.inputType=='date' || baseForm.isReadOnly || this.inputType == 'textarea' || this.inputType=='file'"
+    [disabled] = "baseForm.isDisabled"
+    [(ngModel)]="baseForm.value"
+    #ionInputModel = "ngModel"
+    [type]         = "this.inputType"
+    [name]        = "baseForm.name"
+    [placeholder] = "baseForm.placeholder || ''"
+    [required]    = "baseForm.rules.isRequired && this.inputType !='file'"
+    [minlength]   = "baseForm.rules.minlength"
+    [maxlength]   = "baseForm.rules.maxlength"
+    [pattern]     = "baseForm.rules.pattern"
+    [readonly]    = "baseForm.isReadOnly"
+    [max]         = "baseForm.rules.max"
+    [min]         = "baseForm.rules.min"
+    (ionChange)   = "baseForm.broadcastIonChange(event)"
+    (focus)="onFieldClicked(event)"
     (click) = "baseForm.inputClickListener.next(ionInputModel)"
 
   >
@@ -42,18 +70,19 @@
   </ion-input>
 
 
+
   <ion-select
     [hidden]="this.inputType != 'select' || baseForm.isReadOnly"
-    interface="popover"
+    interface="action-sheet"
     [(ngModel)]   = "baseForm.value"
     #ionSelectModel="ngModel"
     [name]        = "baseForm.name"
     [placeholder] = "baseForm.placeholder || ''"
-    [required]    = "baseForm.rules.isRequired "
+    [required]    = "baseForm.rules.isRequired && this.inputType !='file' "
     [minlength]   = "baseForm.rules.minlength"
     [maxlength]   = "baseForm.rules.maxlength"
     [pattern]     = "baseForm.rules.pattern"
-    (ionChange)   = "baseForm.broadcast(ionSelectModel)"
+    (ionChange)   = "baseForm.broadcastIonChange(ionSelectModel,event)"
     [disabled]    = "baseForm.isReadOnly || baseForm.isDisabled"
     (click) = "baseForm.inputClickListener.next(ionSelectModel)"
 
@@ -69,7 +98,7 @@
     [(ngModel)]       = "baseForm.value"
     [name]          = "baseForm.name"
     [placeholder]   = "baseForm.placeholder || ''"
-    [required]      = "baseForm.rules.isRequired "
+    [required]      = "baseForm.rules.isRequired  && this.inputType !='file'"
     [minlength]     = "baseForm.rules.minlength"
     [maxlength]     = "baseForm.rules.maxlength"
     [pattern]       = "baseForm.rules.pattern"
@@ -77,26 +106,47 @@
     [pickerFormat] = "baseForm.dateSetting.displayFormat"
     [min]           = "baseForm.dateSetting.min"
     [max]           = "baseForm.dateSetting.max"
-    (ionChange)   = "baseForm.broadcast(ionDateModel)"
+    (ionChange)   = "baseForm.broadcastIonChange(ionDateModel,event)"
     [hourValues] = baseForm.hourValues
     (click) = "baseForm.inputClickListener.next(ionDateModel)"
 
   ></ion-datetime>
+
+
+
+
+
 
   <span class="readOnlyInfo" item-left="" [hidden] = "!baseForm.isReadOnly || baseForm.isHidden">
     <p class="label">{{baseForm.label}} </p>
     <p class="value"  style="float:left;text-align:left;margin-top:-0px;"  >{{baseForm.getReadOnlyValue()}}</p>
   </span>
 
-  <button [hidden]="baseForm.buttonRight.isHidden" (click)="baseForm.buttonRight.clickListener.next(this.baseForm)" type="button" item-right="" ion-button="" color="primary">{{baseForm.buttonRight.label}}</button>
+  <button [hidden]="baseForm.buttonRightSuccess.isHidden" (click)="baseForm.buttonRightSuccess.clickListener.next(this.baseForm)" type="button" item-right="" ion-button="" color="primary">{{baseForm.buttonRightSuccess.label}}</button>
+  <button [hidden]="baseForm.buttonRightSuccess.isHidden" (click)="baseForm.buttonRightDanger.clickListener.next(this.baseForm)" type="button" item-right="" ion-button="" color="danger">{{baseForm.buttonRightDanger.label}}</button>
 
 
 </ion-item >
+<!--[required]      = "baseForm.rules.isRequired "-->
+<!--ngModel="t"-->
 
+<input
+  #fileModel = "ngModel"
+  ngModel=""
+  [type]="this.inputType"
+  [name]="baseForm.name"
+  [id]="baseForm.name"
+  [hidden] = "this.inputType != 'file'"
+  (change) = "baseForm.broadcastNgChange($event)"
+  multiple
+  accept="*/*"
+>
+
+
+<!---->
 <!--for display onlu-->
 
-
-<p class="infoBottom">{{baseForm.infoBottom}}</p>
+<p [hidden]="baseForm.isHidden || baseForm.isReadOnly" class="infoBottom">{{baseForm.infoBottom}}</p>
 
 <div [hidden]="baseForm.isHidden" *ngIf="finalModel">
   <!--<span>{{debug()}}</span>-->

@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import {isString} from "ionic-angular/util/util";
-import {MyHelper} from "../../providers/myHelper";
+import {MyHelper} from "../../app/MyHelper";
 
 /**
  * Generated class for the UcWordPipe pipe.

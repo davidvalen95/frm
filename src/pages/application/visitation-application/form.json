@@ -27,12 +27,12 @@
 
 
   {
-    title: 'Vechile Information',
+    title: 'vehicle Information',
     isOpen:false,
     baseForms:[
       {
-        name: "vechileType",
-        label: "Vechile Type",
+        name: "vehicleType",
+        label: "vehicle Type",
         type: "text",
         rules: {
           required: true,

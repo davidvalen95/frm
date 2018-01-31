@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import {Injectable, ViewChild} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {VisitationApplicationParam} from "../../pages/application/visitation-application/visitation-application";
 import {BaseForm} from "../../components/Forms/base-form";
-import {Slides} from "ionic-angular";
-import {NgForm} from "@angular/forms";
+import {ReplaySubject} from "rxjs/ReplaySubject";
 
 /*
   Generated class for the RootParamsProvider provider.
@@ -13,18 +12,39 @@ import {NgForm} from "@angular/forms";
 */
 @Injectable()
 export class RootParamsProvider {
-  public isPartial:boolean = false;
-  public version:string = "1.4.071";
-  public visitationApplicationParam?: VisitationApplicationParam = {isProvider:true} ;
 
+
+  /*
+      - set partial to true
+      - set correct version
+      - set url to live
+      - copy index html
+      - sencha set global live ip
+      - sencha app build
+      - sencha app build native
+      - cordova build android --release
+   */
+
+  public  isPartial:boolean = false;
+  public  version:string = "1.5.23";
+  public  isLive:boolean = false;
+
+
+
+  public visitationApplicationParam?: VisitationApplicationParam = {isProvider:true} ;
+  public broadcast:ReplaySubject<BroadcastType> = new ReplaySubject(-1);
 
   constructor(public http: HttpClient) {
     console.log('Hello RootParamsProvider Provider');
     if(this.isPartial){
       console.log('version',this.version)
     }
+
+    this.broadcast.subscribe((data:BroadcastType)=>{
+      console.log("theBroadcast",data);
+    })
   }
- //
+ ////
 
 }
 
@@ -34,5 +54,9 @@ interface PageForm {
   isOpen: boolean,
   baseForms: BaseForm[]
   isHidden: boolean
+}
+
+export enum BroadcastType{
+  visitationPageOnResume
 }
 

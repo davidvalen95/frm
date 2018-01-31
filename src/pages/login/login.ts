@@ -27,6 +27,7 @@ export class LoginPage {
 
   loginFormSubmit(form: NgForm) {
     if (form.valid) {
+
       this.userProvider.login(form.value.username, form.value.password, ((isLoggedIn: boolean) => {
         if (isLoggedIn) {
           this.navCtrl.setRoot(HomePage);
@@ -39,8 +40,13 @@ export class LoginPage {
     var username: BaseForm = new BaseForm("", 'username');
     username.placeholder   = "Username"
     username.rules = {};
+    username["image"] = "assets/imgs/login_username.png"
+    username.changeListener.subscribe(data=>{
+      data.value = data.value.toUpperCase();
+    })
     var password: BaseForm = new BaseForm("", 'password');
     password.placeholder   = "Password"
+    password["image"] = "assets/imgs/login_password.png"
     password.inputType     = InputType.password;
     password.rules = {};
 

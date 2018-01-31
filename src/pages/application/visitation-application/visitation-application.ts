@@ -7,7 +7,7 @@ import {
 import {BaseForm, InputType, LabelType, KeyValue} from "../../../components/Forms/base-form";
 import {NgForm, NgModel} from "@angular/forms";
 import {
-  ApiProvider, CompanyInformation, EmployeeInformationInterface, VisitationDataApiInterface,
+  ApiProvider, BadgeApiInterface, CompanyInformation, EmployeeInformationInterface, VisitationDataApiInterface,
   VisitationDataDetailInterface,
   VisitationDataRecordsInterface,
   VisitationFilterApi
@@ -16,8 +16,9 @@ import {UserProvider} from "../../../providers/user/user";
 import {SearchBarPage} from "../../search-bar/search-bar";
 import {HttpParams} from "@angular/common/http";
 import {VisitationDetailPage, VisitationDetailPageParam} from "../../visitation-detail/visitation-detail";
-import {RootParamsProvider} from "../../../providers/root-params/root-params";
-import {MyHelper} from "../../../providers/myHelper";
+import {BroadcastType, RootParamsProvider} from "../../../providers/root-params/root-params";
+import {FileJsonFormat, MyHelper} from "../../../app/MyHelper";
+import {Subscription} from "rxjs/Subscription";
 
 /**
  * Generated class for the VisitationApplicationPage page.
@@ -37,12 +38,11 @@ export class VisitationApplicationPage {
   public visitationData: VisitationDataApiInterface[] = [];
   public identityForms: PageForm[]                    = [];
   public identityForEmployeeForm: PageForm;
-  public vechileForm: PageForm;
+  public vehicleForm: PageForm;
   public statusFilter;
   public identityInformationForm: PageForm;
   public visitationDetailForm: PageForm;
   public additionalForm: PageForm;
-
   public segmentValue: string        = "list";
   public formSlides: Slides;
   public filter: VisitationFilterApi = new VisitationFilterApi();
@@ -55,7 +55,10 @@ export class VisitationApplicationPage {
   public pageParam: VisitationApplicationParam = {};
   public isFormSettedUp:boolean                = false;
 
-  public slidingStatus = {previous:false,next:false};
+  public slidingStatus = {previous:false,next:false,position:0};
+  public broadcast:Subscription = null;
+  // public Setting = Setting;
+  public badge:BadgeApiInterface ;
   @ViewChild('infiniteScroll') public infiniteScroll: InfiniteScroll;
 
   // @ViewChild('segment') public segment:Segment
@@ -78,6 +81,9 @@ export class VisitationApplicationPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
     console.log("visitationApplicationParam", this.rootParam.visitationApplicationParam);
+
+
+
 
 
 
@@ -106,7 +112,7 @@ export class VisitationApplicationPage {
       ]
     } else {
       this.statusFilter = [
-        {value: '', name: '--All--'},
+        {value: '', name: 'Active'},
         {value: 'submitted', name: 'Submitted'},
         {value: 'PA', name: 'Pending Approval'},
         {value: 'AP', name: 'Approved'},
@@ -115,7 +121,41 @@ export class VisitationApplicationPage {
         {value: 'in', name: 'In'},
         {value: 'out', name: 'Out'},
         {value: 'expired', name: 'Expired'}
-      ]
+      ];
+
+
+    }
+
+    if (!this.pageParam.isEditing) {
+      if (this.pageParam.isApprover) {
+        //# will trigger getVisitation
+        this.filter.cmbStatus = "PA";
+        // this.getVisitation();
+        //# REPLACED WITH BROADCAST
+      } else {
+        // this.getVisitation();
+
+      }
+      console.log('enter !');
+
+      this.rootParam.broadcast.next(BroadcastType.visitationPageOnResume);
+
+      if(this.broadcast == null ){
+        console.log('broadcastSubscrive');
+        this.broadcast = this.rootParam.broadcast.subscribe((data:BroadcastType)=>{
+          if(data == null){
+            return;
+          }
+
+          if(data == BroadcastType.visitationPageOnResume){
+            this.getVisitation();
+
+            // console.log('visitationPageOnResumeBroadcast');
+            console.log("getBroadcast");
+          }
+
+        });
+      }
     }
 
     // this.setUpForms();
@@ -135,6 +175,9 @@ export class VisitationApplicationPage {
     })
 
 
+
+
+
   }
 
 
@@ -148,10 +191,30 @@ export class VisitationApplicationPage {
     ).present();
   }
 
-  completionFormSubmit(form: NgForm) {
-    console.log(this.formSlides.length());
+  completionFormSubmit(form: NgForm,pageForm:PageForm = null) {
+    console.log("completionFormSubmitDirty", form);
+
+
+
+
+
     if (form.valid) {
 
+
+      //#check for identityEmployeeForm
+      if(pageForm != null){
+        if(pageForm.id && pageForm.id==2){
+          // if()
+          console.log('switchMobileVisitor', pageForm, form.value);
+
+          if(form.value.mobile_no === "" && form.value.visitor_no === "") {
+            // pageForm.baseForms[1].rules.isRequired = true; //#mobileNO
+            // pageForm.baseForms[2].rules.isRequired = true; //# icNo visitor_no
+            this.alert("<p>Please fulfill at least one of these</p><p>Mobile No OR IC No</p>", "Attention");
+            return;
+          }
+        }
+      }
 
       if(form.value.hostFormState){
         //# convert to id format my080127;my080123
@@ -164,12 +227,19 @@ export class VisitationApplicationPage {
       this.content.scrollToTop();
 
       for (var key in form.value) {
-        this.formValues[key] = form.value[key];
+
+        //# wont ovveride attachment
+        if(key.indexOf("attachment") == -1){
+          this.formValues[key] = form.value[key];
+
+        }
       }
       console.log('completionFormSubmit', this.formValues);
       this.ngForms.push(form);
 
       if (this.formSlides.isEnd()) {
+        console.log('completionFormSubmitEnd', form);
+
         this.submitForm();
       }
       this.slideNext();
@@ -185,6 +255,9 @@ export class VisitationApplicationPage {
   }
 
   doInfinite(infinite: InfiniteScroll) {
+    if(!this.visitationData || !this.visitationData[0]){
+      return;
+    }
     if (this.visitationData.length >= (this.visitationData[0].maxpage)) {
       // infinite.enable(false);
       this.isInfiniteEnable = false
@@ -222,13 +295,17 @@ export class VisitationApplicationPage {
       var companion: BaseForm = new BaseForm("Companion", "companion");
       // companion.inputType           = InputType.number;
       companion.setRulesPatternNumberOnly();
-      companion.value                  = "" + (this.pageParam.editData.companion || 0);
       var companionRemark: BaseForm    = new BaseForm("Companion Remark", "companion_remark");
       companion.rules.max              = Number(this.categoryCountryRules["max_companion"]) || 0;
       companionRemark.rules.isRequired = false;
       companionRemark.value            = this.pageParam.editData.companion_remark || "";
       console.log('companionForm', companion);
 
+
+      setTimeout(()=>{
+        companion.value                  = "" + (this.pageParam.editData.companion || 0);
+
+      },300)
 
       companion.changeListener.subscribe((model: BaseForm) => {
         if  (model.value == "0") {
@@ -238,15 +315,16 @@ export class VisitationApplicationPage {
         }
       })
       companionRemark.changeListener.subscribe((data:BaseForm)=>{
-        data.value = MyHelper.ucWord(data.value);
+        // data.value = MyHelper.ucWord(data.value);
+        data.value = data.value.toUpperCase();
       })
+
 
 
       var mobileNo: BaseForm = new BaseForm("Mobile No", "mobile_no");
       // mobileNo.setRulesPatternNumberOnly();
-
+      mobileNo.rules.isRequired = false;
       mobileNo.isHidden         = false;
-      mobileNo.rules.isRequired = true;
       // mobileNo.isReadOnly     = this.pageParam.isEditing;
       if (form.value.visitorcategory_code.toLowerCase() == 's002' || form.value.visitorcategory_code.toLowerCase() == 'staff') {
         console.log('staff');
@@ -256,7 +334,6 @@ export class VisitationApplicationPage {
 
           this.formValues["visitor_no"] = (employeeInformation.ident_no||"") !== '' ? employeeInformation.ident_no : "-";
 
-          this.apiProvider.dismissLoader();
           this.ngForms.push(form)
 
           var employeeIdInformation: BaseForm    = new BaseForm("Employee Id", "visitor_id");
@@ -309,7 +386,7 @@ export class VisitationApplicationPage {
           // birthDate.setInputTypeDate({displayFormat: "DD MMM YYYY"});
           // if (employeeInformation.birthdate_str && employeeInformation.birthdate_str != "") {
           //   var birthDateValue = this.pageParam.editData.visitor_birth_date || employeeInformation.birthdate_str || "";
-          //   birthDate.setDateAdvance1Day(birthDateValue)
+          //   birthDate.setDateAdvanceDay(birthDateValue)
           //
           // }
           // console.log('birthDateValue', birthDateValue);
@@ -324,7 +401,10 @@ export class VisitationApplicationPage {
           mobileNo.isHidden         = true;
           mobileNo.rules.isRequired = false;
 
-          this.identityForEmployeeForm.baseForms = [employeeIdInformation, employeeName, employeeDepartment, section, gender, companion, companionRemark, mobileNo];
+          if(this.identityForEmployeeForm.baseForms.length == 0){
+            this.identityForEmployeeForm.baseForms = [employeeIdInformation, employeeName, employeeDepartment, section, gender, companion, companionRemark, mobileNo];
+
+          }
           this.identityForEmployeeForm.isHidden  = false;
           this.identityInformationForm.isHidden  = true;
           console.log("own");
@@ -362,18 +442,18 @@ export class VisitationApplicationPage {
 
           visitorName.changeListener.subscribe((data:BaseForm)=>{
 
-            data.value = MyHelper.ucWord(data.value);
+            data.value = data.value.toUpperCase();
           })
           var icNo: BaseForm = new BaseForm("IC No. / Passport No.", "visitor_no");
           // icNo.setRulesPatternNumberOnly();
-
+          icNo.rules.isRequired = false;
 
           icNo.changeListener.subscribe((data: BaseForm) => {
             console.log('mo/oi icnochangelistner',data);
 
             // icNo.rules.isRequired = mobileNo.rules.isRequired
             setTimeout(() => {
-              mobileNo.rules.isRequired = "" + data.value == "";
+              // mobileNo.rules.isRequired = "" + data.value == "";
               console.log("icNOTriggered")
             }, 300)
 
@@ -383,7 +463,7 @@ export class VisitationApplicationPage {
           mobileNo.changeListener.subscribe((data: BaseForm) => {
             console.log('mo/oi mobilechangelistener',data);
             setTimeout(() => {
-              icNo.rules.isRequired = "" + data.value == "";
+              // icNo.rules.isRequired = "" + data.value == "";
 
             }, 300)
 
@@ -423,11 +503,13 @@ export class VisitationApplicationPage {
           birthDate.setInputTypeDate({displayFormat: "DD MMM YYYY"});
           birthDate.rules.isRequired = false;
           var birthDateValue         = this.pageParam.editData.visitor_birth_date || "";
-          birthDate.setDateAdvance1Day(birthDateValue)
+          birthDate.setDateAdvanceDay(birthDateValue)
 
           // birthDate.value =  new Date(this.pageParam.editData.visitor_birth_date).toISOString();
-          this.identityInformationForm.baseForms = new Array<BaseForm>();
-          this.identityInformationForm.baseForms = [visitorName, mobileNo, icNo, gender, birthDate, companion, companionRemark];
+          if(this.identityInformationForm.baseForms.length == 0 ){
+            this.identityInformationForm.baseForms = [visitorName, mobileNo, icNo, gender, birthDate, companion, companionRemark];
+
+          }
           this.identityForEmployeeForm.isHidden  = true;
           this.identityInformationForm.isHidden  = false;
           //# hide host if courier
@@ -454,26 +536,38 @@ export class VisitationApplicationPage {
 
   }
 
+  ngOnDestroy(){
+    if(this.broadcast != null){
+      console.log('broadcastUnsubscrive1');
+      this.broadcast.unsubscribe();
+      this.broadcast.remove(this.broadcast);
+      this.broadcast = null;
+
+    }
+  }
+  ionViewDidEnter(){//didleave
+
+
+  }
+
+
+  ionViewDidLeave(){//didenter
+
+    if(this.pageParam.isApply || this.pageParam.isEditing){
+      console.log('ionViewDidLeave', this.pageParam.isApply, this.pageParam.isEditing )
+      this.rootParam.broadcast.next(BroadcastType.visitationPageOnResume);
+
+    }
+  }
 
   ionViewDidLoad() {
 
+    //#set broadcastIonChange
+
     console.log("visitationApplicationBoolean", this.pageParam);
 
-    if (!this.pageParam.isEditing) {
-      if (this.pageParam.isApprover) {
-        //# will trigger getVisitation
-        this.filter.cmbStatus = "PA";
-        this.getVisitation();
+    if(this.pageParam.isEditing) {
 
-      } else {
-        this.getVisitation();
-
-      }
-      console.log('enter !');
-
-    } else {
-
-      console.log('enter here');
 
       var param: VisitationApplicationParam = <VisitationApplicationParam> this.pageParam
       this.pageParam.editTid                = param.editTid;
@@ -502,14 +596,18 @@ export class VisitationApplicationPage {
 
 
 
+
+
     //# overide back button
     if(this.pageParam.isEditing || this.pageParam.isApply){
       this.navbar.backButtonClick = (e:UIEvent)=>{
 
-        this.showConfirmAlert("cancel " + this.pageParam.isEditing ? "edit" : "apply",()=>{
-          this.navCtrl.pop();
+        if(this.formSlides.isBeginning()){
+          this.leavePage();
+        }
 
-        })
+
+        this.slidePrevious();
 
 
       }
@@ -521,23 +619,24 @@ export class VisitationApplicationPage {
 
     var param: VisitationDetailPageParam = {
       visitationData: visitationData,
-      title: "Visitation Detail",
+      title: this.pageParam.isApprover ? "Visitation Approval" : "Visitation Detail",
       isVisitation: true,
       isApprover: this.pageParam.isApprover,
       actionOnPop: () => {
-        this.getVisitation();
+        // this.getVisitation();
       }
     }
     this.navCtrl.push(VisitationDetailPage, param)
   }
 
   slideNext() {
-    if (this.formSlides && !this.slidingStatus.next ) {
+    if (this.formSlides && !this.slidingStatus.next && !this.formSlides.isEnd() ) {
       console.log('slidenext');
       this.slidingStatus.next = true;
       this.formSlides.lockSwipes(false);
       this.formSlides.slideNext(100);
       this.formSlides.lockSwipes(true);
+      this.slidingStatus.position++;
       setTimeout(()=>{
         this.slidingStatus.next = false;
 
@@ -546,7 +645,7 @@ export class VisitationApplicationPage {
   }
 
   slidePrevious() {
-    if (this.formSlides && !    this.slidingStatus.previous) {
+    if (this.formSlides && !    this.slidingStatus.previous && !this.formSlides.isBeginning()) {
       console.log('slideprevious');
 
       this.slidingStatus.previous  = true;
@@ -633,7 +732,6 @@ export class VisitationApplicationPage {
 
       }
       console.log('processing', selectOptions);
-      visitorCompany.value            = this.pageParam.editData.outsider_code || "";
 
       return selectOptions;
     }));
@@ -694,20 +792,24 @@ export class VisitationApplicationPage {
       console.log('visitorCompanyChangelistener',data, data.value.toLowerCase().indexOf("other"));
       outsiderSpecify.isHidden         = true;
       outsiderSpecify.rules.isRequired = false;
+
       outsiderSpecify.value = "";
-      visitorId.value = data.value;
+      // visitorId.value = data.value;
 
       data.selectOptions.filter((keyValue:KeyValue)=>{
         if(keyValue.value == data.value){
           if(keyValue.key.toLowerCase().indexOf("other")>-1){
             outsiderSpecify.isHidden         = false;
             outsiderSpecify.rules.isRequired = true;
+            outsiderSpecify.value            = this.pageParam.editData.outsider_specify || "";
+
           }
         }
       })
 
     })
     var visitorType: BaseForm = new BaseForm("Visitor Type", "visitor_type"); //# for nonFnf
+    visitorType.isInitializeState = true;
     visitorType.setInputTypeSelect([{
       key: "For Own Visit", value: "own"
     }, {
@@ -716,7 +818,7 @@ export class VisitationApplicationPage {
     visitorType.isHidden = this.userProvider.userSession.isFnF;
 
     visitorType.changeListener.subscribe((model: BaseForm) => {
-      console.log('visitorTypeChangeListener');
+      console.log('visitorTypeChangeListener',model);
       if (visitorCategory.value.toLowerCase() != "s001" && visitorCategory.value.toLowerCase() != "s002" && visitorCategory.value.toLowerCase() != "staff") {
         return;
       }
@@ -745,13 +847,7 @@ export class VisitationApplicationPage {
 
       var visitorTypeValue = "own";
 
-      if (this.pageParam.isEditing) {
-        visitorTypeValue = (this.pageParam.editData.visitor_id || "") == this.userProvider.userSession.empId ? 'own' : "other";
-      }
-      visitorType.value = visitorTypeValue;
 
-
-      visitorId.rules.isRequired = visitorTypeValue == "other";
 
 
     }, 300)
@@ -761,15 +857,25 @@ export class VisitationApplicationPage {
     visitorCategory.inputClickListener.subscribe((data: BaseForm) => {
       isVisitorCategoryClicked = true;
     })
+
+    var visitorChangeListenerCounter:number = 0;
     visitorCategory.changeListener.subscribe((data: BaseForm) => {
+
+
+
+      // this.alert(`"${data.value}"`, "Value");
+
       console.log('visitorCategoryChanged', data);
       // console.log('visitorcategorySelect', data.value, 'tes: visitorCountry.value',visitorCategory.value,'visitorId:',visitorId.value);
       // this.identityForms[0].baseForms[2].isHidden = true;
-
       visitorCompany.isHidden = true;
+
       visitorCompany.rules.isRequired = false;
+      outsiderSpecify.isHidden = true;
+      outsiderSpecify.rules.isRequired = false;
       // visitorCompany.value = "";
-      visitorId.inputType     = InputType.text;
+      // visitorId.inputType     = InputType.text;
+      visitorId.setInputTypeText();
       visitorId.isReadOnly    = false;
       visitorId.isSearchBar   = false;
       if (isVisitorCategoryClicked) {
@@ -778,6 +884,7 @@ export class VisitationApplicationPage {
       }
       visitorId.rules.isRequired = true;
       visitorType.isHidden       = true;
+      visitorType.rules.isRequired = false;
       // visitorCountry.isReadOnly  = false;
       visitorCountry.value       = this.userProvider.userSession.ct_id;
 
@@ -796,11 +903,25 @@ export class VisitationApplicationPage {
 
         if (!this.userProvider.userSession.isFnF) {
           visitorType.isHidden          = false;
-          visitorType.value             = "own";
+          visitorType.rules.isRequired = true;
           visitorId.value               = this.pageParam.editData.visitor_id || this.userProvider.userSession.empId;
           // visitorCountry.isReadOnly     = true;
           this.formValues["visitor_ct"] = visitorCountry.value;
           visitorCountry.value          = this.userProvider.userSession.ct_id;
+          console.log('visitorTypePrepare',this.pageParam.isEditing ,visitorType.isInitializeState, (this.pageParam.editData.visitor_id || ""), this.userProvider.userSession.empId);
+          if (this.pageParam.isEditing && visitorType.isInitializeState) {
+            console.log('visitorType', visitorType.value)
+            visitorType.value   = (this.pageParam.editData.visitor_id || "") == this.userProvider.userSession.empId ? 'own' : "other";
+            console.log('visitorTypeDone', visitorType.value)
+
+            visitorType.isInitializeState = false;
+          }else{
+            console.log('visitorTypeDoneElse')
+            visitorType.value             = "own";
+
+          }
+
+          visitorId.rules.isRequired = visitorType.value   == "other";
 
 
 
@@ -840,16 +961,97 @@ export class VisitationApplicationPage {
           var currentOutsider = data["outsiders"][key];
           selectOptions.push({key: currentOutsider["company_name"], value: currentOutsider["outsider_code"]})
         }
+
+        if(selectOptions.length == 0){
+          visitorCompany.rules.isRequired = false;
+          visitorCompany.isHidden = true;
+          visitorCompany.value = "";
+
+        }
+        // visitorCompany.value = "";
+        //
+        // setTimeout(()=>{
+        //   if(visitorChangeListenerCounter < 2){
+        //     visitorCompany.value            = this.pageParam.editData.outsider_code || "";
+        //     visitorChangeListenerCounter ++;
+        //   }
+        // },300)
+
+
+
         visitorCompany.setInputTypeSelect(selectOptions)
+        if(selectOptions.filter((keyValue)=>{
+            return keyValue.value == this.pageParam.editData["outsider_code"]
+          }).length > 0 && this.pageParam.isEditing){
+          visitorCompany.value = this.pageParam.editData["outsider_code"];
+        }else{
+          visitorCompany.value = "";
+        }
+
+        //region #attachment 1
+
+        this.additionalForm.baseForms.splice(1);
+
+
+        //# for sorting
+        var attachmentContainer:BaseForm[] =[]
+        for(var key in data){
+          //# ada attachment4 ada attachment4_desc
+          if(key.indexOf("attachment")>-1 && key.indexOf("desc")==-1 && key.indexOf("require") == -1 ){
+
+            if(data[key]){
+              var currentAttachment:BaseForm = new BaseForm(data[`${key}_desc`],key);
+              //# ke 4 dipisah karena optional
+              var currentKey = key.slice(0,key.length);
+                currentAttachment.setInputTypeFile((event)=>{
+                  // this.formValues[currentKey] = event;
+                  this.formValues[currentKey] = event.target.files[0];
+
+                }
+              );
+
+
+              if(key.indexOf("4") >-1){
+                currentAttachment.rules.isRequired = false;
+              }
+              attachmentContainer.push(currentAttachment);
+              console.log("attachment",key,data[`${key}_desc`],currentAttachment);
+
+
+              // currentAttachment.fileCallback.subscribe(($event)=>{
+              //   MyHelper.readFile($event.target,(result)=>{
+              //     console.log('result',result);
+              //   });
+              // })
+
+
+
+              currentAttachment.inputClickListener.subscribe((baseForm:BaseForm)=>{
+                console.log('attachmentInputListener',baseForm);
+              });
+            }
+
+          }
+        }
+
+        attachmentContainer.sort((a,b)=>{
+          return a.name.localeCompare(b.name);
+        })
+        console.log('theAttachmentContainer',attachmentContainer);
+
+        this.additionalForm.baseForms = this.additionalForm.baseForms.concat(attachmentContainer);
+
+        //endregion
 
       });
 
 
     });
 
-    // visitorId.changeListener.subscribe((data:BaseForm)=>{
-    //   data.
-    // })
+    visitorId.changeListener.subscribe((data:BaseForm)=>{
+      this.identityForEmployeeForm.baseForms = [];
+      this.identityInformationForm.baseForms = [];
+    })
 
 
     visitorCountry.changeListener.subscribe((model: BaseForm) => {
@@ -864,23 +1066,123 @@ export class VisitationApplicationPage {
           var currentOutsider = data["outsiders"][key];
           selectOptions.push({key: currentOutsider["company_name"], value: currentOutsider["outsider_code"]})
         }
-        visitorCompany.setInputTypeSelect(selectOptions)
+        if(selectOptions.length == 0){
+          visitorCompany.rules.isRequired = false;
+          visitorCompany.isHidden = true;
+          visitorCompany.value = "";
+        }
+
+        // var isValueExist:boolean = false;
+        // for(var value in selectOptions.values()){
+        //   if(value == visitorCompany.value){
+        //     isValueExist = true;
+        //   }
+        // }
+        // if(!isValueExist){
+        //   visitorCompany.value = "";
+        // }
+        //
+        visitorCompany.setInputTypeSelect(selectOptions);
+
+        //# if editint and same as editdata
+        if(selectOptions.filter((keyValue)=>{
+            return keyValue.value == this.pageParam.editData["outsider_code"]
+          }).length > 0 && this.pageParam.isEditing){
+          visitorCompany.value = this.pageParam.editData["outsider_code"];
+        }else{
+          visitorCompany.value = "";
+        }
+        // visitorCompany.value = "";
+        // setTimeout(()=>{
+        //   if(visitorChangeListenerCounter < 2){
+        //     visitorCompany.value            = this.pageParam.editData.outsider_code || "";
+        //     visitorChangeListenerCounter ++;
+        //   }
+        // },300)
+
+
+        //region #attachment 2
+        //
+        this.additionalForm.baseForms.splice(1);
+
+
+        //# for sorting
+        var attachmentContainer:BaseForm[] =[]
+        for(var key in data){
+          //# ada attachment4 ada attachment4_desc
+          if(key.indexOf("attachment")>-1 && key.indexOf("desc")==-1 && key.indexOf("require") == -1 ){
+
+            if(data[key]){
+              var currentAttachment:BaseForm = new BaseForm(data[`${key}_desc`],key);
+              //# ke 4 dipisah karena optional
+              var currentKey = key.slice(0,key.length);
+              currentAttachment.setInputTypeFile((event)=>{
+                  // this.formValues[currentKey] = event;
+                  this.formValues[currentKey] = event.target.files[0];
+
+                }
+              );
+
+
+              if(key.indexOf("4") >-1){
+                currentAttachment.rules.isRequired = false;
+              }
+              attachmentContainer.push(currentAttachment);
+              console.log("attachment",key,data[`${key}_desc`],currentAttachment);
+
+
+              // currentAttachment.fileCallback.subscribe(($event)=>{
+              //   MyHelper.readFile($event.target,(result)=>{
+              //     console.log('result',result);
+              //   });
+              // })
+
+
+
+              currentAttachment.inputClickListener.subscribe((baseForm:BaseForm)=>{
+                console.log('attachmentInputListener',baseForm);
+              });
+            }
+
+          }
+        }
+
+        attachmentContainer.sort((a,b)=>{
+          return a.name.localeCompare(b.name);
+        })
+        console.log('theAttachmentContainer',attachmentContainer);
+
+        // this.additionalForm.baseForms.concat(attachmentContainer);
+        this.additionalForm.baseForms = this.additionalForm.baseForms.concat(attachmentContainer);
+
+        //endregion
+
+
+        // isVisitorCategoryAndCountryChanged = true;
 
       });
     });
 
+    visitorCompany.value = "";
 
-    setTimeout(() => {
-      var defaultVisitorCategory = this.pageParam.editData.visitorcategory_code;
+//
 
-      if (!this.pageParam.isEditing) {
-        defaultVisitorCategory = !this.userProvider.userSession.isFnF ? "S002" : "";
+    var fnfCheckInterval = setInterval(() => {
+      if(this.userProvider.userSession.isFnFReady){
+        var defaultVisitorCategory = this.pageParam.editData.visitorcategory_code;
 
+        if (!this.pageParam.isEditing) {
+          defaultVisitorCategory = !this.userProvider.userSession.isFnF ? (this.rootParam.isLive ? "STAFF" : "S002") : "";
+          // defaultVisitorCategory = !this.userProvider.userSession.isFnF ? "S002" : "";
+
+        }
+        visitorCategory.value = defaultVisitorCategory;
+        console.log("visitorCategory", this.userProvider.userSession.isFnF, defaultVisitorCategory, visitorCategory);
+        clearInterval(fnfCheckInterval);
       }
-      visitorCategory.value = defaultVisitorCategory;
-      console.log("visitorCategory", this.userProvider.userSession.isFnF, defaultVisitorCategory, visitorCategory);
 
-    }, 300)
+
+    }, 200)
 
     console.log('setupFormsVisitorCategory', visitorCategory);
 
@@ -899,12 +1201,14 @@ export class VisitationApplicationPage {
       isHidden: true,
       isOpen: false,
       baseForms: [],
+      id:3,
     };
     this.identityInformationForm = {
       title: "Visitor Information",
       isOpen: true,
       baseForms: [],
-      isHidden: false
+      isHidden: false,
+      id:2,
     };
 
 
@@ -920,14 +1224,14 @@ export class VisitationApplicationPage {
 
 
 
-    var vehicleType: BaseForm       = new BaseForm("Vechile Type", "vehicle_type");
+    var vehicleType: BaseForm       = new BaseForm("Vehicle Type", "vehicle_type");
     vehicleType.rules.isRequired    = false;
     vehicleType.value               = this.pageParam.editData.vehicle_type || "";
-    var vehiclePlateNo: BaseForm    = new BaseForm("Vechile Plate No", "vehicle_no");
+    var vehiclePlateNo: BaseForm    = new BaseForm("Vehicle Plate No", "vehicle_no");
     vehiclePlateNo.rules.isRequired = false;
     vehiclePlateNo.value            = this.pageParam.editData.vehicle_no || "";
-    this.vechileForm                = {
-      title: "Vechile Information",
+    this.vehicleForm                = {
+      title: "Vehicle Information",
       isOpen: false,
       baseForms: [vehicleInfo, vehicleType, vehiclePlateNo],
       isHidden: false
@@ -973,8 +1277,19 @@ export class VisitationApplicationPage {
       }
       return selectOptions
     }));
-    hostIdSearch.isHidden = true;
-    hostIdSearch.value = this.pageParam.editData.host_id || "";
+    // hostIdSearch.isHidden = true;
+
+    setTimeout(()=>{
+      if(this.pageParam.isEditing){
+        if(hostType.value =='t'){
+          hostId.value = this.pageParam.editData.host_id || "";
+        }else{
+          hostIdSearch.value = this.pageParam.editData.host_id || "";
+
+        }
+      }
+
+    },3000)
 
     var hostId: BaseForm            = new BaseForm("Employee ID", "host_id");
     hostId.labelType                = LabelType.inline;
@@ -999,23 +1314,35 @@ export class VisitationApplicationPage {
 
     hostType.changeListener.subscribe((model: BaseForm) => {
       console.log("hostTypeListener",model);
-      hostName.isHidden = hostIdSearch.isHidden = hostDepartment.isHidden = hostSection.isHidden = true;
+      hostName.isHidden = hostDepartment.isHidden = hostSection.isHidden = true;
+      hostIdSearch.isHidden = true;
+
       hostId.value = "";
       if (model.value === 't') {
         //#emp id is the host
         hostId.value = this.userProvider.userSession.empId || "";
         console.log('enter here ', this.userProvider.userSession.empId,hostId);
+        hostId.isHidden = ext.isHidden =true;
 
       } else if (model.value === 'f') {
         //# search']
-        hostIdSearch.value = "";
+        hostIdSearch.isHidden = false;
 
+        hostIdSearch.value = "";
+        hostId.isHidden = ext.isHidden =false;
+
+        hostId.value         = "";
+        hostName.value       = "";
+        hostDepartment.value = "";
+        hostSection.value    = "";
         console.log('enter here lse');
         if (this.pageParam.isEditing) {
+          // hostIdSearch.value = this.pageParam.editData.host_id || "";
+
+        }else{
           hostIdSearch.value = "";
 
         }
-        hostName.isHidden = hostIdSearch.isHidden = hostDepartment.isHidden = hostSection.isHidden = false;
 
       }
 
@@ -1025,10 +1352,13 @@ export class VisitationApplicationPage {
     setTimeout(() => {
       console.log('hostTypeValueTimeout', this.userProvider.userSession.isFnF);
       if (this.userProvider.userSession.isFnF) {
-        hostType.value = 't';
+        var hostTypeValue = 't';
         if (this.pageParam.isEditing) {
-          hostType.value = this.pageParam.editData.host_id == this.userProvider.userSession.empId ? 't' : 'f';
+          hostTypeValue = this.pageParam.editData.host_id == this.userProvider.userSession.empId ? 't' : 'f';
         }
+
+        hostType.value = hostTypeValue;
+
         hostId.value = this.pageParam.editData.host_id || "";
 
 
@@ -1043,20 +1373,27 @@ export class VisitationApplicationPage {
 
     hostIdSearch.changeListener.subscribe((model: BaseForm) => {
       if(model.value == ""){
-        // return;
+        // hostId.value         = "";
+        // hostName.value       = "";
+        // hostDepartment.value = "";
+        // hostSection.value    = "";
+
+        return;
       }
       this.apiProvider.getEmployeeInformation(model.value, true).then((serverResponse: EmployeeInformationInterface) => {
         hostId.value         = serverResponse.emp_id;
         hostName.value       = serverResponse.emp_name;
         hostDepartment.value = serverResponse.dept_name;
         hostSection.value    = serverResponse.sec_name;
+
+        hostName.isHidden = hostDepartment.isHidden = hostSection.isHidden = false;
+        hostIdSearch.value = "";
       }).catch((rejected) => {
         console.log(rejected);
         this.apiProvider.presentToast("error");
 
 
       }).finally(() => {
-        this.apiProvider.dismissLoader()
       })
     });
 
@@ -1075,7 +1412,7 @@ export class VisitationApplicationPage {
     hostFormState.value = "t";
 
 
-    var extraHostBar:BaseForm = new BaseForm("Extra Host","extraHostBar");
+    var extraHostBar:BaseForm = new BaseForm("Backup Host(to Edit)","extraHostBar");
     extraHostBar.rules.isRequired = false;
     var httpParams: HttpParams    = new HttpParams().set('autocomplete', 'true').set('loc_id', 'FnF');
 
@@ -1136,9 +1473,9 @@ export class VisitationApplicationPage {
     console.log('maxTime', max);
 
     var visitationDate: BaseForm = new BaseForm("Visitation Date", "visitation_date");
-    visitationDate.setInputTypeDate({min: min, max: max,});
+    visitationDate.setInputTypeDate({min: null, max: max,});
     if (this.pageParam.editData.visitation_date && this.pageParam.editData.visitation_date != "" && this.pageParam.editData.visitation_date != null) {
-      visitationDate.setDateAdvance1Day("" + this.pageParam.editData.visitation_date);
+      visitationDate.setDateAdvanceDay("" + this.pageParam.editData.visitation_date);
     }
     // var untilDate = new BaseForm("Until Date", "until_date");
     // untilDate.setInputTypeDate({min: min, max: max})
@@ -1176,7 +1513,7 @@ export class VisitationApplicationPage {
         });
 
       }
-
+      console.log('purposeSelectChain',selectOptions);
       return selectOptions;
     }));
     purpose.value = "" + (this.pageParam.editData.purpose_id || "");
@@ -1249,21 +1586,123 @@ export class VisitationApplicationPage {
 
   getVisitation(page = 1): Promise<any> {
     this.visitationData   = [];
-    this.isInfiniteEnable = true;
 
     console.log('getVisitation', this.pageParam);
+
     if (this.pageParam.isApprover) {
+
+      this.apiProvider.getBadgeVisitationApproval(this.userProvider.userSession).then((badge:VisitationDataApiInterface)=>{
+        console.log('theBadgeApprover',badge);
+
+        this.badge = {badgeVisitation:badge.badgeAppointmentApproval};
+      }).catch(e=>{
+
+      });
+
+
       return this.apiProvider.getApprovalVisitationContainer(this.filter, page, this.userProvider.userSession).then((data: VisitationDataApiInterface) => {
+        //# get the name of ids
+        // for (var key in data.records){
+        //   //#detail record
+        //   var currentRecord:VisitationDataRecordsInterface = data.records[key];
+        //   this.apiProvider.getEmployeeInformation(currentRecord.host_id).then((data:EmployeeInformationInterface)=>{
+        //     currentRecord.host_name = data.emp_name;
+        //   }).catch(re=>{
+        //
+        //   })
+        //
+        //   this.apiProvider.getEmployeeInformation(currentRecord.visitor_id).then((data:EmployeeInformationInterface)=>{
+        //     currentRecord.visitor_name = data.emp_name;
+        //   }).catch(re=>{
+        //
+        //   })
+        // }
+
+
+        data.records.forEach((currentRecord)=>{
+          currentRecord.isOpen = true;
+        })
+
+
         this.visitationData.push(data);
 
+        this.isInfiniteEnable = this.visitationData[0].maxpage > 1;
+
+
         return Promise.resolve(true);
-      }).catch()
+      }).catch(rejected=>{
+        console.log(rejected);
+      });
     } else {
+
+      this.apiProvider.getBadgeVisitationPendingAcknowledge(this.userProvider.userSession).then((badge:BadgeApiInterface)=>{
+        console.log('theBadge',badge);
+
+        this.badge = badge;
+      }).catch(e=>{
+
+      });
+
+
+
       return this.apiProvider.getVisitationContainer(this.filter, this.userProvider.userSession, false, page).then((data: VisitationDataApiInterface) => {
+
+        //# get the name of ids
+        // data.records.forEach((currentRecord:VisitationDataRecordsInterface)=>{
+        //   // this.apiProvider.getEmployeeInformation(currentRecord.host_id).then((data:EmployeeInformationInterface)=>{
+        //   //
+        //   //   var linkCurrentRecord = currentRecord;
+        //   //   console.log('visitationGetName', currentRecord);
+        //   //   currentRecord.host_name = data.emp_name;
+        //   // }).catch(re=>{
+        //   //
+        //   // })
+        //
+        //   this.apiProvider.getEmployeeInformation(currentRecord.visitor_id).then((data:EmployeeInformationInterface)=>{
+        //     var linkCurrentRecord = currentRecord;
+        //
+        //     currentRecord.visitor_name = data.emp_name;
+        //   }).catch(re=>{
+        //
+        //   })
+        // })
+
+        //
+        // for (var key in data.records){
+        //     console.log('visitationGetNameKey',key)
+        //     var currentKey = key;
+        //
+        //     var currentRecord:VisitationDataRecordsInterface = data.records[currentKey];
+        //     this.apiProvider.getEmployeeInformation(currentRecord.host_id).then((data:EmployeeInformationInterface)=>{
+        //
+        //       var linkCurrentRecord = currentRecord;
+        //       console.log('visitationGetName', linkCurrentRecord);
+        //       linkCurrentRecord.host_name = data.emp_name;
+        //     }).catch(re=>{
+        //
+        //     })
+        //
+        //     this.apiProvider.getEmployeeInformation(currentRecord.visitor_id).then((data:EmployeeInformationInterface)=>{
+        //       var linkCurrentRecord = currentRecord;
+        //
+        //       linkCurrentRecord.visitor_name = data.emp_name;
+        //     }).catch(re=>{
+        //
+        //     })
+        //   //#detail record
+        //
+        // }
         // console.log(data);
+        data.records.forEach((currentRecord)=>{
+          currentRecord.isOpen = true;
+        })
         this.visitationData.push(data);
+        this.isInfiniteEnable = this.visitationData[0].maxpage > 1;
+
         return Promise.resolve(true);
-      }).catch();
+      }).catch(rejected=>{
+        console.log(rejected);
+      });
     }
 
   }
@@ -1297,7 +1736,9 @@ export class VisitationApplicationPage {
     this.formValues['outsider_specify'] = this.formValues['outsider_specify'] || "";
     // this.formValues['visitor_no']       = this.formValues['visitor_id'];
     this.formValues['act']              = this.pageParam.isEditing ? 'edit' : 'add';
-    this.formValues['tid']              = this.pageParam.editTid;
+    this.formValues['tid']              = this.pageParam.editTid || -1;
+
+
 
     if (!this.formValues['vehicle_no'] || this.formValues['vehicle_no'] == '') {
       this.formValues['vehicle_info'] = 'f';
@@ -1306,8 +1747,14 @@ export class VisitationApplicationPage {
     if (!this.formValues["visitor_id"] || this.formValues["visitor_id"] == "") {
       this.formValues['visitor_id'] = "-";
     }
-    this.formValues['requisition_type'] = "appointment"
-    this.formValues['emp_id']           = this.userProvider.userSession.empId;
+
+
+    this.formValues['requisition_type'] = "appointment";
+    console.log('submitFormVisitation1', this.formValues);
+    this.formValues['emp_id']           = this.pageParam.isApply ? this.userProvider.userSession.empId : this.pageParam.editData.emp_id;
+    console.log('submitFormVisitation2', this.formValues);
+
+
     var message: string                 = "";
 
     if (this.pageParam.isEditing) {
@@ -1316,11 +1763,21 @@ export class VisitationApplicationPage {
 
 
     this.showConfirmAlert("submit",()=>{
-      this.apiProvider.submitVisitationAplyForm(this.formValues, "s/VisitationApplication_op").then((data) => {
+      var loading = this.apiProvider.presentLoadingV2("Submiting Form");
+
+
+      // s/VisitationApplication_op
+
+      // this.apiProvider.submitVisitationAplyForm(this.formValues, `${ApiProvider.URL_PHP}/app-ionic.php?VisitationApplication_op`).then((data) => {
+      // this.apiProvider.submitVisitationAplyForm(this.formValues, `${ApiProvider.URL_PHP}app-ionic-multipart.php?VisitationApplication_op`).then((data) => {
+      this.apiProvider.submitVisitationAplyForm(this.formValues, `${ApiProvider.BASE_URL}s/VisitationApplication_op`).then((data) => {
+      // this.apiProvider.submitVisitationAplyForm(this.formValues, `http://10.26.5.111/upload.php`).then((data) => {
+      // this.apiProvider.submitVisitationAplyForm(this.formValues, `http://10.26.5.111/app-ionic-multipart.php?VisitationApplication_op`).then((data) => {
         console.log('submit form response', data);
 
         message                = data["message"]
         var isSuccess: boolean = data["success"];
+        // isSuccess = false;
         if (isSuccess) {
           this.ngForms.forEach((currentForm: NgForm) => {
             this.setUpForms();
@@ -1333,7 +1790,9 @@ export class VisitationApplicationPage {
             }
             if (this.pageParam.isEditing) {
               callback = ()=>{
-                this.navCtrl.pop(); //# detailpage->list page->
+                this.navCtrl.pop({},()=>{
+
+                }); //# detailpage->list page->
 
               }
             } else {
@@ -1341,14 +1800,20 @@ export class VisitationApplicationPage {
             this.navCtrl.pop({}, callback);
 
           }, 300)
+          this.apiProvider.presentToast(message);
+
+        }else{
+          this.alert(message,"Info");
+
         }
 
       }).catch(rejected => {
         message = rejected["message"]
         console.log('submit rejected', rejected);
+        this.alert(message,"Submit Exception");
+
       }).finally(() => {
-        this.apiProvider.dismissLoader();
-        this.apiProvider.presentToast(message)
+        loading.dismiss();
 
       })
     })
@@ -1373,14 +1838,26 @@ export class VisitationApplicationPage {
     if(value == ""){
       return;
     }
-    var hostForm: BaseForm     = new BaseForm("Extra Host", `extraHost[${this.extraHost.length}]`);
-    hostForm.value = value;
-    hostForm.rules.isRequired  = false;
-    hostForm.buttonRight.isHidden = false;
-    hostForm.buttonRight.label = "Detail";
-    hostForm.isReadOnly = true;
+    var hostForm: BaseForm               = new BaseForm("Extra Host", `extraHost[${this.extraHost.length}]`);
+    hostForm.value                       = value;
+    hostForm.rules.isRequired            = false;
+    hostForm.buttonRightSuccess.isHidden = false;
+    hostForm.buttonRightSuccess.label    = "Detail";
+    hostForm.isReadOnly                  = true;
     //#showing info
-    hostForm.buttonRight.clickListener.subscribe((data: BaseForm) => {
+
+
+    hostForm.activateButtonRightDanger("X").subscribe((data:BaseForm)=>{
+      this.showConfirmAlert("remove this host",()=>{
+        hostForm.value = "";
+        hostForm.isDisabled = true;
+        hostForm.isHidden   = true;
+        var index = this.hostForm.baseForms.indexOf(hostForm);
+        this.hostForm.baseForms.splice(index,1);
+        console.log('remove',this.hostForm);
+      })
+    })
+    hostForm.buttonRightSuccess.clickListener.subscribe((data: BaseForm) => {
 
       //#showing info
       var alert: Alert = this.alertController.create({
@@ -1388,25 +1865,7 @@ export class VisitationApplicationPage {
         message: "Loading",
         buttons: [
           {
-            text: "Cancel",
-
-          }, {
-            //# showing confirmation
-            text: "Remove",
-            handler: () => {
-
-              this.showConfirmAlert("continue",()=>{
-                hostForm.value = "";
-                hostForm.isDisabled = true;
-                hostForm.isHidden   = true;
-                var index = this.hostForm.baseForms.indexOf(hostForm);
-                this.hostForm.baseForms.splice(index,1);
-                console.log('remove',this.hostForm);
-              })
-
-
-
-            },
+            text: "Ok",
 
           }]
       });
@@ -1435,7 +1894,6 @@ export class VisitationApplicationPage {
 
 
       }).finally(() => {
-        this.apiProvider.dismissLoader()
       })
       console.log('labelClickListener');
 
@@ -1461,6 +1919,8 @@ export class VisitationApplicationPage {
 
 
   public showConfirmAlert(message:string, handler:()=>void):Alert{
+
+    //#alertconfirmation
     var alert:Alert = this.alertController.create({
       title:"Confirmation",
       message: `Are you sure to ${message}?`,
@@ -1550,9 +2010,10 @@ export class VisitationApplicationPage {
 
     }
 
-    if(status.toLowerCase().indexOf("pending")){
+    if(status.toLowerCase().indexOf("pending") >-1 ){
       color = "#FF0000";
     }
+
     // color = "#FF0000";
 
 
@@ -1561,14 +2022,26 @@ export class VisitationApplicationPage {
 
 
   }
+
+  public leavePage(){
+
+    this.showConfirmAlert("leave this page",()=>{
+      this.navCtrl.pop({},()=>{
+        if(this.pageParam.isEditing || this.pageParam.isApply){
+        }
+      });
+
+    })
+  }
 }
 
 
-interface PageForm {
+export interface PageForm {
   title: string,
   isOpen: boolean,
   baseForms: BaseForm[]
-  isHidden: boolean
+  isHidden: boolean,
+  id?:number
 }
 
 export interface VisitationApplicationParam {

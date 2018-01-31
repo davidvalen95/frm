@@ -9,7 +9,10 @@
     <button ion-button menuToggle *ngIf="!this.rootParam.isPartial" >
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title text-center="" >{{this.title}}</ion-title>
+    <ion-title text-center="" >{{this.title}}
+      <span *ngIf="this.badge;let resultBadge" item-right=""><ion-badge *ngIf="(resultBadge.badgeVisitation != 0);"  color="danger" >{{resultBadge.badgeVisitation}}</ion-badge></span>
+
+    </ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -66,8 +69,9 @@
 
           </ion-list>
 
+          <button class="submitButton" ion-button=""  type="button" (click)="leavePage()" color="light">Cancel</button>
 
-          <button ion-button="" align-items-center="" color="primary">Next</button>
+          <button  class="submitButton" ion-button=""    align-items-center="" color="primary">Next</button>
         </form>
       </ion-slide>
 
@@ -75,24 +79,25 @@
 
       <ion-slide   *ngIf="!this.identityInformationForm.isHidden" [hidden]="this.identityInformationForm.isHidden">
         <h2>{{this.identityInformationForm.title}}</h2>
-        <form class="ionContent" #idIdentityInformationForm="ngForm"  (submit)="completionFormSubmit(idIdentityInformationForm)">
+        <form class="ionContent" #idIdentityInformationForm="ngForm"  (submit)="completionFormSubmit(idIdentityInformationForm,this.identityInformationForm)">
           <ion-list *ngFor="let currentBaseForm of this.identityInformationForm.baseForms" >
             <floating-input [parentForm]="idIdentityInformationForm" [baseForm]="currentBaseForm"></floating-input>
           </ion-list>
-          <button  ion-button=""  type="button" (click)="slidePrevious()" color="light">Previous</button>
-          <button  ion-button=""  color="primary">Next</button>
+          <button class="submitButton"  ion-button=""    type="button" (click)="leavePage()" color="light">Cancel</button>
+          <button class="submitButton"  ion-button=""   color="primary">Next</button>
 
         </form>
       </ion-slide>
 
       <ion-slide  *ngIf="!this.identityForEmployeeForm.isHidden" [hidden]="this.identityForEmployeeForm.isHidden" >
         <h2>{{this.identityForEmployeeForm.title}}</h2>
-        <form class="ionContent" #idIdentityForEmployee="ngForm"  (submit)="completionFormSubmit(idIdentityForEmployee)">
+        <form class="ionContent" #idIdentityForEmployee="ngForm"  (submit)="completionFormSubmit(idIdentityForEmployee,this.identityForEmployeeForm)">
           <ion-list *ngFor="let currentBaseForm of this.identityForEmployeeForm.baseForms" >
             <floating-input [parentForm]="idIdentityForEmployee" [baseForm]="currentBaseForm"></floating-input>
           </ion-list>
-          <button  ion-button=""  type="button" (click)="slidePrevious()" color="light">Previous</button>
-          <button  ion-button=""  color="primary">Next</button>
+          <button class="submitButton"  ion-button=""  type="button" (click)="leavePage()" color="light">Cancel</button>
+
+          <button class="submitButton"  ion-button=""   color="primary">Next</button>
 
         </form>
       </ion-slide>
@@ -102,14 +107,15 @@
 
 
       <ion-slide >
-        <h2>{{this.vechileForm.title}}</h2>
-        <form class="ionContent" #idVechileForm="ngForm"  (submit)="completionFormSubmit(idVechileForm)">
-          <ion-list *ngFor="let currentBaseForm of this.vechileForm.baseForms" >
-            <floating-input [parentForm]="idVechileForm" [baseForm]="currentBaseForm"></floating-input>
+        <h2>{{this.vehicleForm.title}}</h2>
+        <form class="ionContent" #idvehicleForm="ngForm"  (submit)="completionFormSubmit(idvehicleForm)">
+          <ion-list *ngFor="let currentBaseForm of this.vehicleForm.baseForms" >
+            <floating-input [parentForm]="idvehicleForm" [baseForm]="currentBaseForm"></floating-input>
           </ion-list>
 
-          <button  ion-button=""  type="button" (click)="slidePrevious()" color="light">Previous</button>
-          <button  ion-button=""  color="primary">Next</button>
+          <button class="submitButton"  ion-button=""  type="button" (click)="leavePage()" color="light">Cancel</button>
+
+          <button class="submitButton"  ion-button=""   color="primary">Next</button>
         </form>
       </ion-slide>
 
@@ -120,9 +126,10 @@
           <ion-list *ngFor="let currentBaseForm of hostForm.baseForms">
             <floating-input  [parentForm]="idHostForm" [baseForm]="currentBaseForm"></floating-input>
           </ion-list>
-          <!--<button type="button" block="" ion-button="" color="success" (click)="addAnotherHost()">Add Another Host</button>-->
-          <button type="button"  ion-button=""  type="button" (click)="slidePrevious()" color="light">Previous</button>
-          <button  ion-button="" color="primary">Next</button>
+          <!--<button class="submitButton" type="button" block="" ion-button="" color="success" (click)="addAnotherHost()">Add Another Host</button>-->
+          <button class="submitButton"  ion-button=""   type="button" (click)="leavePage()" color="light">Cancel</button>
+
+          <button class="submitButton"  ion-button=""  color="primary">Next</button>
         </form>
 
       </ion-slide>
@@ -134,8 +141,10 @@
           <ion-list *ngFor="let currentBaseForm of visitationDetailForm.baseForms">
             <floating-input  [parentForm]="idVisitationDetailForm" [baseForm]="currentBaseForm"></floating-input>
           </ion-list>
-          <button  ion-button=""  type="button" (click)="slidePrevious()" color="light">Previous</button>
-          <button  ion-button="" color="primary">Next</button>
+          <!--<button class="submitButton"  ion-button=""  block="" type="button" (click)="slidePrevious()" color="light">Previous</button>-->
+          <button class="submitButton"  ion-button=""   type="button" (click)="leavePage()" color="light">Cancel</button>
+
+          <button class="submitButton"  ion-button=""  color="primary">Next</button>
         </form>
       </ion-slide>
 
@@ -147,8 +156,11 @@
           <ion-list *ngFor="let currentBaseForm of additionalForm.baseForms">
             <floating-input  [parentForm]="idAdditionalForm" [baseForm]="currentBaseForm"></floating-input>
           </ion-list>
-          <button  ion-button=""  type="button" (click)="slidePrevious()" color="light">Previous</button>
-          <button  ion-button="" color="primary">Submit</button>
+          <!--<button class="submitButton"  ion-button=""  block="" type="button" (click)="slidePrevious()" color="light">Previous</button>-->
+
+          <button class="submitButton"   ion-button=""   type="button" (click)="leavePage()" color="light">Cancel</button>
+
+          <button class="submitButton"   ion-button=""   color="primary">Submit</button>
 
           <!--<pre style="font-size:12px">{{this.formValues | json}}</pre>-->
 
@@ -173,12 +185,12 @@
 
   <div *ngIf="!pageParam.isApply && !pageParam.isEditing">
 
-      <button   (click)="newApply()" ion-button="" block="" color="primary">Apply</button>
+      <button  *ngIf="!this.pageParam.isApprover" style="margin-bottom:24px;" (click)="newApply()" ion-button="" block="" color="danger">Apply</button>
 
 
-    <ion-list>
+    <ion-list style="border: 1px solid #C4C4C4; border-radius:5px;">
 
-      <ion-item (click)="filter.isOpen = !filter.isOpen">
+      <ion-item  (click)="filter.isOpen = !filter.isOpen">
         <h3>Search for Visitation Application</h3>
         <span item-end="">
               <ion-icon name="arrow-down" *ngIf="filter.isOpen"></ion-icon>
@@ -187,6 +199,7 @@
       </ion-item>
 
       <span *ngIf="filter.isOpen" class="animation-expand-bottom">
+
           <ion-item>
             <ion-label>Year</ion-label>
             <ion-select (ionChange)="filterChanged()" [(ngModel)]="filter.cmbYear" interface="popover">
@@ -227,8 +240,8 @@
         </span>
 
     </ion-list>
-
-    <p padding="" *ngIf="this.visitationData[0]; let result"><span *ngIf="  result.records.length == 0">No record</span></p>
+    <p style="background: #C4F0FF;padding-top:0;padding-bottom:0" no-padding="" >{{title}} Listing</p>
+    <span *ngIf="this.visitationData[0]; let result"><p padding="" *ngIf="  result.records.length == 0">No record</p></span>
     <ion-grid>
       <ion-row *ngFor="let currentVisitationData of visitationData">
         <!--<p>page: {{currentVisitationData.page}}/{{currentVisitationData.maxpage}}</p>-->
@@ -237,38 +250,70 @@
             <ion-card-header  (click)="record.isOpen = !record.isOpen">
               <ion-item no-padding="">
                 <h2>{{record.visitorcategory_name}}</h2>
-                <!--<span item-end="">-->
-                <!--<ion-icon name="arrow-down" *ngIf="record.isOpen"></ion-icon>-->
-                <!--<ion-icon name="arrow-up" *ngIf="!record.isOpen"></ion-icon>-->
-                <!--</span>-->
+                <span item-right="">
+                <ion-icon name="arrow-down" *ngIf="record.isOpen"></ion-icon>
+                <ion-icon name="arrow-up" *ngIf="!record.isOpen"></ion-icon>
+                </span>
+
+                <small > {{record.visitor_id | ifEmptyThenDash}} {{record.visitor_name | ifEmptyThenDash }}</small>
               </ion-item>
               <!--<p><small>{{record.status}}</small></p>-->
             </ion-card-header>
 
 
-            <!--<div *ngIf="record.isOpen" ngClass=" animation-expand-bottom">-->
-            <div ngClass=" animation-expand-bottom">
+            <div *ngIf="record.isOpen" ngClass=" animation-expand-bottom">
+            <!--<div  ngClass=" animation-expand-bottom">-->
 
 
-              <ion-list ngClass="ionContent" >
+              <ion-list class="visitationMini" ngClass="ionContent" >
 
                 <ion-item>
-                  status
-                  <span  [style.color]="this.getStatusColor(record.status)" item-end="">{{record.status}} </span>
+                  Status
+                  <span  [style.color]="this.getStatusColor(record.status)" item-end="">{{record.status | ifEmptyThenDash}} </span>
                 </ion-item>
 
+                <!--<ion-item *ngIf="record.visitor_name; let result">-->
+                  <!--Visitor Name-->
+                  <!--<span  [style.color]="this.getStatusColor(record.status)" item-end="">{{result}} </span>-->
+                <!--</ion-item>-->
+
+                <!--<ion-item>-->
+                  <!--Created By(Id)-->
+                  <!--<span item-end="">{{record.emp_id}} </span>-->
+                <!--</ion-item>-->
+                <ion-item>
+                  Created By
+                  <span item-end="">{{record.emp_id | ifEmptyThenDash:record.employee}}<p>{{record.emp_name | ifEmptyThenDash:""}}</p></span>
+                </ion-item>
                 <ion-item>
                   Created Date
-                  <span item-end="">{{record.created_date}}</span>
+                  <span item-end="">{{record.created_date | ifEmptyThenDash}}</span>
                 </ion-item>
                 <ion-item>
-                  Visit Date
-                  <span item-right="">{{record.visitation_date}}</span>
+                  Visit Date / Time
+                  <span item-right="">{{record.visitation_date | ifEmptyThenDash }} {{record.visitation_time | ifEmptyThenDash }}</span>
                 </ion-item>
+                <!--<ion-item>-->
+                  <!--Visit Time-->
+                  <!--<span item-right="">{{record.visitation_time}}</span>-->
+                <!--</ion-item>-->
+
                 <ion-item>
-                  Visit Time
-                  <span item-right="">{{record.visitation_time}}</span>
+                  Host
+                  <span item-right="">{{record.host_id | ifEmptyThenDash }}<p>{{record.host_name | ifEmptyThenDash}}</p></span>
                 </ion-item>
+                <!--<ion-item>-->
+                  <!--Host Name-->
+                  <!--<span item-right="">{{record.host_name}}</span>-->
+                <!--</ion-item>-->
+
+                <ion-item>
+                  Purpose
+                  <span item-right="">{{record.purpose | ifEmptyThenDash}}</span>
+
+                </ion-item>
+
+
               </ion-list>
 
 
@@ -280,7 +325,7 @@
                 <!--</button>-->
                 <!--</ion-col>-->
                 <ion-col (click)="pushVisitationDetail(record)" text-center="">
-                  <button ion-button clear small color="primary" icon-center>
+                  <button ion-button block color="primary" icon-center>
                     <!--<ion-icon name='list-box'></ion-icon>-->
                     Detail
                   </button>

@@ -67,4 +67,88 @@ ion-slides{
   -moz-user-select: text;
   -ms-user-select: text;
   user-select: text;
+  //word-break: keep-all !important;
+  word-wrap: break-word !important;
+  word-break: keep-all !important;
+  white-space:normal;
+}
+
+
+input {
+  -webkit-user-select: text; /* Chrome, Opera, Safari */
+  -moz-user-select: text; /* Firefox 2+ */
+  -ms-user-select: text; /* IE 10+ */
+  user-select: text; /* Standard syntax */
+}
+
+
+//# supaya title jadi center kalo ada back button
+.back-button,.bar-button-menutoggle-wp,.bar-button-menutoggle {
+  z-index:9999;
+  margin-right: -34px !important;
+
+  &~.toolbar-content>{
+    //border: 1px solid black;
+    //
+    display:inline-block;
+    z-index:-1
+  }
+  //width:64px;
+}
+.toolbar-title{
+  text-align: center;
+
+}
+
+
+
+
+//
+////# create space for swiper pagination dot
+//div.swiper-pagination {
+//  top:-10px;
+//  bottom:inherit;
+//  z-index: 9999;
+//}
+//ion-slide{
+//  padding-top:30px;
+//  //overflow: visible;
+//  z-index: 4;
+//}
+
+
+
+
+
+//#selection
+.action-sheet-title{
+  text-align: center !important;
+  &::before {
+    content: "Select ";
+  }
+}
+
+.action-sheet-selected{
+  .button-inner{
+    display:inline-block;
+    &::after{
+      float:right;
+      content: " V";
+      color:blue;
+    }
+  }
+
+}
+
+
+//# prevent keyboard covers field
+ion-col{
+  position: initial;
+}
+
+
+
+//# ion select cancel
+.action-sheet-cancel{
+  color: tomato !important;
 }

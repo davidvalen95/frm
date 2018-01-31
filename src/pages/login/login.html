@@ -22,10 +22,12 @@
 
 
       <div class="img">
-        <img class="img-responsive" src="assets/imgs/logohrms.png"/>
+        <img style='' class="img-responsive" src="{{currentBaseForm['image']}}"/>
       </div>
       <div class="input">
-              <input [type]="currentBaseForm.getInputTypeText()" [placeholder]="currentBaseForm.placeholder" [name]="currentBaseForm.name" ngModel=""/>
+              <input (keyup)="currentBaseForm.broadcastNgChange($event)"  [type]="currentBaseForm.getInputTypeText()" [placeholder]="currentBaseForm.placeholder" [name]="currentBaseForm.name" [(ngModel)]="currentBaseForm.value"/>
+
+        <!--<floating-input [baseForm]="currentBaseForm" [parentForm]="loginFormId"></floating-input>-->
       </div>
     </div>
 

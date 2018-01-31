@@ -1,8 +1,22 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.hrms.guard-house" version="0.2.25" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Guard House</name>
-    <description>HRMS Guard House</description>
-    <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
+<widget android-versionCode="200000" id="com.domain.DxnHrms" version="2.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>DxnHrms</name>
+    <description>
+    DXN HRMS App is specifically design for our employees as a mobile facility.
+    DXN HRMS App enable our employee to check their own DXN Calendar, to view HR Announcement, apply application, perform application approval and update attendance record on the go through the mobile platform.
+
+    App features:
+    1. View your own DXN Calendar - view your rest/off day, DXN Public Holiday, leave application and attendance record.
+    2. Apply Leave Application and keep track your leave balance and status.
+    3. Apply Overtime Application, Exchange Alternate Off Application, Work Outside Office Application and keep track the application status.
+    4. Perform application approval.
+    5. View your Attendance and update your Incomplete or Absence record.
+    6. View HR Announcement on news/events.
+    7. Notification on new announcement.
+  </description>
+    <author email="hr@dxn2u.com" href="http://hrms.dxn2u.com">
+    DXN Holdings Bhd
+  </author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
@@ -21,6 +35,8 @@
     <preference name="SplashScreenDelay" value="3000" />
     <preference name="loadUrlTimeoutValue" value="70000" />
     <platform name="android">
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
         <allow-intent href="market:*" />
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
         <icon density="mdpi" src="resources/android/icon/drawable-mdpi-icon.png" />
@@ -79,6 +95,7 @@
     </platform>
     <engine name="android" spec="6.3.0" />
     <engine name="browser" spec="5.0.1" />
+    <engine name="ios" spec="^4.5.4" />
     <plugin name="ionic-plugin-keyboard" spec="^2.2.1" />
     <plugin name="cordova-plugin-whitelist" spec="^1.3.1" />
     <plugin name="cordova-plugin-device" spec="^1.1.4" />
@@ -86,4 +103,6 @@
     <plugin name="cordova-plugin-ionic-webview" spec="^1.1.16" />
     <plugin name="cordova-plugin-headercolor" spec="^1.0.0" />
     <plugin name="cordova-plugin-datepicker" spec="^0.9.3" />
+    <plugin name="cordova-plugin-file" spec="^6.0.1" />
+    <plugin name="cordova-plugin-android-permissions" spec="^1.0.0" />
 </widget>
