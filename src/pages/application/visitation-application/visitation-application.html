@@ -20,15 +20,14 @@
 
 <ion-content padding="" [ngClass]="{'partial':this.rootParam.isPartial}">
 
-  <!--<ion-segment (ionChange)="ionSegmentChange()"  style='margin-top:16px;'[(ngModel)]="segmentValue">-->
-    <!--<ion-segment-button value="apply" *ngIf="!this.isApprover" >-->
-      <!--Apply-->
-    <!--</ion-segment-button>-->
-    <!--<ion-segment-button value="list" [hidden]="pageParam.isEditing">-->
-        <!--List-->
-        <!--<ion-badge *ngIf="this.visitationData[0];let result" item-end="" color="primary">{{result.totalRecord || 0}}</ion-badge>-->
-    <!--</ion-segment-button>-->
-  <!--</ion-segment>-->
+  <ion-segment *ngIf="!pageParam.isApply && !pageParam.isEditing" (ionChange)="ionSegmentChange()"  style='margin-top:16px;'[(ngModel)]="segmentValue">
+    <ion-segment-button value="apply" *ngIf="!this.isApprover" >
+      Apply
+    </ion-segment-button>
+    <ion-segment-button value="list" [hidden]="pageParam.isEditing">
+        List
+    </ion-segment-button>
+  </ion-segment>
 
 
   <!---->
@@ -163,8 +162,11 @@
           <button class="submitButton"   ion-button=""   color="primary">Submit</button>
 
           <!--<pre style="font-size:12px">{{this.formValues | json}}</pre>-->
-
         </form>
+        Attachment:
+        <ul>
+          <li (click)="openUrl('test')">test</li>
+        </ul>
       </ion-slide>
 
       <!--<ion-slide>-->
@@ -185,7 +187,7 @@
 
   <div *ngIf="!pageParam.isApply && !pageParam.isEditing">
 
-      <button  *ngIf="!this.pageParam.isApprover" style="margin-bottom:24px;" (click)="newApply()" ion-button="" block="" color="danger">Apply</button>
+      <!--<button  *ngIf="!this.pageParam.isApprover" style="margin-bottom:24px;" (click)="newApply()" ion-button="" block="" color="danger">Apply</button>-->
 
 
     <ion-list style="border: 1px solid #C4C4C4; border-radius:5px;">

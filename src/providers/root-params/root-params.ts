@@ -3,6 +3,7 @@ import {Injectable} from '@angular/core';
 import {VisitationApplicationParam} from "../../pages/application/visitation-application/visitation-application";
 import {BaseForm} from "../../components/Forms/base-form";
 import {ReplaySubject} from "rxjs/ReplaySubject";
+import {HomeLeaveApplicationParam} from "../../pages/application/leave/home-leave-application/home-leave-application";
 
 /*
   Generated class for the RootParamsProvider provider.
@@ -32,6 +33,7 @@ export class RootParamsProvider {
 
 
   public visitationApplicationParam?: VisitationApplicationParam = {isProvider:true} ;
+  public HomeLeaveApplicationParam?: HomeLeaveApplicationParam = {};
   public broadcast:ReplaySubject<BroadcastType> = new ReplaySubject(-1);
 
   constructor(public http: HttpClient) {
@@ -57,6 +59,7 @@ interface PageForm {
 }
 
 export enum BroadcastType{
-  visitationPageOnResume
+  visitationPageOnResume,
+  homeLeaveApplicationOnResume
 }
 

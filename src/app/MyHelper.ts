@@ -17,6 +17,8 @@ export class MyHelper{
 
 
 
+
+
   public static ucWord(target:string){
     target = target.replace(/_/g," ");
     //# replace all after space in documents

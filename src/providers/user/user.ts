@@ -54,6 +54,8 @@ export class UserProvider {
         this.userSession.isLoggedIn = true;
         this.getFnf();
 
+
+
       }).catch(()=>{
 
       })
@@ -71,7 +73,8 @@ export class UserProvider {
         this.concatArray(this.userSession,data);
         this.userSession.isLoggedIn = true;
         this.getFnf();
-        console.log(this.userSession);
+        localStorage.setItem(StorageKey.USER_ID, username);
+        localStorage.setItem(StorageKey.USER_PASSWORD,password);
         return this.api.getMenu(this.userSession.empId);
       }
       return new Promise((resolve,reject)=>{
@@ -113,6 +116,8 @@ export class UserProvider {
 
   logout(){
     this.userSession = {isLoggedIn: false};
+    localStorage.removeItem(StorageKey.USER_PASSWORD);
+    localStorage.removeItem(StorageKey.USER_ID);
   }
 
 

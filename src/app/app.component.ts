@@ -19,6 +19,7 @@ import {LoginPage} from "../pages/login/login";
 import {RootParamsProvider} from "../providers/root-params/root-params";
 import {EmptyPage} from "../pages/empty/empty";
 import {AndroidPermissions} from "@ionic-native/android-permissions";
+import {HomeLeaveApplicationPage} from "../pages/application/leave/home-leave-application/home-leave-application";
 @Component({
   templateUrl: 'app.html'
 })
@@ -36,6 +37,12 @@ export class MyApp {
     this.checkPermission();
 
 
+    // if(localStorage.getItem("test")){
+    //   console.log('localStorageKept');
+    // }else{
+    //   console.log("localstorageNOTkept");
+    //   localStorage.setItem("test","bebek");
+    // }
 
     //
     // this.toastController.create({
@@ -113,6 +120,10 @@ export class MyApp {
         case "home":
           this.rootPage = HomePage
           break;
+
+        case "leaveApplication":
+          this.rootPage = HomeLeaveApplicationPage;
+          break;
         default:
           this.rootPage = HomePage;
           break;
@@ -159,8 +170,8 @@ export class MyApp {
 }
 
 export class StorageKey{
-  public static USER_ID = "userId";
-  public static ROOM_ID = "roomId";
-  public static USER_PASSWORD = "userPassword";
+  public static USER_ID = "userId-Rumah0123asdfqwer";
+  public static ROOM_ID = "roomId-Rumah0123asdfqwer";
+  public static USER_PASSWORD = "userPassword--Rumah0123asdfqwer";
 
 }

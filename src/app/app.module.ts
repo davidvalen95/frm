@@ -27,6 +27,9 @@ import {LoginPage} from "../pages/login/login";
 import { RootParamsProvider } from '../providers/root-params/root-params';
 import {EmptyPage} from "../pages/empty/empty";
 import {AndroidPermissions} from "@ionic-native/android-permissions";
+import {HomeLeaveApplicationPage} from "../pages/application/leave/home-leave-application/home-leave-application";
+import { MyHelperProvider } from '../providers/my-helper/my-helper';
+import {ApplyLeaveApplicationPage} from "../pages/application/leave/apply-leave-application/apply-leave-application";
 
 @NgModule({
   declarations: [
@@ -41,7 +44,10 @@ import {AndroidPermissions} from "@ionic-native/android-permissions";
     VisitationApplicationPage,
     ContainerInPage,
     LoginPage,
-    EmptyPage
+    EmptyPage,
+    HomeLeaveApplicationPage,
+    ApplyLeaveApplicationPage,
+
 
   ],
   imports: [
@@ -64,6 +70,9 @@ import {AndroidPermissions} from "@ionic-native/android-permissions";
     ContainerInPage,
     LoginPage,
     EmptyPage,
+    HomeLeaveApplicationPage,
+    ApplyLeaveApplicationPage,
+
 
   ],
   providers: [
@@ -76,6 +85,7 @@ import {AndroidPermissions} from "@ionic-native/android-permissions";
     DatePicker,
     RootParamsProvider,
     AndroidPermissions,
+    MyHelperProvider,
 
   ]
 })

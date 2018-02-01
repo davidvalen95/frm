@@ -4,6 +4,7 @@ import {NgForm} from "@angular/forms";
 import {UserProvider} from "../../providers/user/user";
 import {BaseForm, InputType} from "../../components/Forms/base-form";
 import {HomePage} from "../home/home";
+import {StorageKey} from "../../app/app.component";
 
 /**
  * Generated class for the LoginPage page.
@@ -23,17 +24,25 @@ export class LoginPage {
 
   constructor(public navCtrl: NavController, public userProvider: UserProvider) {
     this.setupForm()
+    if(localStorage.getItem(StorageKey.USER_ID) && localStorage.getItem(StorageKey.USER_PASSWORD)){
+      this.login(localStorage.getItem(StorageKey.USER_ID),localStorage.getItem(StorageKey.USER_PASSWORD));
+      console.log('localStorageLogin')
+    }
   }
 
   loginFormSubmit(form: NgForm) {
     if (form.valid) {
+      this.login(form.value.username, form.value.password);
 
-      this.userProvider.login(form.value.username, form.value.password, ((isLoggedIn: boolean) => {
-        if (isLoggedIn) {
-          this.navCtrl.setRoot(HomePage);
-        }
-      }));
     }
+  }
+
+  private login(username:string, password:string){
+    this.userProvider.login(username, password, ((isLoggedIn: boolean) => {
+      if (isLoggedIn) {
+        this.navCtrl.setRoot(HomePage);
+      }
+    }));
   }
 
   setupForm() {

@@ -19,7 +19,7 @@ import {VisitationDetailPage, VisitationDetailPageParam} from "../../visitation-
 import {BroadcastType, RootParamsProvider} from "../../../providers/root-params/root-params";
 import {FileJsonFormat, MyHelper} from "../../../app/MyHelper";
 import {Subscription} from "rxjs/Subscription";
-
+// import { InAppBrowser } from 'ionic-native';
 /**
  * Generated class for the VisitationApplicationPage page.
  *
@@ -128,12 +128,12 @@ export class VisitationApplicationPage {
 
     if (!this.pageParam.isEditing) {
       if (this.pageParam.isApprover) {
-        //# will trigger getVisitation
+        //# will trigger getList
         this.filter.cmbStatus = "PA";
-        // this.getVisitation();
+        // this.getList();
         //# REPLACED WITH BROADCAST
       } else {
-        // this.getVisitation();
+        // this.getList();
 
       }
       console.log('enter !');
@@ -623,7 +623,7 @@ export class VisitationApplicationPage {
       isVisitation: true,
       isApprover: this.pageParam.isApprover,
       actionOnPop: () => {
-        // this.getVisitation();
+        // this.getList();
       }
     }
     this.navCtrl.push(VisitationDetailPage, param)
@@ -1580,7 +1580,7 @@ export class VisitationApplicationPage {
     // this.visitationData   = [];
     // // this.infiniteScroll.enable(true);
     // this.isInfiniteEnable = true;
-    // this.getVisitation();
+    // this.getList();
 
   }
 
@@ -1713,9 +1713,16 @@ export class VisitationApplicationPage {
       this.getVisitation();
     } else {
       if(this.userProvider.userSession.isFnFReady){
-        this.setUpForms();
+        // this.setUpForms();
+        this.newApply();
+
       }
     }
+
+    setTimeout(()=>{
+      this.segmentValue = 'list';
+
+    },100);
   }
 
   popUp(ev) {
@@ -2032,6 +2039,11 @@ export class VisitationApplicationPage {
       });
 
     })
+  }
+
+  public  openUrl(url:string){
+    // var browser = new InAppBrowser(url,"_blank");
+    // browser.
   }
 }
 
