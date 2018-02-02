@@ -44,7 +44,7 @@ export class SearchBarPage {
       currentParam = currentParam.set(this.baseForm.searchBarSetting.httpParamBindEvent[key], ev.target.value || "")
     }
     console.log(currentParam);
-    this.httpClient.get(ApiProvider.BASE_URL + this.baseForm.searchBarSetting.url, {params: currentParam}).subscribe(response => {
+    this.httpClient.get(ApiProvider.HRM_URL + this.baseForm.searchBarSetting.url, {params: currentParam}).subscribe(response => {
       this.selectOptions = this.baseForm.searchBarSetting.processData(response);
     })
 

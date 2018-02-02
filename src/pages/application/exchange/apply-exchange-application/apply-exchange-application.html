@@ -1,0 +1,25 @@
+<!--
+  Generated template for the ApplyLeaveApplicationPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Exchange Alternate Off Application</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <form #parentForm="ngForm" (submit)="formSubmit(parentForm)">
+    <ion-list>
+      <floating-input  *ngFor="let currentBaseForm of this.baseForms" [parentForm]="parentForm" [baseForm]="currentBaseForm"></floating-input>
+    </ion-list>
+
+    <button class="submitButton" ion-button=""  type="button" (click)="leavePage()" color="light">Cancel</button>
+    <button  class="submitButton" ion-button=""  type="submit"  align-items-center="" color="primary">Submit</button>
+  </form>
+</ion-content>

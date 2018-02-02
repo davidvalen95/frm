@@ -11,6 +11,7 @@ import {SearchBarPage} from "../search-bar/search-bar";
 import {VisitationDetailPageParam, VisitationDetailPage} from "../visitation-detail/visitation-detail";
 import {HttpParams} from "@angular/common/http";
 import {RootParamsProvider} from "../../providers/root-params/root-params";
+import {HelperProvider} from "../../providers/helper/helper";
 
 /**
  * Generated class for the ContainerInPage page.
@@ -70,7 +71,7 @@ export class ContainerInPage {
   public dataList:DataList[] = [];
   public formValues: object        = {};
   public categoryCountryRules: any = {}
-  constructor(public navCtrl: NavController, public alertController:AlertController, public navParams: NavParams, public apiProvider:ApiProvider, public userProvider:UserProvider, public rootParam:RootParamsProvider) {
+  constructor(public helperProvider:HelperProvider, public navCtrl: NavController, public alertController:AlertController, public navParams: NavParams, public apiProvider:ApiProvider, public userProvider:UserProvider, public rootParam:RootParamsProvider) {
     this.dataList.push({
       theCase:"containerIn",
       isInfiniteEnable:true,
@@ -141,7 +142,7 @@ export class ContainerInPage {
           message = rejected["message"]
           console.log('submit rejected', rejected);
         }).finally(() => {
-          this.apiProvider.presentToast(message)
+          this.helperProvider.presentToast(message)
 
         })
       }
@@ -229,7 +230,7 @@ export class ContainerInPage {
     this.formValues["visitorcategory_code"] = "CONT"
 
     var visitationDateFrom = new BaseForm("Visitation Date From", "visitation_date");
-    visitationDateFrom.setInputTypeDate({min: BaseForm.getCurrentDate(),max:BaseForm.getAdvanceDate(720).toISOString(), displayFormat: "DD MMM YYYY"});
+    visitationDateFrom.setInputTypeDate({min: this.helperProvider.getCurrentDate(),max:BaseForm.getAdvanceDate(720).toISOString(), displayFormat: "DD MMM YYYY"});
     var visitationDateTo = new BaseForm("Until","until_date")
     visitationDateTo.setInputTypeDate({});
     visitationDateFrom.changeListener.subscribe((model:BaseForm)=>{
@@ -367,7 +368,7 @@ export class ContainerInPage {
         hostSection.value    = serverResponse.sec_name;
       }).catch((rejected) => {
         console.log(rejected);
-        this.apiProvider.presentToast("error");
+        this.helperProvider.presentToast("error");
 
 
       }).finally(() => {

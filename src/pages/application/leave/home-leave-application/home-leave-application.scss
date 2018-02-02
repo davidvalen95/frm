@@ -1,0 +1,25 @@
+page-home-leave-application {
+
+.detail-container{
+  margin-top: 32px;
+}
+.summary{
+
+  //
+  //padding-left: 16px;
+  //padding-right: 16px;
+  //margin-top: 16px;
+  *{
+    display:inline-block;;
+    vertical-align: top;
+  }
+  .description{
+    width: 68%;
+
+  }
+  .detail{
+    width: 28%;
+    text-align: right;
+  }
+}
+}

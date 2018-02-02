@@ -24,10 +24,15 @@ export class LoginPage {
 
   constructor(public navCtrl: NavController, public userProvider: UserProvider) {
     this.setupForm()
-    if(localStorage.getItem(StorageKey.USER_ID) && localStorage.getItem(StorageKey.USER_PASSWORD)){
-      this.login(localStorage.getItem(StorageKey.USER_ID),localStorage.getItem(StorageKey.USER_PASSWORD));
-      console.log('localStorageLogin')
-    }
+    setTimeout(()=>{
+      if(localStorage.getItem(StorageKey.USER_ID) && localStorage.getItem(StorageKey.USER_PASSWORD)){
+
+          this.login(localStorage.getItem(StorageKey.USER_ID),localStorage.getItem(StorageKey.USER_PASSWORD));
+          console.log('localStorageLogin')
+
+
+      }
+    },500)
   }
 
   loginFormSubmit(form: NgForm) {

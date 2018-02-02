@@ -1,22 +1,22 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { ErrorHandler, NgModule } from '@angular/core';
-import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import {BrowserModule} from '@angular/platform-browser';
+import {ErrorHandler, NgModule} from '@angular/core';
+import {IonicApp, IonicErrorHandler, IonicModule} from 'ionic-angular';
 
-import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
-import { ListPage } from '../pages/list/list';
+import {MyApp} from './app.component';
+import {HomePage} from '../pages/home/home';
+import {ListPage} from '../pages/list/list';
 
-import { StatusBar } from '@ionic-native/status-bar';
-import { SplashScreen } from '@ionic-native/splash-screen';
+import {StatusBar} from '@ionic-native/status-bar';
+import {SplashScreen} from '@ionic-native/splash-screen';
 import {VisitationApplicationPage} from "../pages/application/visitation-application/visitation-application";
 import {ArrowOpenDirective} from "../directives/arrow-open/arrow-open";
 import {FloatingInputComponent} from "../components/Forms/floating-input/floating-input";
 import {FormsModule} from "@angular/forms";
 import {FormErrorMessageComponent} from "../components/Forms/form-error-message/form-error-message";
 import {HeaderColor} from "@ionic-native/header-color";
-import { UserProvider } from '../providers/user/user';
+import {UserProvider} from '../providers/user/user';
 import {HttpClientModule} from "@angular/common/http";
-import { ApiProvider } from '../providers/api/api';
+import {ApiProvider} from '../providers/api/api';
 import {DatePicker} from "@ionic-native/date-picker";
 import {SearchBarPage} from "../pages/search-bar/search-bar";
 import {shim} from "promise.prototype.finally";
@@ -24,69 +24,75 @@ import {VisitationDetailPage} from "../pages/visitation-detail/visitation-detail
 import {PipesModule} from "../pipes/pipes.module";
 import {ContainerInPage} from "../pages/container-in/container-in";
 import {LoginPage} from "../pages/login/login";
-import { RootParamsProvider } from '../providers/root-params/root-params';
+import {RootParamsProvider} from '../providers/root-params/root-params';
 import {EmptyPage} from "../pages/empty/empty";
 import {AndroidPermissions} from "@ionic-native/android-permissions";
 import {HomeLeaveApplicationPage} from "../pages/application/leave/home-leave-application/home-leave-application";
-import { MyHelperProvider } from '../providers/my-helper/my-helper';
+import {HomeExchangeApplicationPage} from "../pages/application/exchange/home-exchange-application/home-exchange-application";
+import {HelperProvider} from '../providers/helper/helper';
 import {ApplyLeaveApplicationPage} from "../pages/application/leave/apply-leave-application/apply-leave-application";
+import {ApplyExchangeApplicationPage} from "../pages/application/exchange/apply-exchange-application/apply-exchange-application";
+import {InAppBrowser} from "@ionic-native/in-app-browser";
 
+
+//tes
 @NgModule({
-  declarations: [
-    ArrowOpenDirective,
-    FormErrorMessageComponent,
-    FloatingInputComponent,
-    HomePage,
-    ListPage,
-    MyApp,
-    SearchBarPage,
-    VisitationDetailPage,
-    VisitationApplicationPage,
-    ContainerInPage,
-    LoginPage,
-    EmptyPage,
-    HomeLeaveApplicationPage,
-    ApplyLeaveApplicationPage,
+    declarations: [
+        ArrowOpenDirective,
+        FormErrorMessageComponent,
+        FloatingInputComponent,
+        HomePage,
+        ListPage,
+        MyApp,
+        SearchBarPage,
+        VisitationDetailPage,
+        VisitationApplicationPage,
+        ContainerInPage,
+        LoginPage,
+        EmptyPage,
+        HomeLeaveApplicationPage,
+        ApplyLeaveApplicationPage,
+        HomeExchangeApplicationPage,
+        ApplyExchangeApplicationPage
+    ],
+    imports: [
+        BrowserModule,
+        IonicModule.forRoot(MyApp),
+        FormsModule,
+        HttpClientModule,
+        PipesModule,
 
 
-  ],
-  imports: [
-    BrowserModule,
-    IonicModule.forRoot(MyApp),
-    FormsModule,
-    HttpClientModule,
-    PipesModule,
+    ],
+    bootstrap: [IonicApp],
+    entryComponents: [
+        HomePage,
+        ListPage,
+        MyApp,
+        SearchBarPage,
+        VisitationApplicationPage,
+        VisitationDetailPage,
+        ContainerInPage,
+        LoginPage,
+        EmptyPage,
+        HomeLeaveApplicationPage,
+        ApplyLeaveApplicationPage,
+        HomeExchangeApplicationPage,
+        ApplyExchangeApplicationPage
+    ],
+    providers: [
+        StatusBar,
+        SplashScreen,
+        {provide: ErrorHandler, useClass: IonicErrorHandler},
+        HeaderColor,
+        UserProvider,
+        ApiProvider,
+        DatePicker,
+        RootParamsProvider,
+        AndroidPermissions,
+        HelperProvider,
+        InAppBrowser
 
-
-  ],
-  bootstrap: [IonicApp],
-  entryComponents: [
-    HomePage,
-    ListPage,
-    MyApp,
-    SearchBarPage,
-    VisitationApplicationPage,
-    VisitationDetailPage,
-    ContainerInPage,
-    LoginPage,
-    EmptyPage,
-    HomeLeaveApplicationPage,
-    ApplyLeaveApplicationPage,
-
-
-  ],
-  providers: [
-    StatusBar,
-    SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
-    HeaderColor,
-    UserProvider,
-    ApiProvider,
-    DatePicker,
-    RootParamsProvider,
-    AndroidPermissions,
-    MyHelperProvider,
-
-  ]
+    ]
 })
 export class AppModule {}

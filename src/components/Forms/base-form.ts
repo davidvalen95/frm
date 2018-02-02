@@ -19,7 +19,7 @@ export class BaseForm {
   public styling: InputStyle                        = {};
   public value: any                              = "";
   public isReadOnly: boolean                        = false;
-  public dateSetting: DateSetting                   = {min: "1900-01-01", max: BaseForm.getCurrentDate()};
+  public dateSetting: DateSetting                   = {min: "1900-01-01"};
   public changeListener: ReplaySubject<BaseForm>          = new ReplaySubject(0);
   public inputClickListener: ReplaySubject<BaseForm>      = new ReplaySubject(0);
   public labelClickListener: ReplaySubject<BaseForm>      = new ReplaySubject(0);
@@ -98,7 +98,7 @@ export class BaseForm {
       dateSetting.min = "1900-01-01";
 
     if (dateSetting.max == null)
-      dateSetting.max = BaseForm.getCurrentDate();
+      dateSetting.max = BaseForm.getAdvanceDate(712);
 
     if (dateSetting.displayFormat == null) {
       dateSetting.displayFormat = "DD MMM YYYY";
@@ -173,13 +173,13 @@ export class BaseForm {
 
   }
 
-  public setInputTypeSelectChain(observable: Observable<any>, processData: (data: object[]) => KeyValue[]) {
+  public setInputTypeSelectChain(observable: Observable<any>, processData: (data: any) => KeyValue[]) {
     this.placeholder = `Select ${this.label}`;
 
     this.inputType = InputType.select;
 
     // parsing as key value
-    observable.subscribe((data: object[]) => {
+    observable.subscribe((data:any) => {
       this.selectOptions = processData(data)
       console.log('selectOptions', this.selectOptions)
     })
@@ -219,18 +219,7 @@ export class BaseForm {
     this.rules.patternInformation = "Must valid email";
   }
 
-  public static getCurrentDate() {
-    var currentTime = new Date();
-// returns the month (from 0 to 11)
-    var month       = ('0' + currentTime.getMonth()).slice(-2);
-// returns the day of the month (from 1 to 31)
-    var day         = ('0' + currentTime.getDate()).slice(-2);
-// returns the year (four digits)
-    var year        = currentTime.getFullYear();
 
-    console.log('max date', `${year}-${month}-${day}`)
-    return currentTime.toISOString()
-  }
 
   public static getAdvanceDate(advance: number, from = new Date(),) {
     from.setDate(from.getDate() + advance);

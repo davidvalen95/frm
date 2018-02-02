@@ -62,16 +62,16 @@ ion-slides{
 }
 
 
-*{
-  -webkit-user-select: text;
-  -moz-user-select: text;
-  -ms-user-select: text;
-  user-select: text;
-  //word-break: keep-all !important;
-  word-wrap: break-word !important;
-  word-break: keep-all !important;
-  white-space:normal;
-}
+//*{
+//  -webkit-user-select: text;
+//  -moz-user-select: text;
+//  -ms-user-select: text;
+//  user-select: text;
+//  //word-break: keep-all !important;
+//  word-wrap: break-word !important;
+//  word-break: keep-all !important;
+//  white-space:normal;
+//}
 
 
 input {
@@ -163,4 +163,26 @@ ion-col{
   width: 47%;
 
 
+}
+
+
+//# descriptionDescriptionDescription    detail
+.summary{
+
+  //
+  //padding-left: 16px;
+  //padding-right: 16px;
+  //margin-top: 16px;
+  *{
+    display:inline-block;;
+    vertical-align: top;
+  }
+  .description{
+    width: 68%;
+
+  }
+  .detail{
+    width: 28%;
+    text-align: right;
+  }
 }

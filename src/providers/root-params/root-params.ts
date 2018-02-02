@@ -1,9 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {VisitationApplicationParam} from "../../pages/application/visitation-application/visitation-application";
 import {BaseForm} from "../../components/Forms/base-form";
 import {ReplaySubject} from "rxjs/ReplaySubject";
 import {HomeLeaveApplicationParam} from "../../pages/application/leave/home-leave-application/home-leave-application";
+import {HomeExchangeApplicationParam} from "../../pages/application/exchange/home-exchange-application/home-exchange-application";
 
 /*
   Generated class for the RootParamsProvider provider.
@@ -15,51 +16,53 @@ import {HomeLeaveApplicationParam} from "../../pages/application/leave/home-leav
 export class RootParamsProvider {
 
 
-  /*
-      - set partial to true
-      - set correct version
-      - set url to live
-      - copy index html
-      - sencha set global live ip
-      - sencha app build
-      - sencha app build native
-      - cordova build android --release
-   */
+    /*
+        - set partial to true
+        - set correct version
+        - set url to live
+        - copy index html
+        - sencha set global live ip
+        - sencha app build
+        - sencha app build native
+        - cordova build android --release
+     */
 
-  public  isPartial:boolean = false;
-  public  version:string = "1.5.23";
-  public  isLive:boolean = false;
+    public isPartial: boolean = false;
+    public version: string = "1.5.23";
+    public isLive: boolean = false;
 
 
 
-  public visitationApplicationParam?: VisitationApplicationParam = {isProvider:true} ;
-  public HomeLeaveApplicationParam?: HomeLeaveApplicationParam = {};
-  public broadcast:ReplaySubject<BroadcastType> = new ReplaySubject(-1);
+    public visitationApplicationParam?: VisitationApplicationParam = {isProvider: true};
+    public HomeLeaveApplicationParam?: HomeLeaveApplicationParam = {};
+    public HomeExchangeApplicationParam?: HomeExchangeApplicationParam = {};
+    public broadcast: ReplaySubject<BroadcastType> = new ReplaySubject(-1);
 
-  constructor(public http: HttpClient) {
-    console.log('Hello RootParamsProvider Provider');
-    if(this.isPartial){
-      console.log('version',this.version)
+    constructor(public http: HttpClient) {
+        console.log('Hello RootParamsProvider Provider');
+        if (this.isPartial) {
+            console.log('version', this.version)
+        }
+
+        this.broadcast.subscribe((data: BroadcastType) => {
+            console.log("theBroadcast", data);
+        })
     }
-
-    this.broadcast.subscribe((data:BroadcastType)=>{
-      console.log("theBroadcast",data);
-    })
-  }
- ////
+    ////
 
 }
 
 
 interface PageForm {
-  title: string,
-  isOpen: boolean,
-  baseForms: BaseForm[]
-  isHidden: boolean
+    title: string,
+    isOpen: boolean,
+    baseForms: BaseForm[]
+    isHidden: boolean
 }
 
-export enum BroadcastType{
-  visitationPageOnResume,
-  homeLeaveApplicationOnResume
+export enum BroadcastType {
+    visitationPageOnResume,
+    homeLeaveApplicationOnResume,
+    homeExchangeApplicationOnResume
 }
 

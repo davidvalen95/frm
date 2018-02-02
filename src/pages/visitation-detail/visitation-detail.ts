@@ -14,6 +14,7 @@ import {
   VisitationApplicationParam
 } from "../application/visitation-application/visitation-application";
 import {NgForm} from "@angular/forms";
+import {HelperProvider} from "../../providers/helper/helper";
 
 /**
  * Generated class for the VisitationDetailPage page.
@@ -47,7 +48,7 @@ export class VisitationDetailPage {
 
   @ViewChild('idAdditionalForm') idAdditionalForm:NgForm;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public userProvider: UserProvider, public apiProvider: ApiProvider, public alertCtrl: AlertController, public toastCtrl: ToastController, public rootParam: RootParamsProvider) {
+  constructor(public helperProvider:HelperProvider, public navCtrl: NavController, public navParams: NavParams, public userProvider: UserProvider, public apiProvider: ApiProvider, public alertCtrl: AlertController, public toastCtrl: ToastController, public rootParam: RootParamsProvider) {
 
 
 
@@ -127,7 +128,7 @@ export class VisitationDetailPage {
 
 
   private getVisitationDetail() {
-    var loading:Loading = this.apiProvider.presentLoadingV2("Fetching Data");
+    var loading:Loading = this.helperProvider.presentLoadingV2("Fetching Data");
 
     this.apiProvider.getVisitationDetail(this.userProvider.userSession, this.visitationData.id).then((data: any) => {
       console.log('rawvisitatildetail', data)
@@ -351,9 +352,9 @@ export class VisitationDetailPage {
 
     var remark            = this.additionalForm.baseForms[0];
     var emailNotification = this.additionalForm.baseForms[1];
-    this.showConfirmAlert(message, () => {
+    this.helperProvider.showConfirmAlert(message, () => {
 
-      var loader:Loading = this.apiProvider.presentLoadingV2("acknowledging")
+      var loader:Loading = this.helperProvider.presentLoadingV2("acknowledging")
 
       this.apiProvider.acknowledge(this.visitationData.id, remark.value).then((data) => {
 
@@ -377,7 +378,7 @@ export class VisitationDetailPage {
             duration: 2000,
           }).present();
         });
-        // this.apiProvider.presentToast(message);
+        // this.helperProvider.presentToast(message);
       })
     });
 
@@ -409,7 +410,7 @@ export class VisitationDetailPage {
 
     var remark            = this.additionalForm.baseForms[0];
     var emailNotification = this.additionalForm.baseForms[1];
-    this.showConfirmAlert(message, () => {
+    this.helperProvider.showConfirmAlert(message, () => {
       if (remark.value == "") {
         this.toastCtrl.create({
           message: "Not commited, remark cannot be empty",
@@ -426,7 +427,7 @@ export class VisitationDetailPage {
       params["status"]                    = status;
       params["requisition_type"]          = this.visitationDetailObject.requisition_type;
       params["alert_employee"]            = emailNotification.value
-      var loading = this.apiProvider.presentLoadingV2("Submiting Form");
+      var loading = this.helperProvider.presentLoadingV2("Submiting Form");
 
       this.apiProvider.visitationApproval(params).then((data) => {
         console.log("visitationDetail.approval.apiprovider", data);
@@ -679,9 +680,9 @@ export class VisitationDetailPage {
 
             var message: string = "";
 
-            var loading = this.apiProvider.presentLoadingV2("Submiting Form");
+            var loading = this.helperProvider.presentLoadingV2("Submiting Form");
 
-            this.apiProvider.submitVisitationAplyForm(post, ApiProvider.BASE_URL  + "s/VisitationApplication_op").then((data) => {
+            this.apiProvider.submitVisitationAplyForm(post, ApiProvider.HRM_URL  + "s/VisitationApplication_op").then((data) => {
               console.log('submit form response', data);
 
               message                = data["message"]
@@ -703,7 +704,7 @@ export class VisitationDetailPage {
               console.log('delete  rejected', rejected);
             }).finally(() => {
               loading.dismiss();
-              this.apiProvider.presentToast(message)
+              this.helperProvider.presentToast(message)
 
             })
           }
@@ -713,21 +714,21 @@ export class VisitationDetailPage {
     alert.present();
   }
 
-  public showConfirmAlert(message: string, handler: () => void): Alert {
-    var alert: Alert = this.alertCtrl.create({
-      title: "Confirmation",
-      message: `Are you sure to ${message}?`,
-      buttons: [
-        {text: "no", role: "cancel"},
-        {
-          text: "yes",
-          handler: handler
-        }
-      ]
-    })
-    alert.present();
-    return alert;
-  }
+  // public showConfirmAlert(message: string, handler: () => void): Alert {
+  //   var alert: Alert = this.alertCtrl.create({
+  //     title: "Confirmation",
+  //     message: `Are you sure to ${message}?`,
+  //     buttons: [
+  //       {text: "no", role: "cancel"},
+  //       {
+  //         text: "yes",
+  //         handler: handler
+  //       }
+  //     ]
+  //   })
+  //   alert.present();
+  //   return alert;
+  // }
 
 
   public sortKeyValueContainer() {

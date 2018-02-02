@@ -1,7 +1,7 @@
 import {Component, Input, ViewChild} from '@angular/core';
 import {
   Alert,
-  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Segment,
+  AlertController, Content, InfiniteScroll, IonicPage, Loading, Navbar, NavController, NavParams, Segment,
   Slides, ToastController, ToolbarTitle
 } from 'ionic-angular';
 import {BaseForm, InputType, LabelType, KeyValue} from "../../../components/Forms/base-form";
@@ -19,6 +19,8 @@ import {VisitationDetailPage, VisitationDetailPageParam} from "../../visitation-
 import {BroadcastType, RootParamsProvider} from "../../../providers/root-params/root-params";
 import {FileJsonFormat, MyHelper} from "../../../app/MyHelper";
 import {Subscription} from "rxjs/Subscription";
+import {InAppBrowser, InAppBrowserObject} from "@ionic-native/in-app-browser";
+import {HelperProvider} from "../../../providers/helper/helper";
 // import { InAppBrowser } from 'ionic-native';
 /**
  * Generated class for the VisitationApplicationPage page.
@@ -59,6 +61,8 @@ export class VisitationApplicationPage {
   public broadcast:Subscription = null;
   // public Setting = Setting;
   public badge:BadgeApiInterface ;
+
+  public atachment:string[] = [];
   @ViewChild('infiniteScroll') public infiniteScroll: InfiniteScroll;
 
   // @ViewChild('segment') public segment:Segment
@@ -79,7 +83,7 @@ export class VisitationApplicationPage {
   public formValues: object        = {};
   public categoryCountryRules: any = {}
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+  constructor(public helperProvider:HelperProvider, public inAppBrowser:InAppBrowser, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
     console.log("visitationApplicationParam", this.rootParam.visitationApplicationParam);
 
 
@@ -568,6 +572,8 @@ export class VisitationApplicationPage {
 
     if(this.pageParam.isEditing) {
 
+
+      // this.pageParam.editData
 
       var param: VisitationApplicationParam = <VisitationApplicationParam> this.pageParam
       this.pageParam.editTid                = param.editTid;
@@ -1390,7 +1396,7 @@ export class VisitationApplicationPage {
         hostIdSearch.value = "";
       }).catch((rejected) => {
         console.log(rejected);
-        this.apiProvider.presentToast("error");
+        this.helperProvider.presentToast("error");
 
 
       }).finally(() => {
@@ -1468,7 +1474,7 @@ export class VisitationApplicationPage {
     currentTime.setDate(currentTime.getDate() + 60);
 
 
-    var min = BaseForm.getCurrentDate();
+    var min = this.helperProvider.getCurrentDate();
     var max = currentTime.toISOString();
     console.log('maxTime', max);
 
@@ -1716,13 +1722,14 @@ export class VisitationApplicationPage {
         // this.setUpForms();
         this.newApply();
 
+        setTimeout(()=>{
+          this.segmentValue = 'list';
+
+        },100);
       }
     }
 
-    setTimeout(()=>{
-      this.segmentValue = 'list';
 
-    },100);
   }
 
   popUp(ev) {
@@ -1769,15 +1776,15 @@ export class VisitationApplicationPage {
 
 
 
-    this.showConfirmAlert("submit",()=>{
-      var loading = this.apiProvider.presentLoadingV2("Submiting Form");
+    this.helperProvider.showConfirmAlert("submit",()=>{
+      var loading = this.helperProvider.presentLoadingV2("Submiting Form");
 
 
       // s/VisitationApplication_op
 
       // this.apiProvider.submitVisitationAplyForm(this.formValues, `${ApiProvider.URL_PHP}/app-ionic.php?VisitationApplication_op`).then((data) => {
       // this.apiProvider.submitVisitationAplyForm(this.formValues, `${ApiProvider.URL_PHP}app-ionic-multipart.php?VisitationApplication_op`).then((data) => {
-      this.apiProvider.submitVisitationAplyForm(this.formValues, `${ApiProvider.BASE_URL}s/VisitationApplication_op`).then((data) => {
+      this.apiProvider.submitVisitationAplyForm(this.formValues, `${ApiProvider.HRM_URL}s/VisitationApplication_op`).then((data) => {
       // this.apiProvider.submitVisitationAplyForm(this.formValues, `http://10.26.5.111/upload.php`).then((data) => {
       // this.apiProvider.submitVisitationAplyForm(this.formValues, `http://10.26.5.111/app-ionic-multipart.php?VisitationApplication_op`).then((data) => {
         console.log('submit form response', data);
@@ -1807,7 +1814,7 @@ export class VisitationApplicationPage {
             this.navCtrl.pop({}, callback);
 
           }, 300)
-          this.apiProvider.presentToast(message);
+          this.helperProvider.presentToast(message);
 
         }else{
           this.alert(message,"Info");
@@ -1855,7 +1862,7 @@ export class VisitationApplicationPage {
 
 
     hostForm.activateButtonRightDanger("X").subscribe((data:BaseForm)=>{
-      this.showConfirmAlert("remove this host",()=>{
+      this.helperProvider.showConfirmAlert("remove this host",()=>{
         hostForm.value = "";
         hostForm.isDisabled = true;
         hostForm.isHidden   = true;
@@ -1897,7 +1904,7 @@ export class VisitationApplicationPage {
       }).catch((rejected) => {
 
         console.log(rejected);
-        this.apiProvider.presentToast("error");
+        this.helperProvider.presentToast("error");
 
 
       }).finally(() => {
@@ -1968,7 +1975,7 @@ export class VisitationApplicationPage {
               console.log('convertIdFormatdone', this.formValues["other_host_id"]);
             }
           }).catch((error)=>{
-            this.apiProvider.presentToast("" + error);
+            this.helperProvider.presentToast("" + error);
           })
 
 
@@ -2032,7 +2039,7 @@ export class VisitationApplicationPage {
 
   public leavePage(){
 
-    this.showConfirmAlert("leave this page",()=>{
+    this.helperProvider.showConfirmAlert("leave this page",()=>{
       this.navCtrl.pop({},()=>{
         if(this.pageParam.isEditing || this.pageParam.isApply){
         }
@@ -2041,9 +2048,19 @@ export class VisitationApplicationPage {
     })
   }
 
-  public  openUrl(url:string){
+  public  openAttachment(name:string){
     // var browser = new InAppBrowser(url,"_blank");
-    // browser.
+    var loader:Loading = this.helperProvider.presentLoadingV2("Loading");
+    this.apiProvider.getVisitationDetail(this.userProvider.userSession, this.pageParam.editTid).then((data)=>{
+      var url = data["attachment1url"];
+      var browser:InAppBrowserObject = this.inAppBrowser.create(`${ApiProvider.BASE_URL}${url}${name}`);
+      // browser.show();
+    }).catch(rejected=>{
+      this.helperProvider.presentToast("Error")
+    }).finally(()=>{
+      loader.dismiss();
+    })
+
   }
 }
 

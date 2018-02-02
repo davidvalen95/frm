@@ -1,6 +1,6 @@
 
 
-<ion-item no-padding="" [hidden]="baseForm.isHidden===true " (click)="baseForm.labelClickListener.next(this.finalModel)" >
+<ion-item no-padding="" [hidden]="baseForm.isHidden===true " (click)="baseForm.labelClickListener.next(this.finalModel)" [ngClass]='{"ionItemIsReadOnly":baseForm.isReadOnly}' >
 
   <ion-label [hidden]="baseForm.isReadOnly" [ngClass]="{'required':baseForm.rules.isRequired}" stacked="" *ngIf="this.labelType == 'stacked'">{{baseForm.label}} </ion-label>
   <ion-label  [hidden]="baseForm.isReadOnly" [ngClass]="{'required':baseForm.rules.isRequired}" inline="" *ngIf="this.labelType == 'inline'" >{{baseForm.label}} </ion-label>

@@ -93,4 +93,10 @@ floating-input {
     height:100px;
   }
 
+  .ionItemIsReadOnly{
+    .item-inner{
+      border: none !important;
+
+    }
+  }
 }

@@ -30,12 +30,22 @@ page-visitation-application {
 
 
   }
-  
+
   .visitationMini{
     ion-item{
       span{
         text-align: right;
       }
+    }
+  }
+
+  .attachment{
+    *{
+      text-align:left;
+      font-size:14px;
+    }
+    li{
+      color: blue;
     }
   }
 }
