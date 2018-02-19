@@ -1,8 +1,11 @@
 floating-input {
 
+  display: block;
+  margin-bottom: 18px;
+
   .error-container{
     padding:0;
-    margin-bottom:12px;
+    margin: 0 0 12px 0 ;
     text-align:left;
 
   }
@@ -15,11 +18,37 @@ floating-input {
   ion-item{
     margin-top:-8px;
     fon-size:14px !important;
+    background: transparent !important;
     *{
       font-size:14px !important;
 
     }
+
+    .item-inner{
+      padding-right: 0px !important;
+    }
   }
+
+  ion-select{
+    background: #F4ECF7 !important;
+    padding: 8px !important;
+  }
+  ion-datetime{
+    background: #ffffe5;
+  }
+
+  textarea{
+    background: #EAF2F8 !important;
+    padding: 8px !important;
+    margin: 0px !important;
+    height:100px;
+    width: 100% !important;
+  }
+  ion-input{
+    background: #EAF2F8 !important;
+    padding: 0px 8px !important;;
+  }
+
 
   input{
     //border-bottom: 1px solid #d8d8d8 !important;
@@ -31,15 +60,15 @@ floating-input {
 
     &[type="file"]{
       //float: left;
-      margin-bottom: 20px;
       display:block;
     }
   }
 
-  ion-label{
+  ion-label,label{
     color:map_get($colors,'dark') !important;
     margin-left:auto;
     margin-right:auto;
+    font-weight: bold;
 
   }
 
@@ -77,21 +106,38 @@ floating-input {
   }
 
   .readOnlyInfo{
+
+    display: block;
     p{
       //padding-left:12px;
+      vertical-align: top;
+      text-align: left!important;
+      margin: 0;
     }
     .label{
-      color: #999999;
+      color: black;
+      display: inline-block;
+      width: 35%;
+
+      position:relative;
+      &::after{
+        content: ':';
+        position:absolute;
+        right:3px;
+        top:0;
+      }
+
     }
+
     .value{
       color:black;
+      display: inline-block;
+      width: 63%;
+      padding-left: 12px;
     }
   }
 
 
-  textarea{
-    height:100px;
-  }
 
   .ionItemIsReadOnly{
     .item-inner{

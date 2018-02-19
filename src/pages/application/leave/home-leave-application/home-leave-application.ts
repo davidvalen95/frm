@@ -5,7 +5,7 @@ import {
   Slides, ToastController,
 } from 'ionic-angular';
 import {
-  ApiProvider, BadgeApiInterface, TextValue, VisitationDataApiInterface,
+  ApiProvider, BadgeApiInterface, TextValueInterface, VisitationDataApiInterface,
   VisitationDataRecordsInterface,
   VisitationFilterApi
 } from "../../../../providers/api/api";
@@ -19,6 +19,10 @@ import {
 } from "../apply-leave-application/apply-leave-application";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {isString} from "ionic-angular/util/util";
+import {Observable} from "rxjs/Observable";
+import {LeaveApplicationActiveInterface, LeaveApplicationFilter, LeaveListInterface} from "../ApiInterface";
+import {HomeBaseInterface} from "../../../../app/app.component";
+
 /**
  * Generated class for the HomeLeaveApplicationPage page.
  *
@@ -34,55 +38,41 @@ import {isString} from "ionic-angular/util/util";
 export class HomeLeaveApplicationPage {
 
 
-  public title: string;
+  public title: string = "Leave Application";
   public visitationData: VisitationDataApiInterface[] = [];
 
-  public segmentValue: string        = "summary";
-  public formSlides: Slides;
+  public segmentValue: string = "summary";
   public filter: VisitationFilterApi = new VisitationFilterApi();
-  public isNeedHost: boolean         = true;
-  public isInfiniteEnable: boolean   = true;
+  public isInfiniteEnable: boolean = true;
 
-  public pageParam: HomeLeaveApplicationParam = {};
+  public pageParam: HomeLeaveApplicationParam = {isApproval:false};
+  public badge: BadgeApiInterface;
 
-  public broadcast:Subscription = null;
-  public badge:BadgeApiInterface ;
+  public leaveApplicationTop: LeaveApplicationFilter;
 
-  public leaveApplicationTop:LeaveApplicationTopInterface ;
+  public listData: LeaveApplicationActiveInterface;
+
+  public eventBroadcaster
   @ViewChild('infiniteScroll') public infiniteScroll: InfiniteScroll;
 
-  @ViewChild("navbar") navbar:Navbar;
+  @ViewChild("navbar") navbar: Navbar;
   @ViewChild(Content) public content: Content;
 
-  constructor(public httpClient:HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider:HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
-    console.log("visitationApplicationParam", this.rootParam.visitationApplicationParam);
+  constructor(public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+    console.log("visitationApplicationBadge", this.rootParam.visitationApplicationParam);
+
+    this.pageParam = this.rootParam.homeLeaveApplicationParam;
+    this.segmentValue = this.pageParam.isApproval ? "list" : "summary";
+    this.title = this.pageParam.isApproval ? "Leave Approval" : "Leave Application";
+
+    //# for filter too
+    this.apiExecuteGetSummary();
 
 
+    this.getList();
 
 
-
-
-    this.rootParam.broadcast.next(BroadcastType.homeLeaveApplicationOnResume);
-
-    if(this.broadcast == null ){
-      console.log('broadcastSubscrive');
-      this.broadcast = this.rootParam.broadcast.subscribe((data:BroadcastType)=>{
-        if(data == null){
-          return;
-        }
-
-        if(data == BroadcastType.homeLeaveApplicationOnResume){
-
-          //# Do Get Page Data here on broadcast
-        }
-
-      });
-    }
-
-
-    this.apiGetSummaryAndList();
   }
-
 
 
   public alert(message: string, title?: string) {
@@ -96,7 +86,7 @@ export class HomeLeaveApplicationPage {
   }
 
   doInfinite(infinite: InfiniteScroll) {
-    if(!this.visitationData || !this.visitationData[0]){
+    if (!this.visitationData || !this.visitationData[0]) {
       return;
     }
     if (this.visitationData.length >= (this.visitationData[0].maxpage)) {
@@ -117,23 +107,16 @@ export class HomeLeaveApplicationPage {
   }
 
 
-  ngOnDestroy(){
-    if(this.broadcast != null){
-      this.broadcast.unsubscribe();
-      this.broadcast.remove(this.broadcast);
-      this.broadcast = null;
-
-    }
-  }
 
 
-  ionViewDidEnter(){//didleave
+
+  ionViewDidEnter() {//didleave
 
 
   }
 
 
-  ionViewDidLeave(){//didenter
+  ionViewDidLeave() {//didenter
 
   }
 
@@ -158,18 +141,22 @@ export class HomeLeaveApplicationPage {
 
   }
 
-  pushDetailPage(visitationData: VisitationDataRecordsInterface) {
+  pushDetailPage(currentList: LeaveListInterface) {
 
-    // var param: VisitationDetailPageParam = {
-    //   visitationData: visitationData,
-    //   title: this.pageParam.isApprover ? "Visitation Approval" : "Visitation Detail",
-    //   isVisitation: true,
-    //   isApprover: this.pageParam.isApprover,
-    //   actionOnPop: () => {
-    //     // this.getVisitation();
-    //   }
-    // }
-    // this.navCtrl.push(VisitationDetailPage, param)
+    if(this.pageParam.isApproval){
+      currentList.id = currentList.tid;
+    }
+    var param: ApplyLeaveApplicationParam = {
+      isEditing: true,
+      isApply: false,
+      isApproval: this.pageParam.isApproval,
+      list: currentList,
+      title:this.title,
+      onDidLeave: ()=>{
+        this.getList();
+      }
+    }
+    this.navCtrl.push(ApplyLeaveApplicationPage, param);
   }
 
   slideNext() {
@@ -214,88 +201,134 @@ export class HomeLeaveApplicationPage {
     if (this.segmentValue == 'list') {
       // this.visitationData = [];
       //get data
-    } else if(this.segmentValue == "apply") {
-        // this.setUpForms();
-        this.newApply();
-        setTimeout(()=>{
-          this.segmentValue = 'summary';
+    } else if (this.segmentValue == "apply") {
+      // this.setUpForms();
+      this.newApply();
+      setTimeout(() => {
+        this.segmentValue = 'list';
 
-        },100);
+      }, 100);
+    }else if (this.segmentValue == 'summary'){
+      this.apiExecuteGetSummary();
     }
 
   }
 
-  //
-  // public showConfirmAlert(message:string, handler:()=>void):Alert{
-  //
-  //   //#alertconfirmation
-  //   var alert:Alert = this.alertController.create({
-  //     title:"Confirmation",
-  //     message: `Are you sure to ${message}?`,
-  //     buttons:[
-  //       {text:"no",role:"cancel"},
-  //       {
-  //         text:"yes",
-  //         handler:handler
-  //       }
-  //     ]
-  //   })
-  //   alert.present();
-  //   return alert;
-  // }
+  public getList() {
+    // http://hrms.dxn2u.com:8888/hrm_test2/s/LeaveApplication_active?
+    // http://hrms.dxn2u.com:8888/hrm_test2/s/LeaveApplicationApproval_active?_dc=1518086522349&mobile=true&searchBy=c.name&keyWord=&cmbYear=&cmbMonth=0&cmbStatus=PA&cmbDepartment=&user_id=MY040001&cmbType=&page=1&start=0&limit=25&callback=Ext.data.JsonP.callback86
+    var loader = this.helperProvider.presentLoadingV2("Retrieving leave data");
+    this.apiGetApplicationActive().toPromise().then((data: LeaveApplicationActiveInterface) => {
+
+      this.listData = data;
+      this.listData.data.forEach((currentLeaveList:LeaveListInterface)=>{
+        currentLeaveList.isOpen = true;
+      })
+    }).catch((rejected) => {
+      console.log('leaveApplicationGetListRejected', rejected);
+    }).finally(() => {
+      loader.dismiss();
+    });
 
 
-  public newApply(){
+  }
+
+  public newApply() {
     // var params:VisitationApplicationParam = {isApprover:false, title:"Visitation Application",isProvider:true,isApply:true}
     // this.navCtrl.push(VisitationApplicationPage,params);
 
     var param: ApplyLeaveApplicationParam = {
-        leaveApplicationTop: this.leaveApplicationTop,
+      leaveApplicationTop: this.leaveApplicationTop,
+      isEditing: false,
+      isApproval: this.pageParam.isApproval,
+      isApply: true,
+      title: this.title,
+      onDidLeave: ()=>{
+        this.getList();
+      },
     };
-    this.navCtrl.push(ApplyLeaveApplicationPage,param)
+    this.navCtrl.push(ApplyLeaveApplicationPage, param)
   }
 
 
-  public leavePage(){
+  public leavePage() {
 
-    this.helperProvider.showConfirmAlert("leave this page",()=>{
-      this.navCtrl.pop({},()=>{
+    this.helperProvider.showConfirmAlert("leave this page", () => {
+      this.navCtrl.pop({}, () => {
 
       });
 
     })
   }
 
-  public  openUrl(url:string){
+  public openUrl(url: string) {
     // var browser = new InAppBrowser(url,"_blank");
     // browser.
   }
 
 
-  public apiGetSummaryAndList(){
-
-    var url = `${ ApiProvider.HRM_URL }s/LeaveApplication_top?mobile=true&cmd=filter&user_id=MY080127`;
-
-    var params:HttpParams = new HttpParams().set("mobile","true")
-      .append("cmd","filter")
-      .append("user_id",this.userProvider.userSession.empId);
-
-    var promise:Promise <LeaveApplicationTopInterface> = this.httpClient.get<LeaveApplicationTopInterface>(url, {withCredentials:true, params:params}).toPromise();
+  private apiGetApplicationActive(): Observable<LeaveApplicationActiveInterface> {
+    //http://hrms.dxn2u.com:8888/hrm_test2/s/LeaveApplication_active?_dc=1517821711125&mobile=true&cmbEmployee=MY080127&cmbYear=2018&cmbMonth=0&cmbStatus=&cmbType=AL&page=1&start=0&limit=25&callback=Ext.data.JsonP.callback96
+    // LeaveApplicationApproval_active
 
 
-    var loader = this.helperProvider.presentLoadingV2("Loading data");
-    promise.then((data:LeaveApplicationTopInterface)=>{
+    var url = this.pageParam.isApproval ? "s/LeaveApplicationApproval_active" : "s/LeaveApplication_active";
 
-      for (var key in data.info){
-        if(isString(data.info[key]))
-        data.info[key] = data.info[key].replace(".0","");
+
+
+    var params: any = {
+      mobile: "true",
+      cmbEmployee: this.userProvider.userSession.empId,
+      page: "1",
+      start: "0",
+      limit: "50",
+      user_id: this.userProvider.userSession.empId,
+      emp_id: this.userProvider.userSession.empId,
+    };
+
+    params = this.helperProvider.mergeObject(params, this.filter);
+
+    params["cmbMonth"] = params["cmbMonth"] == "" ? "0" : params["cmbMonth"];
+    if(this.pageParam.isApproval){
+      params['cmbStatus'] = 'PA';
+    }
+
+    return this.httpClient.get<LeaveApplicationActiveInterface>(`${ApiProvider.HRM_URL}${url}`, {params: params, withCredentials: true});
+
+
+  }
+
+  public apiExecuteGetSummary() {
+
+    var url = `${ ApiProvider.HRM_URL }s/LeaveApplication_top?mobile=true`;
+
+    var params: HttpParams = new HttpParams().set("mobile", "true")
+      .append("cmd", "filter")
+      .append("user_id", this.userProvider.userSession.empId);
+
+    var promise: Promise<LeaveApplicationFilter> = this.httpClient.get<LeaveApplicationFilter>(url, {
+      withCredentials: true,
+      params: params
+    }).toPromise();
+
+
+    var loader = this.helperProvider.presentLoadingV2(this.pageParam.isApproval ? "Loading filter" : "Loading summary");
+    promise.then((data: LeaveApplicationFilter) => {
+
+
+      //# coonvert 5.0 -> 5
+
+      for (var key in data.info) {
+        if (isString(data.info[key]))
+          data.info[key] = data.info[key].replace(".0", "");
       }
+
       this.leaveApplicationTop = data;
 
-    }).catch(rejected=>{
-      console.log('apigetsummaryandlist',rejected);
+    }).catch(rejected => {
+      console.log('apigetsummaryandlist', rejected);
       this.helperProvider.presentToast("Something error on loading data");
-    }).finally(()=>{
+    }).finally(() => {
       loader.dismiss();
     })
 
@@ -303,34 +336,8 @@ export class HomeLeaveApplicationPage {
 
 }
 
-export interface HomeLeaveApplicationParam{
+export interface HomeLeaveApplicationParam extends HomeBaseInterface{
 
 }
 
 //
-
-export interface LeaveApplicationTopInterface{
-  cmbType?:TextValue[];
-  cmbStatus?:TextValue[];
-  cmbYear?:TextValue[];
-  info?:InfoInterface;
-}
-export interface InfoInterface{
-  taken_el?,
-  available?,
-  currentDate?,
-  taken_ol?,
-  taken_rl?,
-  taken_sl?,
-  total_leave?,
-  entitle?,
-  taken_ul?,
-  nextCarry?,
-  forfeitBalance?,
-  balance?,
-  adjustment?,
-  carry?,
-  taken_al?,
-  availableNext?,
-  nextDate?,
-}

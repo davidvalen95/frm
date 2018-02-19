@@ -38,6 +38,7 @@ export class FloatingInputComponent {
   public finalModel:NgModel;
   public inputType;
   public labelType;
+  public allowedBroadcast;
   constructor(public navController:NavController) {
     this.baseForm = null;
   }
@@ -70,15 +71,19 @@ export class FloatingInputComponent {
         case InputType.number:
         case InputType.searchBar:
           this.finalModel = this.ionInputModel;
+          this.allowedBroadcast = "ioninput";
           break;
         case InputType.select:
           this.finalModel = this.ionSelectModel;
+          this.allowedBroadcast = "ionselect";
           break;
         case InputType.date:
           this.finalModel = this.ionDateModel;
+          this.allowedBroadcast = "iondatetime";
           break;
         case InputType.textarea:
           this.finalModel = this.ionTextareaModel;
+          this.allowedBroadcast = "iontextarea";
           break;
         case InputType.file:
           this.finalModel = this.fileModel;
@@ -114,5 +119,13 @@ export class FloatingInputComponent {
     }
   }
 
+
+  public broadcast(origin){
+
+    if(origin == this.allowedBroadcast){
+      this.baseForm.broadcastIonChange(origin);
+    }
+
+  }
 
 }

@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Injectable, Input} from '@angular/core';
 import {NgModel} from "@angular/forms";
 import {BaseForm} from "../base-form";
 import {isNumber} from "ionic-angular/util/util";
@@ -11,10 +11,9 @@ import {isNumber} from "ionic-angular/util/util";
  */
 @Component({
   selector: 'form-error-message',
-  template: `
-    <p class="error-message" *ngFor="let message of getErrorMessages()">{{message}}</p>
-  `
+  template: `<p class="error-message" *ngFor="let message of getErrorMessages()">{{message}}</p>`
 })
+
 export class FormErrorMessageComponent {
 
 

@@ -79,8 +79,8 @@
       <ion-slide   *ngIf="!this.identityInformationForm.isHidden" [hidden]="this.identityInformationForm.isHidden">
         <h2>{{this.identityInformationForm.title}}</h2>
         <form class="ionContent" #idIdentityInformationForm="ngForm"  (submit)="completionFormSubmit(idIdentityInformationForm,this.identityInformationForm)">
-          <ion-list *ngFor="let currentBaseForm of this.identityInformationForm.baseForms" >
-            <floating-input [parentForm]="idIdentityInformationForm" [baseForm]="currentBaseForm"></floating-input>
+          <ion-list>
+            <floating-input  *ngFor="let currentBaseForm of this.identityInformationForm.baseForms"  [parentForm]="idIdentityInformationForm" [baseForm]="currentBaseForm"></floating-input>
           </ion-list>
           <button class="submitButton"  ion-button=""    type="button" (click)="leavePage()" color="light">Cancel</button>
           <button class="submitButton"  ion-button=""   color="primary">Next</button>
@@ -91,8 +91,8 @@
       <ion-slide  *ngIf="!this.identityForEmployeeForm.isHidden" [hidden]="this.identityForEmployeeForm.isHidden" >
         <h2>{{this.identityForEmployeeForm.title}}</h2>
         <form class="ionContent" #idIdentityForEmployee="ngForm"  (submit)="completionFormSubmit(idIdentityForEmployee,this.identityForEmployeeForm)">
-          <ion-list *ngFor="let currentBaseForm of this.identityForEmployeeForm.baseForms" >
-            <floating-input [parentForm]="idIdentityForEmployee" [baseForm]="currentBaseForm"></floating-input>
+          <ion-list  >
+            <floating-input *ngFor="let currentBaseForm of this.identityForEmployeeForm.baseForms" [parentForm]="idIdentityForEmployee" [baseForm]="currentBaseForm"></floating-input>
           </ion-list>
           <button class="submitButton"  ion-button=""  type="button" (click)="leavePage()" color="light">Cancel</button>
 
@@ -108,8 +108,8 @@
       <ion-slide >
         <h2>{{this.vehicleForm.title}}</h2>
         <form class="ionContent" #idvehicleForm="ngForm"  (submit)="completionFormSubmit(idvehicleForm)">
-          <ion-list *ngFor="let currentBaseForm of this.vehicleForm.baseForms" >
-            <floating-input [parentForm]="idvehicleForm" [baseForm]="currentBaseForm"></floating-input>
+          <ion-list  >
+            <floating-input *ngFor="let currentBaseForm of this.vehicleForm.baseForms" [parentForm]="idvehicleForm" [baseForm]="currentBaseForm"></floating-input>
           </ion-list>
 
           <button class="submitButton"  ion-button=""  type="button" (click)="leavePage()" color="light">Cancel</button>
@@ -122,8 +122,8 @@
       <ion-slide *ngIf="isNeedHost">
         <h2>{{hostForm.title}}</h2>
         <form class="ionContent" #idHostForm="ngForm" (submit)="completionFormSubmit(idHostForm)">
-          <ion-list *ngFor="let currentBaseForm of hostForm.baseForms">
-            <floating-input  [parentForm]="idHostForm" [baseForm]="currentBaseForm"></floating-input>
+          <ion-list >
+            <floating-input  *ngFor="let currentBaseForm of hostForm.baseForms" [parentForm]="idHostForm" [baseForm]="currentBaseForm"></floating-input>
           </ion-list>
           <!--<button class="submitButton" type="button" block="" ion-button="" color="success" (click)="addAnotherHost()">Add Another Host</button>-->
           <button class="submitButton"  ion-button=""   type="button" (click)="leavePage()" color="light">Cancel</button>
@@ -137,8 +137,8 @@
 
         <h2>{{visitationDetailForm.title}}</h2>
         <form class="ionContent" #idVisitationDetailForm="ngForm"  (submit)="completionFormSubmit(idVisitationDetailForm)">
-          <ion-list *ngFor="let currentBaseForm of visitationDetailForm.baseForms">
-            <floating-input  [parentForm]="idVisitationDetailForm" [baseForm]="currentBaseForm"></floating-input>
+          <ion-list >
+            <floating-input *ngFor="let currentBaseForm of visitationDetailForm.baseForms"  [parentForm]="idVisitationDetailForm" [baseForm]="currentBaseForm"></floating-input>
           </ion-list>
           <!--<button class="submitButton"  ion-button=""  block="" type="button" (click)="slidePrevious()" color="light">Previous</button>-->
           <button class="submitButton"  ion-button=""   type="button" (click)="leavePage()" color="light">Cancel</button>
@@ -152,8 +152,8 @@
 
         <h2>{{additionalForm.title}}</h2>
         <form class="ionContent" #idAdditionalForm="ngForm"  (submit)="completionFormSubmit(idAdditionalForm)">
-          <ion-list *ngFor="let currentBaseForm of additionalForm.baseForms">
-            <floating-input  [parentForm]="idAdditionalForm" [baseForm]="currentBaseForm"></floating-input>
+          <ion-list>
+            <floating-input  *ngFor="let currentBaseForm of additionalForm.baseForms"  [parentForm]="idAdditionalForm" [baseForm]="currentBaseForm"></floating-input>
           </ion-list>
           <!--<button class="submitButton"  ion-button=""  block="" type="button" (click)="slidePrevious()" color="light">Previous</button>-->
 
@@ -220,7 +220,7 @@
             <ion-label>Year</ion-label>
             <ion-select (ionChange)="filterChanged()" [(ngModel)]="filter.cmbYear" interface="popover">
               <ion-option value="" selected="">--All--</ion-option>
-              <ion-option *ngFor="let i of this.getYearRange()" [value]="i">{{i}}</ion-option>
+              <ion-option *ngFor="let i of ['2017','2018']" [value]="i">{{i}}</ion-option>
             </ion-select>
           </ion-item>
           <ion-item>

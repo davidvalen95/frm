@@ -1,0 +1,85 @@
+<!--
+  Generated template for the ApplyLeaveApplicationPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar #navbar>
+    <ion-title>{{title}}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content class="has-user-action" padding >
+
+
+  <ion-segment *ngIf="pageParam.isEditing"  style="margin-bottom: 16px"   [(ngModel)]="segmentValue">
+    <ion-segment-button value="form"  >
+      Form
+    </ion-segment-button>
+    <ion-segment-button value="approvalHistory" >
+      Approval History
+    </ion-segment-button>
+  </ion-segment>
+
+
+  <div  [ngSwitch]="segmentValue">
+    <div [hidden]="segmentValue != 'form'">
+
+      <form #parentForm="ngForm" (submit)="formSubmit(parentForm)">
+        <ion-list>
+          <floating-input  *ngFor="let currentBaseForm of this.baseForms" [parentForm]="parentForm" [baseForm]="currentBaseForm"></floating-input>
+        </ion-list>
+
+
+
+        <ion-list class="form-approval"  *ngIf="pageParam.isApproval">
+          <ion-item no-padding="">
+            <h3 class="form-approval-title" text-center="">For Your Approval</h3>
+          </ion-item>
+          <floating-input  *ngFor="let currentBaseForm of this.approvalBaseForms" [parentForm]="parentForm" [baseForm]="currentBaseForm"></floating-input>
+        </ion-list>
+
+
+
+
+        <!--<open-url *ngFor="let currentAttachment of this.attachmentData " [name]="currentAttachment.key" [url]="currentAttachment.value"></open-url>-->
+
+
+
+      </form>
+    </div>
+
+    <div [hidden]="segmentValue != 'approvalHistory'">
+      <detail-key-value *ngFor="let currentHistory of approvalHistoriesContainer" [keyValueContainer]="currentHistory"></detail-key-value>
+    </div>
+
+
+
+
+  </div>
+
+
+
+</ion-content>
+
+
+<div  class="user-action">
+
+  <div class="action-container" *ngIf="!this.pageParam.isApproval">
+    <button ion-button=""  type="button" (click)="leavePage()" color="light">Cancel</button>
+    <button  *ngIf="isCanSubmit"  ion-button=""  type="button" (click)="formSubmit(parentForm)" color="primary">{{pageParam.isEditing ? "Commit Edit" : "Submit"}}</button>
+    <button  *ngIf="isCanDelete"  ion-button="" type="button" (click)="formDelete()" color="danger">Delete</button>
+  </div>
+
+
+  <div class="action-container"  *ngIf="this.pageParam.isApproval">
+    <button  ion-button=""  type="button" (click)="leavePage()" color="light">Cancel</button>
+    <button   *ngIf="isCanApprove" ion-button=""  type="button" (click)="formSubmitApproval(parentForm)" color="primary">Commit Approval</button>
+  </div>
+
+
+</div>

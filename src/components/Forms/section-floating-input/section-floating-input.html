@@ -1,0 +1,23 @@
+<!-- Generated template for the DetailKeyValueComponent component -->
+
+<ion-list [hidden]="container.isHidden" *ngIf="this.container && this.parentForm" no-padding="" >
+    <span class=""    >
+
+      <span >
+        <div class='title' (click)="container.isOpen = !container.isOpen">
+          <h5 style="display: inline-block">{{container.name}}</h5>
+            <ion-icon item-right="" *ngIf="container.isOpen" name="arrow-down"></ion-icon>
+            <ion-icon item-right="" *ngIf="!container.isOpen" name="arrow-up"></ion-icon>
+
+        </div>
+        <div [hidden]="!container.isOpen" class="animation-expand-bottom form-body">
+
+
+          <floating-input *ngFor="let currentForm of container.baseForms" [parentForm]="this.parentForm" [baseForm]="currentForm"></floating-input>
+
+
+        </div>
+      </span>
+
+    </span>
+</ion-list>

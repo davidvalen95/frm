@@ -131,7 +131,7 @@
                 <ion-label>Year</ion-label>
                 <ion-select (ionChange)="filterChanged(currentList)" [(ngModel)]="currentList.filter.cmbYear" interface="popover">
                   <ion-option value="" selected="">--All--</ion-option>
-                  <ion-option *ngFor="let i of this.getYearRange()" [value]="i">{{i}}</ion-option>
+                  <ion-option *ngFor="let i of this.getCmbRule()" [value]="i">{{i}}</ion-option>
                 </ion-select>
               </ion-item>
               <ion-item>

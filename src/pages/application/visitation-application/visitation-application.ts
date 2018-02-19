@@ -84,7 +84,7 @@ export class VisitationApplicationPage {
   public categoryCountryRules: any = {}
 
   constructor(public helperProvider:HelperProvider, public inAppBrowser:InAppBrowser, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
-    console.log("visitationApplicationParam", this.rootParam.visitationApplicationParam);
+    console.log("visitationApplicationBadge", this.rootParam.visitationApplicationParam);
 
 
 
@@ -103,7 +103,7 @@ export class VisitationApplicationPage {
     // this.resetWhenEdit();
 
 
-    console.log('visitationApplicationParam', this.pageParam, navParams.get("isApprover"));
+    console.log('visitationApplicationBadge', this.pageParam, navParams.get("isApprover"));
     if (!this.pageParam.editData) {
       this.pageParam.editData = {};
     }
@@ -142,24 +142,7 @@ export class VisitationApplicationPage {
       }
       console.log('enter !');
 
-      this.rootParam.broadcast.next(BroadcastType.visitationPageOnResume);
-
-      if(this.broadcast == null ){
-        console.log('broadcastSubscrive');
-        this.broadcast = this.rootParam.broadcast.subscribe((data:BroadcastType)=>{
-          if(data == null){
-            return;
-          }
-
-          if(data == BroadcastType.visitationPageOnResume){
-            this.getVisitation();
-
-            // console.log('visitationPageOnResumeBroadcast');
-            console.log("getBroadcast");
-          }
-
-        });
-      }
+      this.getVisitation();
     }
 
     // this.setUpForms();
@@ -557,10 +540,8 @@ export class VisitationApplicationPage {
 
   ionViewDidLeave(){//didenter
 
-    if(this.pageParam.isApply || this.pageParam.isEditing){
-      console.log('ionViewDidLeave', this.pageParam.isApply, this.pageParam.isEditing )
-      this.rootParam.broadcast.next(BroadcastType.visitationPageOnResume);
-
+    if(this.pageParam.visitationApplicationDidLeave){
+      this.pageParam.visitationApplicationDidLeave();
     }
   }
 
@@ -628,8 +609,8 @@ export class VisitationApplicationPage {
       title: this.pageParam.isApprover ? "Visitation Approval" : "Visitation Detail",
       isVisitation: true,
       isApprover: this.pageParam.isApprover,
-      actionOnPop: () => {
-        // this.getList();
+      visitationDetailDidLeave: () => {
+        this.getVisitation();
       }
     }
     this.navCtrl.push(VisitationDetailPage, param)
@@ -1009,12 +990,14 @@ export class VisitationApplicationPage {
               var currentAttachment:BaseForm = new BaseForm(data[`${key}_desc`],key);
               //# ke 4 dipisah karena optional
               var currentKey = key.slice(0,key.length);
-                currentAttachment.setInputTypeFile((event)=>{
-                  // this.formValues[currentKey] = event;
-                  this.formValues[currentKey] = event.target.files[0];
+                // currentAttachment.setInputTypeFile((event)=>{
+                //   // this.formValues[currentKey] = event;
+                //   this.formValues[currentKey] = event.target.files[0];
+                //
+                // }
+              // );
 
-                }
-              );
+              currentAttachment.setInputTypeFile(this.formValues);
 
 
               if(key.indexOf("4") >-1){
@@ -1122,14 +1105,14 @@ export class VisitationApplicationPage {
               var currentAttachment:BaseForm = new BaseForm(data[`${key}_desc`],key);
               //# ke 4 dipisah karena optional
               var currentKey = key.slice(0,key.length);
-              currentAttachment.setInputTypeFile((event)=>{
-                  // this.formValues[currentKey] = event;
-                  this.formValues[currentKey] = event.target.files[0];
+              // currentAttachment.setInputTypeFile((event)=>{
+              //     // this.formValues[currentKey] = event;
+              //     this.formValues[currentKey] = event.target.files[0];
+              //
+              //   }
+              // );
 
-                }
-              );
-
-
+              currentAttachment.setInputTypeFile(this.formValues);
               if(key.indexOf("4") >-1){
                 currentAttachment.rules.isRequired = false;
               }
@@ -1258,11 +1241,12 @@ export class VisitationApplicationPage {
     })
 
     setTimeout(()=>{
-      vehicleInfo.value = (this.pageParam.editData.vehicle_info  || false ) ? 't' : 'f';
+      vehicleInfo.value = (this.pageParam.editData.vehicle_info  || false ) ? 'f' : 't';
 
-    },300)
+    },500)
     var hostType: BaseForm = new BaseForm("Host Type", "host_type");
     hostType.inputType     = InputType.select;
+    hostType.value = "-"
 
 
     hostType.selectOptions = [{
@@ -1355,6 +1339,11 @@ export class VisitationApplicationPage {
     });
 
 
+
+    setTimeout(()=>{
+      hostId.value = this.pageParam.editData.host_id || "";
+
+    },300)
     setTimeout(() => {
       console.log('hostTypeValueTimeout', this.userProvider.userSession.isFnF);
       if (this.userProvider.userSession.isFnF) {
@@ -1365,7 +1354,7 @@ export class VisitationApplicationPage {
 
         hostType.value = hostTypeValue;
 
-        hostId.value = this.pageParam.editData.host_id || "";
+
 
 
       } else {
@@ -1375,7 +1364,7 @@ export class VisitationApplicationPage {
       }
 
 
-    }, 300)
+    }, 600)
 
     hostIdSearch.changeListener.subscribe((model: BaseForm) => {
       if(model.value == ""){
@@ -1592,9 +1581,7 @@ export class VisitationApplicationPage {
 
   getVisitation(page = 1): Promise<any> {
     this.visitationData   = [];
-
     console.log('getVisitation', this.pageParam);
-
     if (this.pageParam.isApprover) {
 
       this.apiProvider.getBadgeVisitationApproval(this.userProvider.userSession).then((badge:VisitationDataApiInterface)=>{
@@ -2082,4 +2069,6 @@ export interface VisitationApplicationParam {
   isProvider?: boolean;
   isEditInitialize?:boolean;
   isApply?:boolean;
+
+  visitationApplicationDidLeave?: ()=>void;
 }

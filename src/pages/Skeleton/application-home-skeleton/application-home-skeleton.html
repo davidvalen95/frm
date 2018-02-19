@@ -71,7 +71,7 @@
             <ion-label>Year</ion-label>
             <ion-select (ionChange)="filterChanged()" [(ngModel)]="filter.cmbYear" interface="popover">
               <ion-option value="" selected="">--All--</ion-option>
-              <ion-option *ngFor="let i of this.helperProvider.getYearRange()" [value]="i">{{i}}</ion-option>
+              <ion-option *ngFor="let i of this.helperProvider.getCmbRule()" [value]="i">{{i}}</ion-option>
             </ion-select>
           </ion-item>
           <ion-item>

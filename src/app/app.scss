@@ -186,3 +186,60 @@ ion-col{
     text-align: right;
   }
 }
+
+
+.has-user-action{
+  z-index: 1;
+
+  .scroll-content{
+    >*:last-child{
+      padding-bottom: 100px !important;
+
+    }
+
+  }
+
+
+}
+.user-action{
+
+
+  bottom: 0 ;
+  left:0;
+  right:0;
+  background: white;
+  padding-top: 6px;
+  position:fixed;
+  border-top: 1px solid #7BB7CA;
+  z-index: 20;
+
+
+  .action-container{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    //justify-content: space-evenly;
+    //padding: 6px 0 10px;
+    >*{
+      flex-grow:1;
+
+      margin-left: 5px;
+      margin-right: 5px;
+
+    }
+  }
+}
+
+
+
+.form-approval{
+  .form-approval-title{
+    background-color: #EEEEEE; padding: 12px 0;
+  }
+}
+
+.item-inner{
+  border: none !important;
+}
+
+

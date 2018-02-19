@@ -25,7 +25,7 @@
         <img style='' class="img-responsive" src="{{currentBaseForm['image']}}"/>
       </div>
       <div class="input">
-              <input (keyup)="currentBaseForm.broadcastNgChange($event)"  [type]="currentBaseForm.getInputTypeText()" [placeholder]="currentBaseForm.placeholder" [name]="currentBaseForm.name" [(ngModel)]="currentBaseForm.value"/>
+              <input (keyup)="currentBaseForm.broadcastNgChange($event,loginFormId)"  [type]="currentBaseForm.getInputTypeText()" [placeholder]="currentBaseForm.placeholder" [name]="currentBaseForm.name" [(ngModel)]="currentBaseForm.value"/>
 
         <!--<floating-input [baseForm]="currentBaseForm" [parentForm]="loginFormId"></floating-input>-->
       </div>
@@ -35,15 +35,16 @@
 
       <button class="loginButton" >Login</button>
     </form>
+
+
+    <p *ngFor="let currentInfo of this.version">
+      {{currentInfo.key}}: {{currentInfo.value}}
+    </p>
+
   </div>
 
 
 
-  <span *ngIf="this.userProvider.userSession.isLoggedIn">
-    <h2>Logged in</h2>
-    <p>Hello {{userProvider.userSession.name}}</p>
-    <button ion-button="" menuToggle="" color="primary">Open Side Menu</button>
-  </span>
 </ion-content>
 
 

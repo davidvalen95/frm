@@ -2,7 +2,7 @@ import {Component, ViewChild} from '@angular/core';
 import {Alert, AlertController, IonicPage, Loading, NavController, NavParams, ToastController} from 'ionic-angular';
 import {
   ApiProvider, EmployeeInformationInterface, VisitationDataApiInterface, VisitationDataDetailInterface,
-  VisitationDataRecordsInterface, VisitationHistoryInterface
+  VisitationDataRecordsInterface, HistoryBaseInterface
 } from "../../providers/api/api";
 import {UserProvider} from "../../providers/user/user";
 import {BaseForm, InputType, KeyValue} from "../../components/Forms/base-form";
@@ -39,7 +39,7 @@ export class VisitationDetailPage {
   public isCanAcknowledge                                      = false;
   public isCanEdit                                             = false;
   public pageParam: VisitationDetailPageParam;
-  public historyContainer: MatureKeyValueContainer             = {
+  public historyContainer: KeyValueContainerV2                 = {
     name: "History Approval",
     keyValue: [],
     isOpen: false,
@@ -118,7 +118,13 @@ export class VisitationDetailPage {
     if (this.pageParam.isVisitation) {
       //# in viewWillLeave to trigger before thepop
 
-      this.rootParam.broadcast.next(BroadcastType.visitationPageOnResume);
+      // this.rootParam.broadcast.next(BroadcastType.visitationPageOnResume);
+    }
+  }
+
+  ionViewDidLeave(){
+    if(this.pageParam.visitationDetailDidLeave){
+      this.pageParam.visitationDetailDidLeave();
     }
   }
 
@@ -155,7 +161,7 @@ export class VisitationDetailPage {
       //   visitationStatus &&
       //   detailStatus
       // ;
-      this.isCanApprove     = (detail.status == null || (detail.status.toLowerCase() == 'pa' || detail.status.toLowerCase() == 'pe') && this.isApprover);
+      this.isCanApprove     = (detail.status == null || detail.status.toLowerCase() == 'pa' || detail.status.toLowerCase() == 'pe') && this.isApprover;
       this.isCanAcknowledge = !detail.acknowledged &&
         isMeTheHost &&
         visitationStatus;
@@ -299,7 +305,7 @@ export class VisitationDetailPage {
 
 
 
-      var history:VisitationHistoryInterface[] = data["history"]
+      var history:HistoryBaseInterface[] = data["history"]
       history.forEach((currentHistory,index)=>{
 
         var keyValue:KeyValue[] = [];
@@ -452,23 +458,6 @@ export class VisitationDetailPage {
 
   getObjectInArray(array: any, column: string, value: any) {
 
-    //#
-    // visitorcompany	[…]
-    // 0	{…}
-    // outsider_code	C001
-    // company_name	COMPANY A
-    // 1	{…}
-    // outsider_code	C002
-    // company_name	COMPANY B
-    // 2	{…}
-    // outsider_code	C003
-    // company_name	COMPANY C
-    // 3	{…}
-    //
-
-    //# cek for each json in visitorcompany if contains value
-    //# if correct then return that json
-    //# get any value from that json
 
     for (var key in array) {
       if (array[key][column] == value) {
@@ -778,10 +767,12 @@ export interface VisitationDetailPageParam {
   isVisitation?: boolean;
   isApprover?: boolean;
   editCallback?: (data: VisitationDataDetailInterface, tid: string) => void;
-  actionOnPop: () => void;
+  visitationDetailDidLeave: () => void;
 
 }
 
+
+//# not good dont use this, doesnt match requirement
 interface KeyValueContainer {
   name: string;
   key: string[];
@@ -791,8 +782,8 @@ interface KeyValueContainer {
 }
 
 
-
-export interface MatureKeyValueContainer{
+//# not good dont use this, doesnt match requirement, use interface in detail-key-valueComponent
+interface KeyValueContainerV2{
 
   name: string;
   isOpen: boolean;

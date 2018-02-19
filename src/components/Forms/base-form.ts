@@ -2,24 +2,25 @@ import {EventEmitter, Injectable} from "@angular/core";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 import {ApiProvider} from "../../providers/api/api";
-import {NgModel} from "@angular/forms";
+import {NgForm, NgModel} from "@angular/forms";
 import {ReplaySubject} from "rxjs/ReplaySubject";
 import {FileJsonFormat, MyHelper} from "../../app/MyHelper";
 import {File} from "@ionic/app-scripts";
+import {Subject} from "rxjs/Subject";
 
 @Injectable()
 export class BaseForm {
   public labelType: LabelType = LabelType.stacked;
   public inputType: InputType = InputType.text;
 
-  public placeholder: string                        = "";
-  public selectOptions: KeyValue[]                  = [];
-  public rules: InputRules                          = {isRequired: true, min: 0};
-  public isHidden: boolean                          = false;
-  public styling: InputStyle                        = {};
-  public value: any                              = "";
-  public isReadOnly: boolean                        = false;
-  public dateSetting: DateSetting                   = {min: "1900-01-01"};
+  public placeholder: string                              = "";
+  public selectOptions: KeyValue[]                        = [];
+  public rules: InputRules                                = {isRequired: true, min: 0};
+  public isHidden: boolean                                = false;
+  public styling: InputStyle                              = {};
+  public value: any                                       = "";
+  public isReadOnly: boolean                              = false;
+  public dateSetting: DateSetting                         = {min: "1900-01-01"};
   public changeListener: ReplaySubject<BaseForm>          = new ReplaySubject(0);
   public inputClickListener: ReplaySubject<BaseForm>      = new ReplaySubject(0);
   public labelClickListener: ReplaySubject<BaseForm>      = new ReplaySubject(0);
@@ -27,26 +28,35 @@ export class BaseForm {
   public searchBarSetting?: SearchBarSetting              = null;
   public isSearchBar: boolean                             = false;
   public isDisabled: boolean                              = false;
-  public isInitializeState:boolean = false;
-  public infoBottom:string = "";
-  public fileCallbackEvent: (event)=>void;
+  public isInitializeState: boolean                       = false;
+  public infoBottom: string                               = "";
   private lastBroadcast: number;
-  private lastBroadcastWithNumber: number = -1;
-  public buttonRightSuccess: ButtonSettingInterface       = {
+  private lastBroadcastWithNumber: number                 = -1;
+
+
+  //# for file auto add
+  private formValueContainer = null;
+
+
+  public attachmentInfo: AttachmentInfoInterface = {isSet: false}
+
+
+  public buttonRightSuccess: ButtonSettingInterface = {
     label: "",
     isHidden: true,
-    clickListener: new ReplaySubject(1)
+    clickListener: new ReplaySubject(0)
   };
-  public buttonRightDanger: ButtonSettingInterface        = {
+  public buttonRightDanger: ButtonSettingInterface  = {
     label: "",
     isHidden: true,
-    clickListener: new ReplaySubject(1)
+    clickListener: new ReplaySubject(0)
   };
 
-  private isSelectProcessing: boolean                     = false;
+  private isSelectProcessing: boolean = false;
 
   constructor(public label: string,
               public name?: string,) {
+    this.label = MyHelper.ucWord(this.label);
     this.placeholder = `Enter ${this.label}`;
 
 
@@ -69,7 +79,23 @@ export class BaseForm {
 
   }
 
-  public setDateAdvanceDay(param: string, day:number = 1) {
+
+  public toggleHidden(isHidden: boolean = null, isRequiredWhenVisible: boolean = false) {
+    var logic = isHidden != null ? isHidden : !this.isHidden;
+
+    this.isHidden = logic;
+
+    if (this.isHidden) {
+      this.value            = '';
+      this.rules.isRequired = false;
+    } else {
+      this.rules.isRequired = isRequiredWhenVisible;
+    }
+
+    return this;
+  }
+
+  public setDateAdvanceDay(param: string, day: number = 1) {
     if (param == null || param == "") {
       return;
     }
@@ -81,27 +107,38 @@ export class BaseForm {
 
     }
 
+    return this;
   }
 
-  public setInputTypeFile(callbackEvent:(event)=>void){
+
+  public setInputTypeFile(formValueContainer: object) {
     this.inputType = InputType.file;
     // this.value = "0 ";
-    this.fileCallbackEvent = callbackEvent;
+    // this.fileCallbackEvent = callbackEvent;
+
+    this.formValueContainer = formValueContainer;
+
+    return this;
+
   }
+
   public setInputTypeDate(dateSetting: DateSetting) {
     this.placeholder = `Select ${this.label}`;
-    this.inputType = InputType.date;
+    this.inputType   = InputType.date;
     // Return today's date and time
 
     dateSetting.hourValues = "";
-    if (dateSetting.min == null)
-      dateSetting.min = "1900-01-01";
+    if (dateSetting.min == null){
+      var year = new Date().getFullYear() - 1;
+      dateSetting.min = `${year}-01-01`;
+
+    }
 
     if (dateSetting.max == null)
       dateSetting.max = BaseForm.getAdvanceDate(712);
 
     if (dateSetting.displayFormat == null) {
-      dateSetting.displayFormat = "DD MMM YYYY";
+      dateSetting.displayFormat = "DDD DD MMM YYYY";
     }
 
     if (dateSetting.min instanceof Date) {
@@ -115,18 +152,15 @@ export class BaseForm {
     console.log(`setting ${this.name}`, this.dateSetting)
 
 
+    return this;
   }
 
-  public setDateTimezone(timezone: number = 8): string {
+  public setDateTimezone(timezone: number = 8) {
 
-    console.log('setDateTimezone', this.dateSetting)
     this.value = new Date((new Date().getTime() - new Date().getTimezoneOffset()) + timezone * 3600 * 1000).toISOString();
-    return this.value;
+    return this;
   }
 
-  public static setDateTimezone(date: Date, timezone: number): Date {
-    return new Date((date.getTime() - date.getTimezoneOffset()) + timezone * 3600 * 1000);
-  }
 
   public setInputTypeTime() {
     this.placeholder = `Select ${this.label}`;
@@ -137,6 +171,7 @@ export class BaseForm {
     dateSetting.min              = '00:00';
     dateSetting.max              = "23:59";
     dateSetting.hourValues       = "";
+    dateSetting.isTime           = true;
     var prefix                   = "";
 
     for (var i = 0; i < 24; i++) {
@@ -149,20 +184,29 @@ export class BaseForm {
     console.log('timesetting', dateSetting);
     this.dateSetting = dateSetting;
 
+    return this;
   }
 
-  public setInputTypeText(){
-    this.inputType = InputType.text;
+  public setInputTypeText() {
+    this.inputType   = InputType.text;
     this.placeholder = `Enter ${this.label}`;
+    return this;
 
   }
+
+  public setInputTypeTextarea() {
+    this.inputType = InputType.textarea;
+
+    return this;
+  }
+
   public setInputTypeSelect(options: KeyValue[]) {
-    if(!this.isSelectProcessing){
-      this.selectOptions = [];
+    if (!this.isSelectProcessing) {
+      this.selectOptions      = [];
       this.isSelectProcessing = true;
-      this.placeholder = `Select ${this.label}`;
-      this.inputType     = InputType.select;
-      this.selectOptions = options;
+      this.placeholder        = `Select ${this.label}`;
+      this.inputType          = InputType.select;
+      this.selectOptions      = options;
 
       var text: string = "sdoifjiojdf";
 
@@ -171,24 +215,31 @@ export class BaseForm {
 
     }
 
+    return this;
+
   }
 
-  public setInputTypeSelectChain(observable: Observable<any>, processData: (data: any) => KeyValue[]) {
+  public setInputTypeSelectChain<T>(observable: Observable<T>, processData: (data: T) => KeyValue[], isFirstDefault:boolean = false) {
     this.placeholder = `Select ${this.label}`;
 
     this.inputType = InputType.select;
 
     // parsing as key value
-    observable.subscribe((data:any) => {
+    observable.subscribe((data: T) => {
       this.selectOptions = processData(data)
+      if(isFirstDefault && this.value == ""){
+        this.value = this.selectOptions[0].value;
+        console.log("firstDefault", this.value);
+      }
       console.log('selectOptions', this.selectOptions)
     })
 
+    return this;
 
   }
 
-  public activateButtonRightDanger(label:string):ReplaySubject<BaseForm>{
-    this.buttonRightDanger.label = label;
+  public activateButtonRightDanger(label: string): ReplaySubject<BaseForm> {
+    this.buttonRightDanger.label    = label;
     this.buttonRightDanger.isHidden = false;
     return this.buttonRightDanger.clickListener;
   }
@@ -205,20 +256,25 @@ export class BaseForm {
       httpParamBindEvent: paramBindEvent,
       processData: processData
     }
-    this.placeholder = "Click here to search " + this.label;
+    this.placeholder      = "Click here to search " + this.label;
+
+    return this;
   }
 
   public setRulesPatternNumberOnly() {
     this.inputType                = InputType.number;
     this.rules.pattern            = "[0-9]+";
     this.rules.patternInformation = "Only number";
+
+    return this;
   }
 
   public setRulesPatternEmail() {
     this.rules.pattern            = '[\\w]+(\\.[\\w+])*@[\\w]+(.[\\w]+)*\\.[a-zA-Z]{2,4}'
     this.rules.patternInformation = "Must valid email";
-  }
 
+    return this;
+  }
 
 
   public static getAdvanceDate(advance: number, from = new Date(),) {
@@ -227,69 +283,98 @@ export class BaseForm {
     return from;
   }
 
+  public getServerDateFormat() {
+    if (this.inputType == InputType.date) {
+      var mmm = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      try {
+        var date = new Date(this.value);
+        return ('0' + date.getUTCDate()).slice(-2) + ` ${mmm[date.getUTCMonth()]} ${date.getUTCFullYear()}`
+      } catch (e) {
+        console.log('error', e.toString())
+      }
+
+    }
+
+    return this.value;
+  }
+
   public getInputTypeText(): string {
-    console.log('getInputTypeText', InputType[this.inputType])
+    // console.log('getInputTypeText', InputType[this.inputType])
     return InputType[this.inputType];
   }
 
-  public broadcastIonChange(event) {
+  public broadcastIonChange(origin) {
     if (this.value == null) {
       return;
     }
-   // if(this.lastBroadcast && new Date().getTime() - this.lastBroadcast < 1000 ){
-   //    return;
-    this.lastBroadcastWithNumber++;
-    if(this.lastBroadcastWithNumber%2>0){
-      return;
-    }
+    // if(this.lastBroadcast && new Date().getTime() - this.lastBroadcast < 1000 ){
+    //    return;
+    // this.lastBroadcastWithNumber++;
+    //# IONCHANGE ANEH TRIGGER 4 KALI
+    console.log('broadcastIonChange', origin);
+    // if (this.lastBroadcastWithNumber % 4 > 0) {
+    //   return;
+    // }
+    // console.log('lastbroadcastWithnumber', this.lastBroadcastWithNumber);
+    ;
     this.lastBroadcast = new Date().getTime();
     this.changeListener.next(this) //# my BaseForm
 
 
   }
 
-  public broadcastNgChange(event){
+  public broadcastNgChange(event, parentForm: NgForm) {
 
-    if(this.inputType == InputType.text){
+    if (this.inputType == InputType.text) {
       this.changeListener.next(this);
     }
 
-    if(this.inputType == InputType.file){
+    if (this.inputType == InputType.file) {
 
-      if(!event.target.files[0]){
+      if (!event.target.files[0]) {
+        this.rules.isRequired = true;
+
         return;
       }
-      // var test:File = event.target.files[0];
-      // event.target.value = "C:\\fakepath\\Screen Shot 2018-01-19 at 2.22.22 PM.png";
-      console.log('broadcastTheEvent',event);
 
-      this.fileCallbackEvent(event);
+      this.formValueContainer[this.name] = event.target.files[0];
+      this.rules.isRequired = false;
+      this.infoBottom = `File set. ${event.target.files[0].name}`
 
-      // MyHelper.readFile(event,(result)=>{
-      //   // console.log(result);
-      //   this.fileCallback(result);
-      // })
+
+
     }
   }
 
-  public getReadOnlyValue(): string{
 
-    switch(this.inputType){
+  private getReadOnlyForDate(){
+    if(this.dateSetting.isTime){
+      return this.value;
+    }else{
+      return this.getServerDateFormat();
+
+    }
+  }
+
+  public getReadOnlyValue(): string {
+
+    switch (this.inputType) {
       case InputType.date:
+        return this.getReadOnlyForDate();
       case InputType.email:
       case InputType.number:
       case InputType.password:
       case InputType.searchBar:
       case InputType.text:
-        return this.value !=='' ? this.value : "-";
+        return this.value !== '' ? this.value : "-";
       case InputType.select:
 
-        var bank:string = "";
+        var bank: string = "";
 
         //# get the label(key) if type select
-        this.selectOptions.map((keyValue)=>{
-          if(keyValue.value == this.value){
-            bank =  keyValue.key
+        this.selectOptions.map((keyValue) => {
+          if (keyValue.value == this.value) {
+            bank = keyValue.key
           }
         });
         return bank;
@@ -300,12 +385,47 @@ export class BaseForm {
 
   }
 
+  public setFileAttachmentInfo(name: string, url: string) {
+    name = !name ? "Attachment " : name;
+    if (!url || url == "") {
+      return;
+    }
+    this.attachmentInfo = {
+      isSet: true,
+      name: name,
+      url: url,
+    }
+
+    return this;
+  }
+
+  public setIsRequired(isRequired: boolean) {
+
+    this.rules.isRequired = isRequired;
+
+    if (this.inputType == InputType.file) {
+      if (this.attachmentInfo.isSet) {
+        this.rules.isRequired = false;
+      }
+    }
+
+
+    return this;
+  }
+
+  public setValue(value: string) {
+    this.value = value;
+    return this;
+  }
+
+
 }
 
 export interface KeyValue {
   value?: any,
   key: string,
-  order?:number,
+  order?: number,
+  originJson?:any;
 }
 
 export interface InputRules {
@@ -325,7 +445,7 @@ export interface InputStyle {
 }
 
 export enum InputType {
-  text, select, password, email, date, number, searchBar,textarea,file
+  text, select, password, email, date, number, searchBar, textarea, file
 }
 
 export enum LabelType {
@@ -339,6 +459,7 @@ export interface DateSetting {
   max?: string | Date;
   displayFormat?: string;
   hourValues?: string;
+  isTime?: boolean;
 }
 
 export interface SearchBarSetting {
@@ -348,8 +469,14 @@ export interface SearchBarSetting {
   httpParamBindEvent: string[];
 }
 
-export interface ButtonSettingInterface{
-  label:string;
+export interface ButtonSettingInterface {
+  label: string;
   clickListener: ReplaySubject<BaseForm>;
   isHidden: boolean;
+}
+
+export interface AttachmentInfoInterface {
+  isSet: boolean;
+  name?: string;
+  url?: string;
 }

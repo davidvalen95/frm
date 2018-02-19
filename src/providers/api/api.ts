@@ -1,10 +1,11 @@
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpEventType, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Alert, AlertController, LoadingController, ToastController, ToastOptions} from "ionic-angular";
 import {UserProvider} from "../user/user";
 import {Observable} from "rxjs/Observable";
 import {Http} from "@angular/http";
 import {BaseForm} from "../../components/Forms/base-form";
+import {HelperProvider} from "../helper/helper";
 
 /*
   Generated class for the ApiProvider provider.
@@ -17,29 +18,49 @@ import {BaseForm} from "../../components/Forms/base-form";
 export class ApiProvider {
 
     // // # TEST URL
-    public static BASE_URL: string = "http://hrms.dxn2u.com:8888";
-    public static HRM_URL: string = "http://hrms.dxn2u.com:8888/hrm_test2/";
-    //public static PHP_URL: string = "http://hrms.dxn2u.com/hrmsphptest/";
-
-    // http://hrms.dxn2u.com/hrmsphptest/app.php
+    // public static BASE_URL: string = "http://hrms.dxn2u.com:8888";
+    // public static HRM_URL: string = "http://hrms.dxn2u.com:8888/hrm_test2/";
+    // public static PHP_URL: string = "http://hrms.dxn2u.com/hrmsphptest/";
+    // public static IS_API_LIVE: boolean = false;
+    // public static PHP_IONIC_URL: string = "http://hrms.dxn2u.com/hrmsionicphp/test/";
 
 //
     //# LOCAL URL
     // public static BASE_URL: string = "http://localhost:8080";
     // public static HRM_URL: string = "http://localhost:8080/hrm2/";
+    // public static IS_API_LIVE: boolean = false;
+    // public static PHP_IONIC_URL: string = "http://hrms.dxn2u.com/hrmsionicphp/test/";
 
 
-    //# LIVE URL
+
+
+
+  //# LIVE URL
+    // public static BASE_URL: string = "http://hrms.dxn2u.com:8888";
     // public static HRM_URL: string = "http://hrms.dxn2u.com:8888/hrm_live/";
     // public static PHP_URL: string = "http://hrms.dxn2u.com/hrmsphplive/";
+    // public static IS_API_LIVE: boolean = true;
+    // public static PHP_IONIC_URL: string = "http://hrms.dxn2u.com/hrmsionicphp/live/"
 
 
 
-    public baseUrl: string = ApiProvider.HRM_URL;
+  //# LOCAL IP URL
+    public static BASE_URL: string = "http://10.26.5.74:8080";
+    public static HRM_URL: string = "http://10.26.5.74:8080/hrm2/";
+    public static IS_API_LIVE: boolean = false;
+    public static PHP_IONIC_URL: string = "http://hrms.dxn2u.com/hrmsionicphp/test/";
+    public static PHP_URL: string = "http://hrms.dxn2u.com/hrmsphptest/";
+
+
+
+
+
+
+  public baseUrl: string = ApiProvider.HRM_URL;
     public phpUrl: string = ApiProvider.HRM_URL;
 
 
-    constructor(public httpClient: HttpClient, private loadingController: LoadingController, public toastController: ToastController, public alertController: AlertController) {
+    constructor(public httpClient: HttpClient, private loadingController: LoadingController, public toastController: ToastController, public alertController: AlertController, public helperProvider:HelperProvider) {
     }
 
     /**
@@ -100,9 +121,9 @@ export class ApiProvider {
         return this.httpClient.get(ApiProvider.HRM_URL + "s/VisitationApplication_top", {withCredentials:true,params: httpParams}).toPromise()
     }
 
-    getVisitationFormRules(ctId: string, visitorCategoryCode: string): Observable<any> {
-        var httpParams: HttpParams = new HttpParams().set('requisition_type', 'appointment')
-            .set('reqtype', 'visitation_rules')
+    getVisitationFormRules(ctId: string, visitorCategoryCode: string, isVisitation:boolean = true): Observable<any> {
+        var httpParams: HttpParams = new HttpParams().set('requisition_type', isVisitation ?  'appointment' : 'container')
+            .set('reqtype', 'visitation_rules' )
             .set('ct_id', ctId)
             .set('visitorcategory_code', visitorCategoryCode);
 
@@ -155,6 +176,7 @@ export class ApiProvider {
         body["user_id"] = userSession.empId;
         body["cmbYearList"] = ["" + ((<number> new Date().getUTCFullYear()) - 1), (new Date().getUTCFullYear())];
         body["isBadge"] = isBadge;
+        body['container'] = isContainer;
         // body["isBadge"] = true
         console.log('filters', body);
         return this.httpClient.get<VisitationDataApiInterface>(visitationUrl, {withCredentials:true, params: body}).toPromise();
@@ -165,6 +187,126 @@ export class ApiProvider {
         // });
 
     }
+
+
+
+
+
+    public get<T>(config:ApiGetConfigInterface, onFinished:(response:T)=>void){
+
+      var url = `${config.url}`;
+
+
+      var promise: Promise<T> = this.httpClient.get<T>(url, {
+        withCredentials: true,
+        params: config.params
+      }).toPromise();
+
+
+      var message = config.loaderMessage ? config.loaderMessage : "Loading data";
+      var loader = this.helperProvider.presentLoadingV2(message);
+
+      promise.then((data: T) => {
+
+
+        onFinished(data);
+
+      }).catch(rejected => {
+        console.log('apigetsummaryandlist', rejected);
+        this.helperProvider.presentToast("Something error on loading data");
+      }).finally(() => {
+        loader.dismiss();
+      })
+
+    }
+
+
+
+
+    public submitGet<T>(url:string, jsonParams:any, onFinished: (response:T)=>void){
+
+      var loader = this.helperProvider.presentLoadingV2("Submitting ");
+
+      this.httpClient.get<T>(url,{params:jsonParams, withCredentials:true,}).toPromise().then((response)=>{
+
+
+        console.log('submitFormWIthProgress,',response)
+
+        onFinished(response);
+
+
+      }).catch(rejected=>{
+        this.helperProvider.showAlert("Error");
+        console.log('submitFormWithProgress rejected',rejected);
+      }).finally(()=>{
+        loader.dismiss();
+
+      });
+    }
+
+    public submitFormWithProgress<T>(url:string, jsonParams:object, onFinished: (response:T)=>void){
+
+
+
+
+
+
+      var httpHeaders = new HttpHeaders()
+      httpHeaders.set("Content-Type", 'multipart/form-data');
+
+
+      var loader = this.helperProvider.presentLoadingV2("Submitting ");
+
+      var formData:FormData = new FormData();
+      for (var key in jsonParams) {
+        formData.append(key, jsonParams[key])
+
+      }
+      // this.httpClient.post(url,formData,{headers:httpHeaders,withCredentials:true,reportProgress:true}).toPromise().then((response)=>{
+      //
+      //   console.log('submitFormWIthProgress,',response)
+      //
+      //
+      //   if (response["type"] === HttpEventType.UploadProgress) {
+      //     // This is an upload progress event. Compute and show the % done:
+      //     const percentDone = Math.round(100 * response["loaded"] / response["total"]);
+      //
+      //     loader.setContent(`Submitting, ${percentDone}`);
+      //     console.log(`File is ${percentDone}% uploaded.`);
+      //   } else if (response instanceof HttpResponse) {
+      //     console.log('File is completely uploaded!');
+      //     onFinished(response);
+      //
+      //   }
+      // }).catch((rejected)=>{
+      //   this.helperProvider.presentToast(rejected.message || "Error");
+      // }).finally(()=>{
+      //   loader.dismiss();
+      // });
+      //
+      // //
+      //
+      this.httpClient.post<T>(url,formData,{withCredentials:true,headers:httpHeaders,}).toPromise().then((response)=>{
+
+
+        console.log('submitFormWIthProgress,',response)
+
+        onFinished(response);
+
+
+      }).catch(rejected=>{
+        this.helperProvider.showAlert("Error on submiting");
+        console.log('submitFormWithProgress rejected',rejected);
+      }).finally(()=>{
+        loader.dismiss();
+
+      });
+
+
+
+    }
+
+
 
     getBadgeVisitationPendingAcknowledge(userSession: UserSessionApiInterface) {
         var visitationUrl: string = ApiProvider.HRM_URL + 's/VisitationApplication_active';
@@ -191,7 +333,8 @@ export class ApiProvider {
         body['cmbSection'] = "";
         body['cmbDepartment'] = "";
         body["cmbYearList"] = ["" + ((<number> new Date().getUTCFullYear()) - 1), (new Date().getUTCFullYear())];
-
+        body['container'] = setting.isContainer;
+        body['isBadge'] = false;
         console.log('filters', body);
         var url = ApiProvider.HRM_URL + "s/VisitationApplicationApproval_active";
         return this.httpClient.get<VisitationDataApiInterface>(url, {withCredentials:true, params: body}).toPromise();
@@ -205,7 +348,7 @@ export class ApiProvider {
         body["container"] = false;
         body["user_id"] = userSession.empId;
         body["cmbYearList"] = ["" + ((<number> new Date().getUTCFullYear()) - 1), (new Date().getUTCFullYear())];
-
+        body['isBadge'] = false;
         console.log('filters', body);
         var url = ApiProvider.HRM_URL + "s/VisitationApplicationApproval_active";
 
@@ -315,6 +458,15 @@ export interface MenusApiInterface {
     id;
     isOpen: boolean;
     image?: string;
+    badge?:BadgeConfig;
+}
+
+export interface BadgeConfig{
+
+  count?:number;
+  url:string;
+  params:any;
+
 }
 
 export interface UserSessionApiInterface {
@@ -336,15 +488,17 @@ export interface UserSessionApiInterface {
 }
 
 export class VisitationFilterApi {
-    cmbYear: string = "" + new Date().getFullYear();
-    cmbMonth: string = "";
-    cmbStatus: string = "";
-    acknowledged: string = "";
-    cmbDepartment: string = "";//# for Approver
-    cmbSection: string = "";//# for Approver
-    filter_by: string = "emp_name";//# for Approver
-    keyword: string = "";//# for Approver
-    isOpen: boolean = false;
+    cmbYear?: string = "2018";
+    cmbMonth?: string = "";
+    cmbStatus?: string = "";
+    acknowledged?: string = "";
+    cmbDepartment?: string = "";//# for Approver
+    cmbSection?: string = "";//# for Approver
+    filter_by?: string = "emp_name";//# for Approver
+    keyWord?: string = "";//# for Approver
+    isOpen?: boolean = false;
+    cmbType?: string = "";
+    cmbSearch?:string = "c.name";
 
 
 }
@@ -454,7 +608,7 @@ export interface CompanyInformation {
     specify?: boolean;
 }
 
-export interface VisitationHistoryInterface {
+export interface HistoryBaseInterface {
     date?: string;
     emp_name?: string;
     remark?: string;
@@ -472,7 +626,25 @@ export interface BadgeApiInterface {
 }
 
 
-export interface TextValue {
+export interface TextValueInterface {
     text: string,
     value: string,
+}
+
+export interface SuccessMessageInterface{
+  success:boolean;
+  message:string;
+}
+
+
+export interface ApiGetConfigInterface{url:string, params:any,loaderMessage?:string}
+
+
+export interface ApproverBaseInterface{
+  approve_remark:string;
+  approver_remark:string;
+  cancel_remark:string;
+  id: string;
+  alert_employee:string; // "f" "t"
+  status: string; // PA RE APP
 }

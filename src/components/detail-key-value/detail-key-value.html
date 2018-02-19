@@ -1,0 +1,29 @@
+<!-- Generated template for the DetailKeyValueComponent component -->
+
+<ion-list>
+    <span class="detailKeyValue"   *ngIf="this.keyValueContainer;let currentContainer" >
+
+      <span [hidden]="currentContainer.isHidden === true">
+        <div class='title' (click)="currentContainer.isOpen = !currentContainer.isOpen">
+          <h5 style="display: inline-block">{{currentContainer.name}}</h5>
+            <ion-icon item-right="" *ngIf="currentContainer.isOpen" name="arrow-down"></ion-icon>
+            <ion-icon item-right="" *ngIf="!currentContainer.isOpen" name="arrow-up"></ion-icon>
+
+        </div>
+        <div *ngIf="currentContainer.isOpen" class="animation-expand-bottom">
+
+
+          <div ion-grid="">
+            <ion-row class="keyValue"  *ngFor="let currentDetail of currentContainer.keyValue">
+              <ion-col class="key" style="" col-4="" >{{currentDetail.key | ucWord}}</ion-col>
+              <ion-col class="value" col-8=""  >{{currentDetail.value | ifEmptyThenDash}}</ion-col>
+
+            </ion-row>
+          </div>
+
+
+        </div>
+      </span>
+
+    </span>
+</ion-list>

@@ -45,35 +45,22 @@ export class ApplicationHomeSkeletonPage {
   public broadcast:Subscription = null;
   public badge:BadgeApiInterface ;
 
+  public listData;
+
   @ViewChild('infiniteScroll') public infiniteScroll: InfiniteScroll;
 
   @ViewChild("navbar") navbar:Navbar;
   @ViewChild(Content) public content: Content;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider:HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
-    console.log("visitationApplicationParam", this.rootParam.visitationApplicationParam);
+    console.log("visitationApplicationBadge", this.rootParam.visitationApplicationParam);
 
 
 
 
 
 
-    this.rootParam.broadcast.next(BroadcastType.homeLeaveApplicationOnResume);
 
-    if(this.broadcast == null ){
-      console.log('broadcastSubscrive');
-      this.broadcast = this.rootParam.broadcast.subscribe((data:BroadcastType)=>{
-        if(data == null){
-          return;
-        }
-
-        if(data == BroadcastType.homeLeaveApplicationOnResume){
-
-          //# Do Get Page Data here on broadcast
-        }
-
-      });
-    }
   }
 
 
@@ -158,7 +145,7 @@ export class ApplicationHomeSkeletonPage {
     //   title: this.pageParam.isApprover ? "Visitation Approval" : "Visitation Detail",
     //   isVisitation: true,
     //   isApprover: this.pageParam.isApprover,
-    //   actionOnPop: () => {
+    //   visitationDetailDidLeave: () => {
     //     // this.getVisitation();
     //   }
     // }
@@ -259,6 +246,27 @@ export class ApplicationHomeSkeletonPage {
     // browser.
   }
 
+
+
+  getList(page = 1): Promise<any> {
+    this.listData   = [];
+    console.log('getVisitation', this.pageParam);
+
+
+    return this.apiProvider.getVisitationContainer(this.filter, this.userProvider.userSession, false, page).then((data: VisitationDataApiInterface) => {
+      data.records.forEach((currentRecord)=>{
+        currentRecord.isOpen = true;
+      })
+      this.visitationData.push(data);
+      this.isInfiniteEnable = this.visitationData[0].maxpage > 1;
+
+      return Promise.resolve(true);
+    }).catch(rejected=>{
+      console.log(rejected);
+    });
+
+
+  }
 }
 
 export interface HomeLeaveApplicationParam{

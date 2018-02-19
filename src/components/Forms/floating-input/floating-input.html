@@ -1,9 +1,9 @@
 
 
-<ion-item no-padding="" [hidden]="baseForm.isHidden===true " (click)="baseForm.labelClickListener.next(this.finalModel)" [ngClass]='{"ionItemIsReadOnly":baseForm.isReadOnly}' >
+<ion-item no-padding="" [hidden]="baseForm.isHidden===true || baseForm.isReadOnly " (click)="baseForm.labelClickListener.next(this.finalModel)" [ngClass]='{"ionItemIsReadOnly":baseForm.isReadOnly}' >
 
-  <ion-label [hidden]="baseForm.isReadOnly" [ngClass]="{'required':baseForm.rules.isRequired}" stacked="" *ngIf="this.labelType == 'stacked'">{{baseForm.label}} </ion-label>
-  <ion-label  [hidden]="baseForm.isReadOnly" [ngClass]="{'required':baseForm.rules.isRequired}" inline="" *ngIf="this.labelType == 'inline'" >{{baseForm.label}} </ion-label>
+  <ion-label  [hidden]="baseForm.isReadOnly" [ngClass]="{'required':baseForm.rules.isRequired}" stacked="" *ngIf="this.labelType == 'stacked'">{{baseForm.label | ucWord}} </ion-label>
+  <ion-label  [hidden]="baseForm.isReadOnly" [ngClass]="{'required':baseForm.rules.isRequired}" inline="" *ngIf="this.labelType == 'inline'" >{{baseForm.label | ucWord}} </ion-label>
 
   <!--<span *ngIf="baseForm.type=='text';then ionInput else ionSelect"></span>-->
 
@@ -32,7 +32,7 @@
     [readonly]    = "baseForm.isReadOnly"
     [max]         = "baseForm.rules.max"
     [min]         = "baseForm.rules.min"
-    (ionChange)   = "baseForm.broadcastIonChange(ionTextAreaModel,event)"
+    (ionChange)   = "broadcast('iontextarea')"
 
     (focus)="onFieldClicked(event)"
     (click) = "baseForm.inputClickListener.next(ionTextAreaModel)"
@@ -61,7 +61,7 @@
     [readonly]    = "baseForm.isReadOnly"
     [max]         = "baseForm.rules.max"
     [min]         = "baseForm.rules.min"
-    (ionChange)   = "baseForm.broadcastIonChange(event)"
+    (ionChange)   = "broadcast('ioninput')"
     (focus)="onFieldClicked(event)"
     (click) = "baseForm.inputClickListener.next(ionInputModel)"
 
@@ -82,12 +82,12 @@
     [minlength]   = "baseForm.rules.minlength"
     [maxlength]   = "baseForm.rules.maxlength"
     [pattern]     = "baseForm.rules.pattern"
-    (ionChange)   = "baseForm.broadcastIonChange(ionSelectModel,event)"
-    [disabled]    = "baseForm.isReadOnly || baseForm.isDisabled"
+    (ionChange)   = "broadcast('ionselect')"
+    [disabled]    = "baseForm.isDisabled"
     (click) = "baseForm.inputClickListener.next(ionSelectModel)"
 
   >
-    <ion-option *ngFor="let option of baseForm.selectOptions" [value]="option.value">{{option.key}}</ion-option>
+    <ion-option selected="" *ngFor="let option of baseForm.selectOptions" [value]="option.value">{{option.key}}</ion-option>
   </ion-select>
 
 
@@ -106,7 +106,7 @@
     [pickerFormat] = "baseForm.dateSetting.displayFormat"
     [min]           = "baseForm.dateSetting.min"
     [max]           = "baseForm.dateSetting.max"
-    (ionChange)   = "baseForm.broadcastIonChange(ionDateModel,event)"
+    (ionChange)   = "broadcast('iondatetime')"
     [hourValues] = baseForm.hourValues
     (click) = "baseForm.inputClickListener.next(ionDateModel)"
 
@@ -117,18 +117,14 @@
 
 
 
-  <span class="readOnlyInfo" item-left="" [hidden] = "!baseForm.isReadOnly || baseForm.isHidden">
-    <p class="label">{{baseForm.label}} </p>
-    <p class="value"  style="float:left;text-align:left;margin-top:-0px;"  >{{baseForm.getReadOnlyValue()}}</p>
-  </span>
 
-  <button [hidden]="baseForm.buttonRightSuccess.isHidden" (click)="baseForm.buttonRightSuccess.clickListener.next(this.baseForm)" type="button" item-right="" ion-button="" color="primary">{{baseForm.buttonRightSuccess.label}}</button>
-  <button [hidden]="baseForm.buttonRightSuccess.isHidden" (click)="baseForm.buttonRightDanger.clickListener.next(this.baseForm)" type="button" item-right="" ion-button="" color="danger">{{baseForm.buttonRightDanger.label}}</button>
 
 
 </ion-item >
+
 <!--[required]      = "baseForm.rules.isRequired "-->
 <!--ngModel="t"-->
+
 
 <input
   #fileModel = "ngModel"
@@ -136,24 +132,45 @@
   [type]="this.inputType"
   [name]="baseForm.name"
   [id]="baseForm.name"
-  [hidden] = "this.inputType != 'file'"
-  (change) = "baseForm.broadcastNgChange($event)"
+  [hidden] = "this.inputType != 'file' || baseForm.isHidden === true || baseForm.isReadOnly"
+  [required] = "baseForm.rules.isRequired"
+  (change) = "baseForm.broadcastNgChange($event,parentForm)"
+  [readonly] = "baseForm.isReadOnly"
+
   multiple
   accept="*/*"
 >
 
 
+<div class="readOnlyInfo" [hidden] = "!baseForm.isReadOnly || baseForm.isHidden">
+  <p class="label">{{baseForm.label | ucWord}} </p>
+  <p class="value"   >{{baseForm.getReadOnlyValue()}}</p>
+</div>
+
+
+
+
+<open-url [hidden]="baseForm.isHidden" *ngIf="baseForm.attachmentInfo.isSet" [name]="baseForm.attachmentInfo.name" [url]="baseForm.attachmentInfo.url"></open-url>
+
 <!---->
 <!--for display onlu-->
 
-<p [hidden]="baseForm.isHidden || baseForm.isReadOnly" class="infoBottom">{{baseForm.infoBottom}}</p>
+<p [hidden]="baseForm.isHidden || baseForm.isReadOnly || baseForm.infoBottom == ''" class="infoBottom">{{baseForm.infoBottom}}</p>
 
 <div [hidden]="baseForm.isHidden" *ngIf="finalModel">
   <!--<span>{{debug()}}</span>-->
-  <p style="text-align:left;margin-left:-0px;" class="error-container" *ngIf="!finalModel.valid && (finalModel.dirty || finalModel.touched || parentForm.submitted)" >
+  <!--<p style="text-align:left;margin-left:-0px;" class="error-container" *ngIf="!finalModel.valid && (finalModel.dirty || finalModel.touched || parentForm.submitted)" >-->
+  <p style="text-align:left;margin-left:-0px;" class="error-container" >
     <form-error-message  [baseForm]="baseForm" [model]="finalModel"></form-error-message>
   </p>
 </div>
+
+
+<div *ngIf="!baseForm.buttonRightSuccess.isHidden || !baseForm.buttonRightSuccess.isHidden" style="margin-bottom: 16px;">
+  <button [hidden]="baseForm.buttonRightSuccess.isHidden" (click)="baseForm.buttonRightSuccess.clickListener.next(this.baseForm)" type="button" item-right="" ion-button="" color="primary">{{baseForm.buttonRightSuccess.label}}</button>
+  <button [hidden]="baseForm.buttonRightDanger.isHidden" (click)="baseForm.buttonRightDanger.clickListener.next(this.baseForm)" type="button" item-right="" ion-button="" color="danger">{{baseForm.buttonRightDanger.label}}</button>
+</div>
+
 
 <ng-template #ionInput>
 

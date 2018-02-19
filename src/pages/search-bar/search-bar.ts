@@ -52,8 +52,11 @@ export class SearchBarPage {
   }
 
   onItemClicked(selectOption: KeyValue) {
-    this.baseForm.value = selectOption.value
     this.navCtrl.pop()
+    setTimeout(()=>{
+      this.baseForm.value = selectOption.value
+
+    },500);
   }
 }
 

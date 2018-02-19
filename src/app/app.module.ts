@@ -33,6 +33,27 @@ import {HelperProvider} from '../providers/helper/helper';
 import {ApplyLeaveApplicationPage} from "../pages/application/leave/apply-leave-application/apply-leave-application";
 import {ApplyExchangeApplicationPage} from "../pages/application/exchange/apply-exchange-application/apply-exchange-application";
 import {InAppBrowser} from "@ionic-native/in-app-browser";
+import {HomeOvertimeApplicationPage} from "../pages/application/overtime/home-overtime-application/home-overtime-application";
+import {ApplyOvertimeApplicationPage} from "../pages/application/overtime/apply-overtime-application/apply-overtime-application";
+import {DetailKeyValueComponent} from "../components/detail-key-value/detail-key-value";
+import {ComponentsModule} from "../components/components.module";
+import {OpenUrlComponent} from "../components/open-url/open-url";
+import {AppVersion} from "@ionic-native/app-version";
+import {WorkoutsideHomePage} from "../pages/application/workoutside/workoutside-home/workoutside-home";
+import {WorkoutsideApplyPage} from "../pages/application/workoutside/workoutside-apply/workoutside-apply";
+import {SectionFloatingInputComponent} from "../components/Forms/section-floating-input/section-floating-input";
+import {CalenderComponent} from "../components/calender/calender";
+import {Calendar} from "@ionic-native/calendar";
+import {ContainerInApplyPage} from "../pages/application/containerIn/container-in-apply/container-in-apply";
+import {ContainerInHomePage} from "../pages/application/containerIn/container-in-home/container-in-home";
+import {AbsenceRecordApplyPage} from "../pages/myAttendance/absenceRecord/absence-record-apply/absence-record-apply";
+import {AbsenceRecordHomePage} from "../pages/myAttendance/absenceRecord/absence-record-home/absence-record-home";
+import {IncompleteRecordApplyPage} from "../pages/myAttendance/incompleteRecord/incomplete-record-apply/incomplete-record-apply";
+import {IncompleteRecordHomePage} from "../pages/myAttendance/incompleteRecord/incomplete-record-home/incomplete-record-home";
+import {CalenderPage} from "../pages/calender/calender";
+import {Badge} from "@ionic-native/badge";
+import {AsyncPipe} from "@angular/common";
+import {HostFormComponent} from "../components/host-form/host-form";
 
 
 //tes
@@ -41,19 +62,52 @@ import {InAppBrowser} from "@ionic-native/in-app-browser";
         ArrowOpenDirective,
         FormErrorMessageComponent,
         FloatingInputComponent,
+        DetailKeyValueComponent,
+        OpenUrlComponent,
+        SectionFloatingInputComponent,
+        CalenderComponent,
+        HostFormComponent,
+
+
+
         HomePage,
         ListPage,
         MyApp,
         SearchBarPage,
-        VisitationDetailPage,
-        VisitationApplicationPage,
+
         ContainerInPage,
         LoginPage,
         EmptyPage,
+
+        CalenderPage,
+
+
+        VisitationDetailPage,
+        VisitationApplicationPage,
+
         HomeLeaveApplicationPage,
         ApplyLeaveApplicationPage,
+
         HomeExchangeApplicationPage,
-        ApplyExchangeApplicationPage
+        ApplyExchangeApplicationPage,
+        HomeOvertimeApplicationPage,
+        ApplyOvertimeApplicationPage,
+
+        WorkoutsideHomePage,
+        WorkoutsideApplyPage,
+
+        ContainerInApplyPage,
+        ContainerInHomePage,
+
+
+
+
+      //# myAttendance
+        AbsenceRecordHomePage,
+        AbsenceRecordApplyPage,
+
+        IncompleteRecordHomePage,
+        IncompleteRecordApplyPage,
     ],
     imports: [
         BrowserModule,
@@ -63,22 +117,54 @@ import {InAppBrowser} from "@ionic-native/in-app-browser";
         PipesModule,
 
 
+
     ],
     bootstrap: [IonicApp],
     entryComponents: [
-        HomePage,
-        ListPage,
-        MyApp,
-        SearchBarPage,
-        VisitationApplicationPage,
-        VisitationDetailPage,
-        ContainerInPage,
-        LoginPage,
-        EmptyPage,
-        HomeLeaveApplicationPage,
-        ApplyLeaveApplicationPage,
-        HomeExchangeApplicationPage,
-        ApplyExchangeApplicationPage
+
+
+      HomePage,
+      ListPage,
+      MyApp,
+      SearchBarPage,
+
+      ContainerInPage,
+      LoginPage,
+      EmptyPage,
+
+      CalenderPage,
+
+
+      VisitationDetailPage,
+      VisitationApplicationPage,
+
+      HomeLeaveApplicationPage,
+      ApplyLeaveApplicationPage,
+
+      HomeExchangeApplicationPage,
+      ApplyExchangeApplicationPage,
+      HomeOvertimeApplicationPage,
+      ApplyOvertimeApplicationPage,
+
+      WorkoutsideHomePage,
+      WorkoutsideApplyPage,
+
+      ContainerInApplyPage,
+      ContainerInHomePage,
+
+
+
+
+      //# myAttendance
+      AbsenceRecordHomePage,
+      AbsenceRecordApplyPage,
+
+      IncompleteRecordHomePage,
+      IncompleteRecordApplyPage,
+
+
+
+
     ],
     providers: [
         StatusBar,
@@ -91,7 +177,10 @@ import {InAppBrowser} from "@ionic-native/in-app-browser";
         RootParamsProvider,
         AndroidPermissions,
         HelperProvider,
-        InAppBrowser
+        InAppBrowser,
+        AppVersion,
+        Calendar,
+        Badge
 
     ]
 })

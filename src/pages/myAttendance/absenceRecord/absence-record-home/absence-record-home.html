@@ -1,0 +1,208 @@
+<!--
+  Generated template for the VisitationApplicationPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header >
+  <ion-navbar #navbar  >
+    <button ion-button menuToggle *ngIf="!this.rootParam.isPartial" >
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title text-center="" >{{title}}
+      <!--<span *ngIf="this.badge;let resultBadge" item-right=""><ion-badge *ngIf="(resultBadge.badgeVisitation != 0);"  color="danger" >{{resultBadge.badgeVisitation}}</ion-badge></span>-->
+
+    </ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding="" [ngClass]="{'partial':this.rootParam.isPartial}">
+
+  <ion-segment *ngIf="!pageParam.isApply && !pageParam.isEditing" (ionChange)="ionSegmentChange()"  style='margin-top:16px;'[(ngModel)]="segmentValue">
+    <!--<ion-segment-button *ngIf="!pageParam.isApproval" value="apply"  >-->
+      <!--Apply-->
+    <!--</ion-segment-button>-->
+    <ion-segment-button value="list" >
+      List
+    </ion-segment-button>
+  </ion-segment>
+
+
+  <!---->
+
+  <div  [ngSwitch]="segmentValue">
+
+
+
+
+    <div *ngIf="segmentValue == 'apply'">
+      <ion-grid >
+        <ion-row >
+
+        </ion-row>
+      </ion-grid>
+    </div>
+
+
+  </div>
+
+
+
+
+
+
+
+
+  <div *ngIf="segmentValue == 'list'">
+
+    <!--<button  *ngIf="!this.pageParam.isApprover" style="margin-bottom:24px;" (click)="newApply()" ion-button="" block="" color="danger">Apply</button>-->
+
+
+    <ion-list style="border: 1px solid #C4C4C4; border-radius:5px;">
+
+      <ion-item  (click)="filter.isOpen = !filter.isOpen">
+        <h3>Search for {{title}}</h3>
+        <span item-end="">
+              <ion-icon name="arrow-down" *ngIf="filter.isOpen"></ion-icon>
+              <ion-icon name="arrow-up" *ngIf="!filter.isOpen"></ion-icon>
+            </span>
+      </ion-item>
+      <span *ngIf="filter.isOpen" class="animation-expand-bottom">
+
+        <ion-item>
+          <ion-label>Year</ion-label>
+          <ion-select [(ngModel)]="filter.cmbYear" interface="popover">
+            <!--<ion-option value="" selected="">&#45;&#45;All&#45;&#45;</ion-option>-->
+            <ion-option *ngFor="let i of this.helperProvider.getCmbRule(this.filterRule,'cmbYear')" selected="" [value]="i.value">{{i.text}}</ion-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label>Month</ion-label>
+          <ion-select [(ngModel)]="filter.cmbMonth" interface="popover">
+
+            <ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.filterRule,'month')" [value]="object.value" >{{object.text}}</ion-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item *ngIf="!pageParam.isApproval">
+          <ion-label >Status</ion-label>
+          <ion-select  [(ngModel)]="filter.cmbStatus" interface="popover">
+            <ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.filterRule,'cmbStatus');let i = index" [selected]="true" [value]="object.value" >{{object.text}}</ion-option>
+          </ion-select>
+        </ion-item>
+
+
+        <ion-item>
+          <ion-label>Record Type</ion-label>
+          <ion-select [(ngModel)]="filter.cmbMonth" interface="popover">
+
+            <ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.filterRule,'cmbType')" [value]="object.value" >{{object.text}}</ion-option>
+          </ion-select>
+        </ion-item>
+
+
+
+
+        <!--<ion-item>-->
+        <!--<ion-label>Leave Type</ion-label>-->
+        <!--<ion-select  [(ngModel)]="filter.cmbType" interface="popover">-->
+        <!--<ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.leaveApplicationTop,'cmbType')"  [value]="object.value" >{{object.text}}</ion-option>-->
+        <!--</ion-select>-->
+        <!--</ion-item>-->
+
+          <ion-item>
+            <button (click)="getList()" ion-button="" block="">Search</button>
+          </ion-item>
+
+        </span>
+
+    </ion-list>
+    <p style="background: #C4F0FF;padding-top:0;padding-bottom:0" no-padding="" >Listing</p>
+
+
+
+    <span *ngIf="this.listData"><p padding="" *ngIf="  listData.total == 0">No record</p></span>
+
+    <ion-grid *ngIf="this.listData">
+      <ion-row >
+        <!--<p>page: {{currentVisitationData.page}}/{{currentVisitationData.maxpage}}</p>-->
+        <ion-col col-12="" col-sm-6="" col-md-4="" *ngFor="let record of listData.data">
+          <ion-card >
+            <ion-card-header  (click)="record.isOpen = !record.isOpen">
+              <ion-item no-padding="">
+                <h2>{{pageParam.isApproval ? record.data5 : record.absence_date | ifEmptyThenDash}} {{record.year}}</h2>
+                <span item-right="">
+                <ion-icon name="arrow-down" *ngIf="record.isOpen"></ion-icon>
+                <ion-icon name="arrow-up" *ngIf="!record.isOpen"></ion-icon>
+                </span>
+
+                <small [innerHtml]="pageParam.isApproval ? record.data9 : record.status | keepAsHtml " ></small>
+              </ion-item>
+              <!--<p><small>{{record.status}}</small></p>-->
+            </ion-card-header>
+
+
+            <div *ngIf="record.isOpen" ngClass=" animation-expand-bottom">
+              <!--<div  ngClass=" animation-expand-bottom">-->
+
+
+              <ion-list class="visitationMini" ngClass="ionContent" >
+
+
+              </ion-list>
+
+
+              <p padding="">Apply to one below</p>
+              <ion-row no-padding>
+                <!--<ion-col>-->
+                <!--<button ion-button clear small color="danger" icon-start>-->
+                <!--<ion-icon name='close-circle'></ion-icon>-->
+                <!--Reject-->
+                <!--</button>-->
+                <!--</ion-col>-->
+                <ion-col col-4="" (click)="newApply('leave',record)" text-center="">
+                  <button ion-button block color="primary" icon-center>
+                    <!--<ion-icon name='list-box'></ion-icon>-->
+                    Leave
+                  </button>
+                </ion-col>
+                <ion-col  col-4="" (click)="newApply('workoutside',record)" text-center="">
+                  <button ion-button block color="primary" icon-center>
+                    <!--<ion-icon name='list-box'></ion-icon>-->
+                    Workoutside
+                  </button>
+                </ion-col>
+                <ion-col col-4="" (click)="newApply('exchange',record)" text-center="">
+                  <button ion-button block color="primary" icon-center>
+                    <!--<ion-icon name='list-box'></ion-icon>-->
+                    Exchange Alt.
+                  </button>
+                </ion-col>
+                <!--<ion-col text-right>-->
+                <!--<button ion-button clear small color="primary" icon-start>-->
+                <!--<ion-icon name='checkmark-circle'></ion-icon>-->
+                <!--Approve-->
+                <!--</button>-->
+                <!--</ion-col>-->
+
+              </ion-row>
+            </div>
+
+
+
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+
+    <!--<ion-infinite-scroll [enabled]="this.isInfiniteEnable" (ionInfinite)="doInfinite($event)">-->
+    <!--<ion-infinite-scroll-content>Loading</ion-infinite-scroll-content>-->
+    <!--</ion-infinite-scroll>-->
+
+  </div>
+
+
+</ion-content>

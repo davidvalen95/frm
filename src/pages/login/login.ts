@@ -2,9 +2,10 @@ import {Component} from '@angular/core';
 import {IonicPage, NavController, NavParams} from 'ionic-angular';
 import {NgForm} from "@angular/forms";
 import {UserProvider} from "../../providers/user/user";
-import {BaseForm, InputType} from "../../components/Forms/base-form";
+import {BaseForm, InputType, KeyValue} from "../../components/Forms/base-form";
 import {HomePage} from "../home/home";
 import {StorageKey} from "../../app/app.component";
+import {AppVersion} from "@ionic-native/app-version";
 
 /**
  * Generated class for the LoginPage page.
@@ -22,7 +23,23 @@ export class LoginPage {
 
   public loginForms: BaseForm[] = [];
 
-  constructor(public navCtrl: NavController, public userProvider: UserProvider) {
+  public version :KeyValue[] = [];
+  constructor(public navCtrl: NavController, public userProvider: UserProvider,public appVersion:AppVersion) {
+
+    // this.version.push({
+    //   key: "App Name",
+    //   value: this.appVersion.getAppName()
+    // },{
+    //   key: "Package Name",
+    //   value: this.appVersion.getPackageName()
+    // },{
+    //   key: "Version Name",
+    //   value: this.appVersion.getVersionCode()
+    // },{
+    //   key: "Version Number",
+    //   value: this.appVersion.getVersionNumber()
+    // })
+
     this.setupForm()
     setTimeout(()=>{
       if(localStorage.getItem(StorageKey.USER_ID) && localStorage.getItem(StorageKey.USER_PASSWORD)){

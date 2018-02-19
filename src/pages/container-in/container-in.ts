@@ -184,7 +184,7 @@ export class ContainerInPage {
   pushVisitationDetail(visitationData: VisitationDataRecordsInterface) {
 
     var param: VisitationDetailPageParam = {visitationData: visitationData,title:"Container In",
-    actionOnPop:()=>{
+    visitationDetailDidLeave:()=>{
 
     }
     }
