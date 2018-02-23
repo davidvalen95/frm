@@ -58,7 +58,7 @@ import {AnnouncementApplyPage} from "../pages/announcement/announcement-apply/an
 import {Pro} from "@ionic/pro";
 
 Pro.init('f4ce1597', {
-  appVersion: '1.9.08'
+  appVersion: '1.9.09'
 })
 
 @Injectable()
