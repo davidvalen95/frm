@@ -10,6 +10,7 @@ import {WorkoutsideHomeParam} from "../../pages/application/workoutside/workouts
 import {ContainerInHomeParam} from "../../pages/application/containerIn/container-in-home/container-in-home";
 import {AbsenceRecordHomeInterface} from "../../pages/myAttendance/absenceRecord/absence-record-home/absence-record-home";
 import {IncompleteRecordHomeInterface} from "../../pages/myAttendance/incompleteRecord/incomplete-record-home/incomplete-record-home";
+import {AnnouncementHomeParamInterface} from "../../pages/announcement/announcement-home/announcement-home";
 
 /*
   Generated class for the RootParamsProvider provider.
@@ -38,13 +39,15 @@ export class RootParamsProvider {
 
 
 
+    public announcementParam? : AnnouncementHomeParamInterface = {isApproval:false};
     public visitationApplicationParam?: VisitationApplicationParam = {isProvider: true};
 
     public homeLeaveApplicationParam?: HomeLeaveApplicationParam       = {isApproval:false};
     public homeExchangeApplicationParam?: HomeExchangeApplicationParam = {isApproval: false};
+
     public workoutsideHomeParam?: WorkoutsideHomeParam                 = {isApproval: false};
     public homeOvertimeApplicationParam: HomeOvertimeApplicationParam  = {isApproval: false};
-    public containerInHomeParam?: ContainerInHomeParam                 = {isApproval:false};
+    public containerInHomeParam?: ContainerInHomeParam                 = {isApproval:false, isContainerIn:true};
     public broadcast: ReplaySubject<BroadcastType>                     = new ReplaySubject(0);
     public absenceRecordHomeParam:AbsenceRecordHomeInterface = {isApproval:false}
     public incompleteRecordHomeParam:IncompleteRecordHomeInterface = {isApproval:false}

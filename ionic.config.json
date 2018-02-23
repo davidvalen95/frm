@@ -1,6 +1,6 @@
 {
   "name": "hrms",
-  "app_id": "ce9f9f08",
+  "app_id": "f4ce1597",
   "type": "ionic-angular",
   "integrations": {
     "cordova": {}

@@ -8,6 +8,7 @@ import {StorageKey} from "../../app/app.component";
 import {ReplaySubject} from "rxjs/ReplaySubject";
 import {HelperProvider} from "../helper/helper";
 import {Badge} from "@ionic-native/badge";
+import {BaseForm} from "../../components/Forms/base-form";
 
 /*
   Generated class for the UserProvider provider.
@@ -37,6 +38,15 @@ export class UserProvider {
   public watchFnF: ReplaySubject<any>         = new ReplaySubject(5);
 
   private intervalMenu;
+  public homeNotification: HomeNotificationInterface = {
+    application:0,
+    attendanceRecord: 0,
+    calender:0,
+    leaveApproval:0.,
+    overtimeApproval:0,
+    otherApproval:0
+  };
+  private lastBadgeFetch:Date;
 
   constructor(public badge:Badge,public helperProvider: HelperProvider, public httpClient: HttpClient, public api: ApiProvider, public rootParam: RootParamsProvider) {
     this.userSession.isFnF      = false;
@@ -144,13 +154,27 @@ export class UserProvider {
       name: "Home",
       id: "home",
       menu: [],
-      isOpen: false
+      isOpen: false,
+      image: "assets/imgs/menu/home.png"
     });
 
     this.homeMenu.push({
+      name: "Announcement",
+      id: "announcement",
+      image: "assets/imgs/menu/announcement.png",
+      menu: [],
+      isOpen: false,
+      badge:{
+        params:this.announcementParam(),
+        url: `${ApiProvider.HRM_URL}s/AnnouncementMobile`,
+        count: 0,
+      },
+
+    })
+    this.homeMenu.push({
       name: "My Calender",
       id: "myCalender",
-      image: "assets/imgs/menu-calendar.png",
+      image: "assets/imgs/menu/calendar.png",
       menu: [],
       isOpen: false
     });
@@ -159,7 +183,7 @@ export class UserProvider {
     this.homeMenu.push({
       name: "Application",
       id: "application",
-      image: "assets/imgs/menu-myapplication.png",
+      image: "assets/imgs/menu/application.png",
       badge:{
         params:null,
         url: null,
@@ -171,15 +195,17 @@ export class UserProvider {
           id: "leaveApplication",
           menu: [],
           isOpen: false,
+          homeNotificationTarget: "application",
           badge:{
             url:`${ApiProvider.HRM_URL}s/LeaveApplication_active`,
             params: this.oldBadgeApplicationParam(),
-          }
+          },
         }, {
           name: "Overtime Application",
           id: "overtimeApplication",
           menu: [],
           isOpen: false,
+          homeNotificationTarget: "application",
           badge:{
             url:`${ApiProvider.HRM_URL}s/OvertimeApplication_active`,
             params: this.oldBadgeApplicationParam(),
@@ -189,8 +215,9 @@ export class UserProvider {
           id: "workoutsideOffice",
           menu: [],
           isOpen: false,
+          homeNotificationTarget: "application",
           badge:{
-            url:`${ApiProvider.HRM_URL}s/LeaveApplication_active`,
+            url:`${ApiProvider.HRM_URL}s/WorkoutsideApplication_active`,
             params: this.oldBadgeApplicationParam(),
           }
         }, {
@@ -198,6 +225,7 @@ export class UserProvider {
           id: "exchangeAltOff",
           menu: [],
           isOpen: false,
+          homeNotificationTarget: "application",
           badge:{
             url:`${ApiProvider.HRM_URL}s/ExchangeApplication_active`,
             params: this.oldBadgeApplicationParam(),
@@ -207,6 +235,7 @@ export class UserProvider {
           id: "visitationApplication",
           menu: [],
           isOpen: false,
+          homeNotificationTarget: "application",
           badge:{
             url:`${ApiProvider.HRM_URL}s/VisitationApplication_active`,
             params:this.visitationApplicationBadge(),
@@ -216,6 +245,7 @@ export class UserProvider {
           id: "containerInApplication",
           menu: [],
           isOpen: false,
+          homeNotificationTarget: "application",
           badge:{
             url: `${ApiProvider.HRM_URL}s/VisitationApplication_active?`,
             params: this.visitationApplicationBadge(),
@@ -226,6 +256,7 @@ export class UserProvider {
           id: "containerOutApplication",
           menu: [],
           isOpen: false,
+          homeNotificationTarget: "application",
           badge:{
             url: `${ApiProvider.HRM_URL}s/VisitationApplication_active?`,
             params: this.visitationApplicationBadge(),
@@ -239,7 +270,7 @@ export class UserProvider {
     this.homeMenu.push({
       name: "My Attendance",
       id: "",
-      image: "assets/imgs/menu-attendance.png",
+      image: "assets/imgs/menu/attendance.png",
       badge:{
         params:null,
         url: null,
@@ -250,18 +281,20 @@ export class UserProvider {
         id: "incompleteRecord",
         menu: [],
         isOpen: false,
+        homeNotificationTarget: "attendanceRecord",
         badge:{
           url:`${ApiProvider.HRM_URL}s/IncompletedRecord_active`,
-          params:this.oldBadgeApplicationParam(),
+          params:this.oldBadgeApplicationParam("PE"),
         }
       }, {
         name: "Absence Record",
         id: "absenceRecord",
         menu: [],
         isOpen: false,
+        homeNotificationTarget: "attendanceRecord",
         badge:{
           url:`${ApiProvider.HRM_URL}s/AbsenceRecord_active`,
-          params:this.oldBadgeApplicationParam(),
+          params:this.oldBadgeApplicationParam("PE"),
         }
       }],
       isOpen: false
@@ -271,7 +304,7 @@ export class UserProvider {
     this.homeMenu.push({
       name: "Approval",
       id: "approval",
-      image: "assets/imgs/menu-approval.png",
+      image: "assets/imgs/menu/approval.png",
       badge:{
         params:null,
         url: null,
@@ -283,6 +316,7 @@ export class UserProvider {
           id: "attendanceApproval",
           menu: [],
           isOpen: false,
+          homeNotificationTarget: "otherApproval",
           badge:{
             url:`${ApiProvider.HRM_URL}s/AttendanceApproval_active`,
             params:this.oldBadgeApprovalParam(),
@@ -290,6 +324,7 @@ export class UserProvider {
         }, {
           name: "Leave Approval",
           id: "leaveApproval",
+          homeNotificationTarget: "leaveApproval",
           menu: [],
           isOpen: false,
           badge:{
@@ -301,6 +336,7 @@ export class UserProvider {
           id: "overtimeApproval",
           menu: [],
           isOpen: false,
+          homeNotificationTarget: "overtimeApproval",
           badge:{
             url:`${ApiProvider.HRM_URL}s/OvertimeApplicationApproval_active`,
             params:this.oldBadgeApprovalParam(),
@@ -310,6 +346,7 @@ export class UserProvider {
           id: "workoutsideApproval",
           menu: [],
           isOpen: false,
+          homeNotificationTarget: "otherApproval",
           badge:{
             url:`${ApiProvider.HRM_URL}s/WorkoutsideApplicationApproval_active`,
             params:this.oldBadgeApprovalParam(),
@@ -319,6 +356,7 @@ export class UserProvider {
           id: "exchangeAltOffApproval",
           menu: [],
           isOpen: false,
+          homeNotificationTarget: "otherApproval",
           badge:{
             url:`${ApiProvider.HRM_URL}s/ExchangeApplicationApproval_active`,
             params:this.oldBadgeApprovalParam(),
@@ -328,21 +366,30 @@ export class UserProvider {
           id: "visitation_approval",
           menu: [],
           isOpen: false,
+          homeNotificationTarget: "otherApproval",
           badge:{
             url: `${ApiProvider.HRM_URL}s/VisitationApplicationApproval_active`,
-            params: this.visitationApprovalBadge(),
+            params: this.visitationApprovalBadge(false),
           }
         },{
-          name: "Container In Approval",
-          id: "containerInApproval",
+          name: "Container Approval",
+          id: "containerApproval",
           menu: [],
           isOpen: false,
-        },{
-          name: "Container Out Approval",
-          id: "containerOutApproval",
-          menu: [],
-          isOpen: false,
-        }
+          homeNotificationTarget: "otherApproval",
+
+          badge:{
+            url: `${ApiProvider.HRM_URL}s/VisitationApplicationApproval_active`,
+            params: this.visitationApprovalBadge(true),
+          }
+        },
+
+        // {
+        //   name: "Container Out Approval",
+        //   id: "containerOutApproval",
+        //   menu: [],
+        //   isOpen: false,
+        // }
       ],
       isOpen: false
     })
@@ -350,7 +397,7 @@ export class UserProvider {
     this.homeMenu.push({
       name: "My Profile",
       id: "",
-      image: "assets/imgs/menu-profile.png",
+      image: "assets/imgs/menu/profile.png",
       menu: [
         {
           name: "Profile Information",
@@ -371,7 +418,7 @@ export class UserProvider {
     this.homeMenu.push({
       name: "Logout",
       id: "logout",
-      image: "assets/imgs/menu-logout.png",
+      image: "assets/imgs/menu/logout.png",
       menu: [],
       isOpen: false
     });
@@ -395,11 +442,13 @@ export class UserProvider {
   }
 
 
-  public getBadge(){
+  public getBadge(isForce: boolean = false){
 
 
 
     // this.badge.clear();
+
+
 
     var bank: MenusApiInterface[] = this.homeMenu.slice();
 
@@ -412,19 +461,36 @@ export class UserProvider {
     }
 
 
+    if(this.lastBadgeFetch && !isForce){
+      var currentTime = new Date();
+      if(currentTime.getTime() - this.lastBadgeFetch.getTime() < (60 * 1000)){
+        return;
+      }
+    }
+
+    this.lastBadgeFetch = new Date();
+
+    this.homeNotification = {
+      application:0,
+      attendanceRecord: 0,
+      calender:0,
+      leaveApproval:0.,
+      overtimeApproval:0,
+      otherApproval:0
+    };
 
 
-
-    bank.forEach((currentHomeMenu:MenusApiInterface)=>{
+      bank.forEach((currentHomeMenu:MenusApiInterface)=>{
 
       this.recursiveScanMenu(currentHomeMenu,(lvl0Badge)=>{
         // this.badge.increase(+lvl0Badge);
 
+        if(currentHomeMenu.menu.length > 0 ){
           currentHomeMenu.badge.count += lvl0Badge;
 
+        }
+
         // currentHomeMenu.badge.count ++;
-        console.log('bank',bank);
-        console.log('bankHomeMenu',this.homeMenu);
         //
         // this.refreshMenu = false;
         // setTimeout(()=>{
@@ -462,6 +528,7 @@ export class UserProvider {
         currentParent.badge.count = data["badge"] || 0;
 
 
+
         //# untuk yg nama badge bya khusus
         switch(currentParent.id){
           case "visitationApplication":
@@ -473,13 +540,23 @@ export class UserProvider {
           case "containerOutApplication":
             currentParent.badge.count = +data["badgeContainerOut"] || 0;
             break;
+          case "announcement":
+            currentParent.badge.count = +data["total"] || 0;
+            console.log(currentParent);
+            break;
+
+        }
+
+
+        if(currentParent.homeNotificationTarget){
+          this.homeNotification[currentParent.homeNotificationTarget] += +currentParent.badge.count;
         }
 
 
         //#manggil parent di foreach
         upperParentNotify(+currentParent.badge.count);
 
-        console.log('apiBadge',data,currentParent);
+        // console.log('apiBadge',data,currentParent);
 
       })
 
@@ -492,17 +569,19 @@ export class UserProvider {
 
 
   //# application
-  private oldBadgeApplicationParam(){
+  private oldBadgeApplicationParam(status:string = "PA"){
     return {
       mobile: true,
       searchBy: "a.emp_id",
       keyWord: "",
-      cmbYear: (new Date()).getFullYear(),
+      // cmbYear: (new Date()).getFullYear(),
       cmbMonth: 0,
-      cmbStatus: "PA",
+      cmbStatus: status,
       cmbType: '',
       cmbDepartment: "",
       user_id: this.userSession.empId,
+      userId: this.userSession.empId,
+      userid: this.userSession.empId,
       cmbEmployee: this.userSession.empId,
       page: 1,
       start: 0,
@@ -510,18 +589,20 @@ export class UserProvider {
     }
   }
 
-  private oldBadgeApprovalParam(){
+  private oldBadgeApprovalParam(status:string = "PA"){
 
     return {
       mobile: true,
       searchBy: "a.emp_id",
       keyWord: "",
-      cmbYear: (new Date()).getFullYear(),
+      // cmbYear: (new Date()).getFullYear(),
       cmbMonth: 0,
-      cmbStatus: "PA",
+      cmbStatus: status,
       cmbType: '',
       cmbDepartment: "",
       user_id: this.userSession.empId,
+      userId: this.userSession.empId,
+      userid: this.userSession.empId,
       cmbEmployee: this.userSession.empId,
       page: 1,
       start: 0,
@@ -543,8 +624,24 @@ export class UserProvider {
 
 
   }
+
+  private announcementParam(){
+
+    var params = {
+      act: "list",
+      mobile: "true",
+      userid: this.userSession.empId,
+      adate_from: this.helperProvider.getServerDateFormat(BaseForm.getAdvanceDate(-60,new Date())),
+      adate_to: this.helperProvider.getServerDateFormat(BaseForm.getAdvanceDate(0,new Date())),
+      limit: "3000",
+      page:"1",
+      start: "0",
+    }
+
+    return params;
+  }
   //# approval
-  private visitationApprovalBadge(){
+  private visitationApprovalBadge(isContainer:boolean){
     return {
       activepage: [1,5],
       inactivepage: [1,5],
@@ -555,8 +652,20 @@ export class UserProvider {
       cmbDepartment: "",
       isBadge:true,
       user_id: this.userSession.empId,
+      container: "" + isContainer,
     }
   }
 
+
+}
+
+
+export interface HomeNotificationInterface{
+  application:number;
+  attendanceRecord:number;
+  calender:number;
+  leaveApproval:number;
+  overtimeApproval:number;
+  otherApproval:number
 
 }

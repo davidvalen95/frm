@@ -1,10 +1,11 @@
 import {
+  ChangeDetectorRef,
   Component, ElementRef, Injectable, Input, ViewChild
 } from '@angular/core';
 import {BaseForm, InputType, LabelType} from "../base-form";
 import {NgForm, NgModel, ValidationErrors} from "@angular/forms";
 import {Label, NavController} from "ionic-angular";
-import {ParamSearchBarPage, SearchBarPage} from "../../../pages/search-bar/search-bar";
+import {SearchBarParam, SearchBarPage} from "../../../pages/search-bar/search-bar";
 import {isDefined} from "ionic-angular/util/util";
 
 /**
@@ -69,7 +70,6 @@ export class FloatingInputComponent {
         case InputType.password:
         case InputType.email:
         case InputType.number:
-        case InputType.searchBar:
           this.finalModel = this.ionInputModel;
           this.allowedBroadcast = "ioninput";
           break;
@@ -92,10 +92,7 @@ export class FloatingInputComponent {
       this.parentForm.addControl(this.finalModel);
       this.inputType = InputType[this.baseForm.inputType];
       this.labelType = LabelType[this.baseForm.labelType];
-      if(this.inputType==InputType.searchBar){
-        this.inputType = "text";
-        // this.isSearchBar = true;//# to disable read-only attr
-      }
+
 
 
 
@@ -108,20 +105,23 @@ export class FloatingInputComponent {
     console.log('debug');
   }
 
-  onFieldClicked(ev){
-    if(this.baseForm.inputType == InputType.searchBar){
-      var param:ParamSearchBarPage = {
+  onFieldClicked(model){
+    if(this.baseForm.isSearchBar){
+      var param:SearchBarParam = {
         baseForm: this.baseForm
       }
       console.log('onFieldClicked');
       this.navController.push(SearchBarPage, param)
 
     }
+
+    this.baseForm.inputClickListener.next(model);
   }
 
 
   public broadcast(origin){
 
+    // console.log('broadcastION',origin,this.allowedBroadcast,this.baseForm.name ,this.baseForm.value);
     if(origin == this.allowedBroadcast){
       this.baseForm.broadcastIonChange(origin);
     }

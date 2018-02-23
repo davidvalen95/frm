@@ -164,9 +164,15 @@ export class IncompleteRecordApplyPage {
     employee.isReadOnly    = true;
     employee.isDisabled    = true;
 
-    var date        = new BaseForm("Date", "");
+    var date        = new BaseForm("Date", "att_date");
     date.isReadOnly = true;
     date.value      = this.applyRule.data.att_date;
+
+
+    var year        = new BaseForm("Year", "year");
+    year.isReadOnly = true;
+    year.value      = this.applyRule.data.year;
+
 
     var recordType = new BaseForm("Record Type","record_type");
     recordType.value = this.applyRule.data.record_type;
@@ -206,18 +212,18 @@ export class IncompleteRecordApplyPage {
 
     var restOut = new BaseForm("Rest Out","rest_out");
     restOut.value = this.applyRule.data.rest_out;
-    restOut.isReadOnly = restOut.value != "";
+    // restOut.isReadOnly = restOut.value != "";
     restOut.setInputTypeTime();
 
 
     var restIn = new BaseForm("Rest In","rest_in");
     restIn.value = this.applyRule.data.rest_in;
-    restIn.isReadOnly = restIn.value != "";
+    // restIn.isReadOnly = restIn.value != "";
     restIn.setInputTypeTime();
 
     var timeOut = new BaseForm("time out","time_out");
     timeOut.value = this.applyRule.data.time_out;
-    timeOut.isReadOnly = timeOut.value != "";
+    // timeOut.isReadOnly = timeOut.value != "";
     timeOut.setInputTypeTime();
 
     var reasonType = new BaseForm("Reason Type","reason_type");
@@ -240,7 +246,7 @@ export class IncompleteRecordApplyPage {
     reason.setInputTypeTextarea();
 
 
-    this.baseForms.push(employee,date,recordType,...timeCapture, timeIn,restOut,restIn,timeOut,reasonType,reason);
+    this.baseForms.push(employee,date, year,recordType,...timeCapture, timeIn,restOut,restIn,timeOut,reasonType,reason);
 
 
 
@@ -327,11 +333,11 @@ export class IncompleteRecordApplyPage {
       json["sts"]    = this.pageParam.isEditing ? "update" : "save";
       json["userid"] = this.userProvider.userSession.empId;
       json["mobile"] = true;
+      json["detail_id"] = -1;
       json           = this.helperProvider.convertIsoToServerDate(json, ["work_date_from","work_date_to"]);
 
 
       json = this.helperProvider.mergeObject(json, this.attachmentValueContainer);
-      json = this.removeWrongDate(json);
       console.log('formSUbmit', json, this.attachmentValueContainer);
 
 
@@ -350,6 +356,7 @@ export class IncompleteRecordApplyPage {
   formDelete() {
     var json       = [];
     json["sts"]    = "delete";
+    json["act"]    = "delete";
     json["tid"]    = this.pageParam.list.id;
     json["id"]     = this.pageParam.list.id;
     json["userid"] = this.userProvider.userSession.empId;

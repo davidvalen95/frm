@@ -173,11 +173,14 @@ export class ApplyLeaveApplicationPage {
     dateFrom.setInputTypeDate({});
     dateFrom.value            = (this.pageParam.dateFrom || BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.leave_date_from))).toISOString();
     dateFrom.rules.isRequired = false
+    dateFrom.isReadOnly = this.pageParam.isFromAbsenceRecord;
 
 
     var dateTo   = new BaseForm("Date To", "leave_date_to");
     dateTo.value = (this.pageParam.dateFrom || BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.leave_date_to))).toISOString();
     dateTo.setInputTypeDate({});
+    dateTo.isReadOnly = this.pageParam.isFromAbsenceRecord;
+
 
 
     var totalApply        = new BaseForm("Total Apply Day(s)", "total_day");

@@ -25,7 +25,7 @@
     [type]         = "this.inputType"
     [name]        = "baseForm.name"
     [placeholder] = "baseForm.placeholder || ''"
-    [required]    = "baseForm.rules.isRequired && this.inputType !='file'"
+    [required]    = "baseForm.rules.isRequired && this.inputType !='file' && !baseForm.isReadOnly"
     [minlength]   = "baseForm.rules.minlength"
     [maxlength]   = "baseForm.rules.maxlength"
     [pattern]     = "baseForm.rules.pattern"
@@ -35,7 +35,7 @@
     (ionChange)   = "broadcast('iontextarea')"
 
     (focus)="onFieldClicked(event)"
-    (click) = "baseForm.inputClickListener.next(ionTextAreaModel)"
+    (click) = "onFieldClicked(ionTextAreaModel)"
 
   >
 
@@ -49,12 +49,12 @@
   <ion-input
     [hidden]="this.inputType=='select' || this.inputType=='date' || baseForm.isReadOnly || this.inputType == 'textarea' || this.inputType=='file'"
     [disabled] = "baseForm.isDisabled"
-    [(ngModel)]="baseForm.value"
+    [(ngModel)]="this.baseForm.value"
     #ionInputModel = "ngModel"
     [type]         = "this.inputType"
     [name]        = "baseForm.name"
     [placeholder] = "baseForm.placeholder || ''"
-    [required]    = "baseForm.rules.isRequired && this.inputType !='file'"
+    [required]    = "baseForm.rules.isRequired && this.inputType !='file' && !baseForm.isReadOnly"
     [minlength]   = "baseForm.rules.minlength"
     [maxlength]   = "baseForm.rules.maxlength"
     [pattern]     = "baseForm.rules.pattern"
@@ -63,8 +63,7 @@
     [min]         = "baseForm.rules.min"
     (ionChange)   = "broadcast('ioninput')"
     (focus)="onFieldClicked(event)"
-    (click) = "baseForm.inputClickListener.next(ionInputModel)"
-
+    (click) = "onFieldClicked(ionInputModel)"
   >
 
   </ion-input>
@@ -78,14 +77,13 @@
     #ionSelectModel="ngModel"
     [name]        = "baseForm.name"
     [placeholder] = "baseForm.placeholder || ''"
-    [required]    = "baseForm.rules.isRequired && this.inputType !='file' "
+    [required]    = "baseForm.rules.isRequired && this.inputType !='file' && !baseForm.isReadOnly"
     [minlength]   = "baseForm.rules.minlength"
     [maxlength]   = "baseForm.rules.maxlength"
     [pattern]     = "baseForm.rules.pattern"
     (ionChange)   = "broadcast('ionselect')"
     [disabled]    = "baseForm.isDisabled"
-    (click) = "baseForm.inputClickListener.next(ionSelectModel)"
-
+    (click) = "onFieldClicked(ionSelectModel)"
   >
     <ion-option selected="" *ngFor="let option of baseForm.selectOptions" [value]="option.value">{{option.key}}</ion-option>
   </ion-select>
@@ -98,7 +96,7 @@
     [(ngModel)]       = "baseForm.value"
     [name]          = "baseForm.name"
     [placeholder]   = "baseForm.placeholder || ''"
-    [required]      = "baseForm.rules.isRequired  && this.inputType !='file'"
+    [required]      = "baseForm.rules.isRequired  && this.inputType !='file' && !baseForm.isReadOnly"
     [minlength]     = "baseForm.rules.minlength"
     [maxlength]     = "baseForm.rules.maxlength"
     [pattern]       = "baseForm.rules.pattern"
@@ -108,8 +106,7 @@
     [max]           = "baseForm.dateSetting.max"
     (ionChange)   = "broadcast('iondatetime')"
     [hourValues] = baseForm.hourValues
-    (click) = "baseForm.inputClickListener.next(ionDateModel)"
-
+    (click) = "onFieldClicked(ionDateModel)"
   ></ion-datetime>
 
 
@@ -133,7 +130,7 @@
   [name]="baseForm.name"
   [id]="baseForm.name"
   [hidden] = "this.inputType != 'file' || baseForm.isHidden === true || baseForm.isReadOnly"
-  [required] = "baseForm.rules.isRequired"
+  [required] = "baseForm.rules.isRequired && !baseForm.isReadOnly"
   (change) = "baseForm.broadcastNgChange($event,parentForm)"
   [readonly] = "baseForm.isReadOnly"
 
@@ -150,7 +147,7 @@
 
 
 
-<open-url [hidden]="baseForm.isHidden" *ngIf="baseForm.attachmentInfo.isSet" [name]="baseForm.attachmentInfo.name" [url]="baseForm.attachmentInfo.url"></open-url>
+<open-url [hidden]="baseForm.isHidden" *ngIf="baseForm.attachmentInfo.isSet && baseForm.attachmentInfo.name && baseForm.attachmentInfo.name!=''" [name]="baseForm.attachmentInfo.name" [url]="baseForm.attachmentInfo.url"></open-url>
 
 <!---->
 <!--for display onlu-->

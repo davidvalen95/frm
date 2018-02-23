@@ -13,6 +13,7 @@ export interface IncompleteRecordListInterface{
   data: IncompleteRecordListDataInterface[];
   success: boolean;
   emp_id:string
+  // records: IncompleteRecordListDataInterface[];
 }
 
 export interface IncompleteRecordListDataInterface{
@@ -91,7 +92,7 @@ export interface IncompleteRecordDataInterface extends ApproverBaseInterface,InO
   reason:string;
   reason_type:string;
   record_type:string;
-
+  year:string;
 }
 
 export interface IncompleteRecordDataDetailInterface{

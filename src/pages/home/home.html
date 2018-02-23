@@ -3,7 +3,7 @@
     <button ion-button menuToggle >
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Guard House</ion-title>
+    <ion-title><img style="height: 40px;" src="assets/imgs/head_logo.png" /></ion-title>
   </ion-navbar>
 </ion-header>
 
@@ -16,23 +16,60 @@
   <!--<button ion-button secondary menuToggle>Toggle Menu</button>-->
 
 
-  <span>
-    <b>{{userProvider.userSession.name}}</b>
-    <h3>
-      31 January 2018
+  <div class="section">
+    <h2 text-center="">Welcome!</h2>
+    <h3 text-center="">
+      {{userProvider.userSession.salutation}}. {{userProvider.userSession.name}}
+
     </h3>
-    <p>
-      This in the anouncment shown here,
-    </p>
-    <!--<button ion-button="" block="" menuToggle="" color="primary">Open Side Menu</button>-->
-    <!--<button ion-button="" block="" (click)="this.logout()" color="danger">Logout</button>-->
-  </span>
+  </div>
 
-  <button ion-button="" (click)="userProvider.getBadge()">refresh</button>
-  <!--<div *ngFor="let currentMenu of userProvider.homeMenu">-->
-    <!--<p>{{currentMenu.name}}: <span *ngIf="currentMenu.badge">{{currentMenu.badge.count}}</span></p>-->
+  <div class="section " (click)="navCtrl.push(announcementHomePage)">
+    <div text-center="">
+      <p   no-padding="" style="margin-bottom: 12px" class="announcementTitle">
+        Recent Anouncement
+        <span class="badge" *ngIf="this.announcement && +this.announcement.total > 0">{{+announcement.total}}</span>
+      </p>
+    </div>
 
-  <!--</div>-->
+
+    <div class="announcement" >
+      <span *ngIf="this.announcement && this.announcement.data && this.announcement.data[0]">
+        <p class="header">
+        <span class="title">{{announcement.data[0].subject}}</span>
+        <span class="right">{{announcement.data[0].description}}</span>
+        </p>
+
+        <p>
+          Posted on: {{announcement.data[0].postdate}}
+        </p>
+
+        <p class="content" [innerHtml]="announcement.data[0].sortcont | keepAsHtml">
+        </p>
+      </span>
+
+
+
+    </div>
+  </div>
+
+
+  <ion-grid style="text-align:center;max-width: 500px">
+    <ion-row>
+      <ion-col class="circleMenu" col-4="" *ngFor="let circleMenu of circleMenus" menuToggle="">
+        <div class="imageContainer" >
+          <img [src]="circleMenu.image"  width="100%"/>
+          <div *ngIf="userProvider.homeNotification[circleMenu.badge] > 0" class="badge">
+            {{userProvider.homeNotification[circleMenu.badge]}}
+          </div>
+        </div>
+        <p class="key" style="margin: :0;" text-center="">
+          {{circleMenu.title}}
+
+        </p>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
 </ion-content>
 

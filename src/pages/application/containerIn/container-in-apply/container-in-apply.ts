@@ -38,7 +38,12 @@ export class ContainerInApplyPage {
 
   public title: string;
   public segmentValue: string                                    = "form";
-  public pageParam: ContainerInApplyParam                        = {isEditing: false, isApproval: false, isApply: true};
+  public pageParam: ContainerInApplyParam                        = {
+    isEditing: false,
+    isApproval: false,
+    isApply: true,
+    isContainerIn: true
+  };
   public baseForms: BaseForm[]                                   = [];
   public sectionFloatings: SectionFloatingInputInterface[]       = []
   public approvalBaseForms: BaseForm[]                           = [];
@@ -97,9 +102,9 @@ export class ContainerInApplyPage {
   }
 
   setupButtonLogic() {
-    this.isCanDelete  = this.pageParam.isEditing && this.applyRule.approved == 0;
+    this.isCanDelete  = this.pageParam.isEditing && this.applyRule.approved == 0 && this.pageParam.isContainerIn;
     this.isCanSubmit  = this.pageParam.isApply || ( this.pageParam.isEditing && this.applyRule.approved == 0);
-    this.isCanApprove = this.pageParam.isApproval && this.applyRule.data.status.toLowerCase() != 'ca' && this.applyRule.allowEdit;
+    this.isCanApprove = this.pageParam.isApproval && this.applyRule.allowEdit;
   }
 
   ionViewDidLoad() {
@@ -161,8 +166,6 @@ export class ContainerInApplyPage {
 
 
 
-
-
     //region baseform
     var name: BaseForm = new BaseForm("Employee", "employee");
     name.value         = this.pageParam.isEditing ? this.applyRule.employee || "" : `${this.userProvider.userSession.empId} ${this.userProvider.userSession.name}`;
@@ -205,11 +208,7 @@ export class ContainerInApplyPage {
       return keyValue;
     }, true)
 
-    visitorCategory.changeListener.subscribe((data)=>{
-      this.apiProvider.getVisitationFormRules(this.userProvider.userSession.ct_id,data.value,false).subscribe((rule)=>{
-        console.log('theRule,rule',rule);
-      })
-    })
+
     this.baseForms.push(name, createdDate, visitorCategory);
     //endregion
 
@@ -244,7 +243,7 @@ export class ContainerInApplyPage {
 
 
     this.sectionFloatings.push({
-      name: "Container In Detail",
+      name: this.pageParam.isContainerIn ? "Container In Detail" : "Container Out Detail",
       isOpen: false,
       baseForms: [visitationDateFrom, untilDate, visitationTime, deliveryType],
     })
@@ -274,34 +273,72 @@ export class ContainerInApplyPage {
     var containerNo   = new BaseForm("Container no.", 'visitor_no');
     containerNo.value = this.applyRule.data.visitor_no;
 
+
     var containerSealNo   = new BaseForm("Container seal no.", 'container_sealno');
     containerSealNo.value = this.applyRule.data.container_sealno;
+
+
     //=========
 
 
+    //# containerOut
+    var specifyReason = new BaseForm("Please Specify reason", "sealno_reason");
+    specifyReason.toggleHidden(true, true);
+    specifyReason.value = this.applyRule.data.sealno_reason;
+
+    var isWithoutContainerSealNo = new BaseForm("Without Container Seal no", "isWithoutContainerSealNo");
+    isWithoutContainerSealNo.toggleHidden(this.pageParam.isContainerIn, false);
+    isWithoutContainerSealNo.setInputTypeSelectTrueFalse();
+    isWithoutContainerSealNo.value = "false";
+    isWithoutContainerSealNo.changeListener.subscribe((data) => {
+      var isWithout = this.helperProvider.parseBoolean(data.value);
+      containerSealNo.toggleHidden(isWithout, true);
+      specifyReason.toggleHidden(!isWithout, true);
+    })
+    //============
+    var inspectorSealNo = new BaseForm("Inspector Seal no.", "inspector_sealno");
+    inspectorSealNo.toggleHidden(this.pageParam.isContainerIn, false);
+    inspectorSealNo.value = this.applyRule.data.inspector_sealno;
+
+    var dxnSealno   = new BaseForm("Dxn Seal no.", "dxn_sealno");
+    dxnSealno.value = this.applyRule.data.dxn_sealno;
+    dxnSealno.setInputTypeSelectChain<ContainerInRuleInterface>(this.apiGetApplyRule(), (data: ContainerInRuleInterface) => {
+      var keyValue: KeyValue[] = [];
+
+      data.dxnSealNo.forEach((dxnSealno) => {
+        keyValue.push({
+          key: dxnSealno, value: dxnSealno,
+        })
+      })
+      return keyValue;
+    })
+    dxnSealno.toggleHidden(this.pageParam.isContainerIn, true);
+
     var transportationCompany   = new BaseForm("Transportation company", "outsider_code");
     transportationCompany.value = this.applyRule.data.outsider_code;
-
-    transportationCompany.setInputTypeSelectChain(this.apiGetOutsider(),(data=>{
-      var keyValue: KeyValue[] = [];
-      console.log('transportationCompany',data);
-
-      return keyValue;
-    }))
+    transportationCompany.setInputTypeSelect([]);
+    // transportationCompany.setInputTypeSelectChain()
 
     //when export
 
     var referenceNo   = new BaseForm("Reference No", 'visitor_id');
     referenceNo.value = this.applyRule.data.visitor_id;
 
+
     var portName   = new BaseForm("port name", "port_name");
     portName.value = this.applyRule.data.port_name;
+
+
     //=========
+
+
+    //# container Out
+
 
     this.sectionFloatings.push({
       name: "Container Information",
       isOpen: false,
-      baseForms: [referenceNo, containerName, containerSize, containerNo, containerSealNo, transportationCompany, portName]
+      baseForms: [referenceNo, containerName, containerSize, containerNo, containerSealNo, specifyReason, isWithoutContainerSealNo, inspectorSealNo, dxnSealno, transportationCompany, portName,]
     });
 
 
@@ -316,12 +353,12 @@ export class ContainerInApplyPage {
       portName.toggleHidden(false, true)
 
 
-      if (data.value.toLowerCase() == "import") {
+      if (data.value.toLowerCase() == "import" && this.pageParam.isContainerIn) {
         referenceNo.toggleHidden(true);
         portName.toggleHidden(true);
       }
 
-      if (data.value.toLowerCase() == 'export') {
+      if (data.value.toLowerCase() == 'export' && this.pageParam.isContainerIn) {
         containerSealNo.toggleHidden(true);
         containerNo.toggleHidden(true);
       }
@@ -331,27 +368,151 @@ export class ContainerInApplyPage {
     //endregion
 
 
-    var remark = new BaseForm("remark", "Remark");
+    //region additional
 
-    this.sectionFloatings.push({
-      name: "Additional Information",
-      baseForms: [remark,],
-      isOpen: false,
+    var remark   = new BaseForm("remark", "remark");
+    remark.value = this.applyRule.data.remark;
+    remark.setIsRequired(false);
+
+
+    var purpose   = new BaseForm("Purpose", "purpose_id");
+    purpose.value = this.applyRule.data.purpose_id;
+    purpose.setInputTypeSelectChain<ContainerInRuleInterface>(this.apiGetApplyRule(), (data: ContainerInRuleInterface) => {
+      var keyValue: KeyValue[] = [];
+
+      data.purpose.forEach((tv) => {
+        keyValue.push({
+          key: tv.purpose,
+          value: tv.id,
+          originJson: tv,
+        });
+      })
+
+      return keyValue;
+    });
+
+
+    var purposeSpecify   = new BaseForm("Please Specify Purpose", "purpose_specify");
+    purposeSpecify.value = this.applyRule.data.purpose_specify;
+    purposeSpecify.toggleHidden(true, true);
+
+
+    purpose.changeListener.subscribe((data) => {
+      var keyValue = data.getSelectOptionJsonOrigin();
+      if (!keyValue) {
+        return;
+      }
+      var isSpecify: boolean = keyValue.originJson["specify"];
+      purposeSpecify.toggleHidden(!isSpecify, true);
     })
 
 
+    var destination = new BaseForm("Destination", "destination_id");
+
+    destination.value = this.applyRule.data.destination_id
+
+    destination.setInputTypeSelectChain<ContainerInRuleInterface>(this.apiGetApplyRule(), (data: ContainerInRuleInterface) => {
+      var keyValue: KeyValue[] = [];
+
+      data.destination.forEach((tv) => {
+        keyValue.push({
+          key: tv.destination,
+          value: tv.id,
+          originJson: tv,
+        });
+      })
+
+      return keyValue;
+    });
+
+
+    var destinationSpecify   = new BaseForm("Please Specify destination", "destination_specify");
+    destinationSpecify.value = this.applyRule.data.destination_specify
+    destinationSpecify.toggleHidden(true, true);
+
+
+    destination.changeListener.subscribe((data) => {
+      var keyValue = data.getSelectOptionJsonOrigin();
+      if (!keyValue) {
+        return;
+      }
+      var isSpecify: boolean = keyValue.originJson["specify"];
+      destinationSpecify.toggleHidden(!isSpecify, true);
+    })
+
+
+    var attachment1 = new BaseForm("Attachment 1", "attachment1").setInputTypeFile(this.attachmentValueContainer).toggleHidden();
+    var attachment2 = new BaseForm("Attachment 2", "attachment2").setInputTypeFile(this.attachmentValueContainer).toggleHidden();
+    var attachment3 = new BaseForm("Attachment 3", "attachment3").setInputTypeFile(this.attachmentValueContainer).toggleHidden();
+    var attachment4 = new BaseForm("Attachment 4", "attachment4").setInputTypeFile(this.attachmentValueContainer).toggleHidden();
+    this.setAttachmentData(this.applyRule, [attachment1, attachment2, attachment3, attachment4]);
+
+
+    visitorCategory.changeListener.subscribe((data) => {
+      this.apiProvider.getVisitationFormRules(this.userProvider.userSession.ct_id, data.value, false).subscribe((rule) => {
+        console.log('theRule,rule', rule);
+        var outsider: { outsider_code: string, company_name: string }[] = rule["outsiders"];
+
+        var keyValue: KeyValue[] = [];
+
+        outsider.forEach((current) => {
+          keyValue.push({
+            key: current.company_name,
+            value: current.outsider_code,
+          });
+        })
+
+        transportationCompany.setInputTypeSelect(keyValue);
+        this.attachmentToggle(rule, [attachment1, attachment2, attachment3, attachment4]);
+      })
+    })
+
+
+    this.sectionFloatings.push({
+      name: "Additional Information",
+      baseForms: [remark, purpose, purposeSpecify, destination, destinationSpecify, attachment1, attachment2, attachment3, attachment4],
+      isOpen: false,
+    })
+
+    //endregion
+
+
+    this.setNotEditable();
+
+
+  }
+
+  private setEditableForContainerOut(currentBaseForm: BaseForm) {
+    if (!this.pageParam.isContainerIn && !this.pageParam.isApproval) {
+      console.log('setNotEditable', this.pageParam.isContainerIn, this.pageParam.isApproval)
+
+      var editableInContainerOut = ["visitation_date", "until_date", "visitation_time", "visitor_no", "container_sealno", "sealno_reason", "isWithoutContainerSealNo", "inspector_sealno", "dxn_sealno", "destination_id", "destination_specify", "purpose_id", "purpose_specify"];
+
+      if (editableInContainerOut.indexOf(currentBaseForm.name) > -1) {
+        currentBaseForm.isReadOnly = false;
+      }
+
+    }
   }
 
   private setNotEditable() {
 
     this.baseForms.forEach((currentBaseForm: BaseForm) => {
-      currentBaseForm.isReadOnly = (this.isCanSubmit && !this.pageParam.isApproval) ? currentBaseForm.isReadOnly : true;
+      currentBaseForm.isReadOnly = (this.isCanSubmit && !this.pageParam.isApproval && this.pageParam.isContainerIn) ? currentBaseForm.isReadOnly : true;
+
+      this.setEditableForContainerOut(currentBaseForm);
+      //# kalo lagi container out, enable visitation date nya
+
     })
 
-    this.sectionDataDetail.forEach(currentInputSection => {
+    this.sectionFloatings.forEach(currentInputSection => {
       currentInputSection.baseForms.forEach((currentBaseForm: BaseForm) => {
-        currentBaseForm.isReadOnly = (this.isCanSubmit && !this.pageParam.isApproval) ? currentBaseForm.isReadOnly : true;
+        currentBaseForm.isReadOnly = (this.isCanSubmit && !this.pageParam.isApproval && this.pageParam.isContainerIn) ? currentBaseForm.isReadOnly : true;
+        this.setEditableForContainerOut(currentBaseForm);
+
       })
+
+      currentInputSection.isOpen = (!this.pageParam.isApproval) //#
     })
     this.approvalBaseForms.forEach((approvalBaseForm: BaseForm) => {
       approvalBaseForm.isReadOnly = (!this.isCanApprove);
@@ -374,18 +535,24 @@ export class ContainerInApplyPage {
      */
 
     if (form.valid) {
-      var param               = this.helperProvider.convertToJson(form);
-      param["approve_remark"] = form.value.approver_remark;
-      param["id"]             = this.pageParam.list.id || this.pageParam.list.tid || "-1";
-      param["sts"]            = "update";
-      param["tid"]            = this.pageParam.list.id || this.pageParam.list.tid || "-1";
-      param["userid"]         = this.userProvider.userSession.empId;
-      param["mobile"]         = "true";
-      param["hospital_name"]  = "";
+      var param                          = this.helperProvider.convertToJson(form);
+      param["approve_remark"]            = form.value.approver_remark;
+      param["id"]                        = this.pageParam.list.id || this.pageParam.list.tid || "-1";
+      param["visitation_application_id"] = this.pageParam.list.id || this.pageParam.list.tid || "-1";
+      param["act"]                       = "edit";
+      // param["sts"]            = "update";
+      param["tid"]                       = this.pageParam.list.id || this.pageParam.list.tid || "-1";
+      param["userid"]                    = this.userProvider.userSession.empId;
+      param["mobile"]                    = "true";
+      param["container"]                 = "true";
+      param["requisition_type"]          = "container";
+      // param["con"]
+      param                              = this.helperProvider.convertIsoToServerDate(param, ["visitation_date", "until_date"]);
+
       console.log('formAPprovalSubmit', param);
 
 
-      var url = `${ApiProvider.HRM_URL}s/ContainerInApplicationApproval_op`;
+      var url = `${ApiProvider.HRM_URL}s/VisitationApplicationApproval_op`;
       this.helperProvider.showConfirmAlert("Commit Approval", () => {
         this.apiProvider.submitGet<SuccessMessageInterface>(url, param, (data: SuccessMessageInterface) => {
           this.navCtrl.pop();
@@ -407,18 +574,18 @@ export class ContainerInApplyPage {
       var json = this.helperProvider.convertToJson(form);
       console.log('jsonraw', json);
 
-      json["emp_id"] = this.applyRule.data.emp_id;
+      json["emp_id"]           = this.applyRule.data.emp_id;
       // json["half_date"]  = form.value.leave_date_from;
-      json["sts"]    = this.pageParam.isEditing ? "update" : "save";
-      json["act"]    = this.pageParam.isEditing ? "edit" : "add";
-      json["tid"]    = this.pageParam.isEditing ? this.pageParam.list.id : -1;
-      json["userid"] = this.userProvider.userSession.empId;
-      json["mobile"] = true;
-      json["id"]     = this.pageParam.isEditing ? this.pageParam.list.id : -1;
-      json           = this.helperProvider.convertIsoToServerDate(json, ["visitation_date", "until_date"]);
+      json["sts"]              = this.pageParam.isEditing ? "update" : "save";
+      json["act"]              = this.pageParam.isEditing ? "edit" : "add";
+      json["tid"]              = this.pageParam.isEditing ? this.pageParam.list.id : -1;
+      json["userid"]           = this.userProvider.userSession.empId;
+      json["mobile"]           = true;
+      json["id"]               = this.pageParam.isEditing ? this.pageParam.list.id : -1;
+      json                     = this.helperProvider.convertIsoToServerDate(json, ["visitation_date", "until_date"]);
       json["requisition_type"] = 'container';
-      json["container_out"] = false;
-
+      json["container_out"]    = !this.pageParam.isContainerIn;
+      json["container_in"]     = this.pageParam.isContainerIn;
 
 
       json = this.helperProvider.mergeObject(json, this.attachmentValueContainer);
@@ -438,13 +605,20 @@ export class ContainerInApplyPage {
   }
 
 
-  formDelete() {
-    var json       = [];
-    json["sts"]    = "delete";
-    json["tid"]    = this.pageParam.list.id;
-    json["id"]     = this.pageParam.list.id;
-    json["userid"] = this.userProvider.userSession.empId;
-    json["mobile"] = true;
+  formDelete(form: NgForm) {
+
+    // var json = this.helperProvider.convertToJson(form);
+    var json = [];
+    // json["sts"]    = "delete";
+
+    json["act"]              = "delete";
+    json["requisition_type"] = 'container';
+    json["container_out"]    = false;
+    json["tid"]              = this.pageParam.list.id;
+    json["id"]               = this.pageParam.list.id;
+    json["userid"]           = this.userProvider.userSession.empId;
+    json["empid"]            = this.userProvider.userSession.empId;
+    json["mobile"]           = true;
     this.helperProvider.showConfirmAlert("Delete this leave application?", () => {
       this.apiExecuteSubmitApplication(json);
     });
@@ -493,15 +667,18 @@ export class ContainerInApplyPage {
     if (!this.apiReplaySubject.applyRule) {
       this.apiReplaySubject.applyRule = new ReplaySubject(0);
 
-      var url    = `${ApiProvider.HRM_URL}${this.pageParam.isApproval ? "s/VisitationApplicationApprovaltop" : "s/VisitationApplication_top"}`;
+      // var url    = `${ApiProvider.HRM_URL}${this.pageParam.isApproval ? "s/VisitationApplicationApprovaltop" : "s/VisitationApplication_top"}`;
+      var url    = `${ApiProvider.HRM_URL}s/VisitationApplication_top`;
       var params = {
         mobile: "true",
         cmd: this.pageParam.isEditing ? "edit" : "add",
-        tid: this.pageParam.isEditing ? this.pageParam.list.id : this.userProvider.userSession.empId,
+        tid: this.pageParam.isEditing ? this.pageParam.list.id : "-1",
         user_id: this.userProvider.userSession.empId,
         container: "true",
         requisition_type: "container",
-        container_out: "false",
+        container_out: "" + !this.pageParam.isContainerIn,
+        container_in: "" + this.pageParam.isContainerIn,
+        approval: "" + this.pageParam.isApproval,
 
       }
 
@@ -518,30 +695,6 @@ export class ContainerInApplyPage {
 
   }
 
-  private apiGetOutsider(){
-    if (!this.apiReplaySubject.outsider) {
-      this.apiReplaySubject.outsider = new ReplaySubject(0);
-
-
-      var url    = `${ApiProvider.HRM_URL}s/VisitationRulesList`;
-      var params = {
-        mobile: "true",
-        requisition_type: "container",
-        reqtype: "container",
-        container_out: "false",
-
-      }
-
-
-      this.httpClient.get<ContainerInRuleInterface>(url, {
-        withCredentials: true,
-        params: params
-      }).subscribe(this.apiReplaySubject.outsider);
-    }
-
-
-    return this.apiReplaySubject.outsider;
-  }
 
   private apiGetAtachmentRule(leaveType): Observable<AttachmentRuleInterface> {
     // http://hrms.dxn2u.com:8888/hrm_test2/s/LeaveApplicationAjax?reqtype=req_attach&ct_id=MY&leave_type=AL
@@ -565,27 +718,38 @@ export class ContainerInApplyPage {
 
     // http://hrms.dxn2u.com:8888/hrm_test2/s/LeaveApplicationAjax?reqtype=total_day&emp_id=MY080127&leave_type=EL&leave_date_from=22%20Feb%202018&leave_date_to=22%20Feb%202018&halfday_date=22%20Feb%202018&exclude_dt=&id=-1&ct_id=MY&callback=Ext.data.JsonP.callback56&_dc=1517798772579
 
-    var url = `${ApiProvider.HRM_URL}s/VisitationApplication_op`;
-    //
-    // this.httpClient.post(url,body)
 
-    this.apiProvider.submitFormWithProgress<SuccessMessageInterface>(url, json, (response: SuccessMessageInterface) => {
+    var application = this.pageParam.isContainerIn ? `${ApiProvider.HRM_URL}s/VisitationApplication_op` : `${ApiProvider.HRM_URL}s/VisitationApplicationContainerout_op`;
 
-      var message = response.message || "Cannot retrieve message";
-      if (response.success) {
-        this.helperProvider.presentToast(message);
-
-        setTimeout(() => {
-          this.navCtrl.pop();
-
-        }, 500)
-      } else {
-        this.helperProvider.showAlert(message);
-      }
-
-    });
+    var url = this.pageParam.isApproval ? "" : application;
 
 
+    // this.apiProvider.submitFormWithProgress<SuccessMessageInterface>(url, json, this.responseClosure);
+
+    if (this.pageParam.isContainerIn) {
+      this.apiProvider.submitFormWithProgress<SuccessMessageInterface>(url, json, this.responseClosure.prototype);
+
+    } else {
+      this.apiProvider.submitGet<SuccessMessageInterface>(url, json, this.responseClosure.prototype);
+
+    }
+
+
+  }
+
+  private responseClosure(response) {
+    console.log('responseClosure', response);
+    var message = response.message || "Cannot retrieve message";
+    if (response.success) {
+      this.helperProvider.presentToast(message);
+
+      setTimeout(() => {
+        this.navCtrl.pop();
+
+      }, 500)
+    } else {
+      this.helperProvider.showAlert(message);
+    }
   }
 
 
@@ -595,11 +759,11 @@ export class ContainerInApplyPage {
     for (var k in baseForms) {
       var key                = +k;// to number
       var keyPlusOne         = key + 1;
-      var isVisible: boolean = this.helperProvider.parseBoolean(rule[`reqAttach${keyPlusOne}`] || false);
+      var isVisible: boolean = this.helperProvider.parseBoolean(rule[`attachment${keyPlusOne}`] || false);
       console.log(keyPlusOne, isVisible, typeof isVisible);
       baseForms[key].isHidden = !isVisible;
       baseForms[key].setIsRequired(isVisible);
-      baseForms[key].label = rule[`reqAttachDesc${keyPlusOne}`] || `Attachment ${keyPlusOne}`;
+      baseForms[key].label = rule[`attachment${keyPlusOne}_desc`] || `Attachment ${keyPlusOne}`;
 
       if (key == 3) {
         baseForms[key].rules.isRequired = false;
@@ -662,5 +826,5 @@ export class ContainerInApplyPage {
 }
 
 export interface ContainerInApplyParam extends ApplyBaseInterface<ContainerInListDataInterface> {
-
+  isContainerIn: boolean;
 }

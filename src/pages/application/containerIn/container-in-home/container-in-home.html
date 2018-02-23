@@ -21,7 +21,7 @@
 <ion-content padding="" [ngClass]="{'partial':this.rootParam.isPartial}">
 
   <ion-segment *ngIf="!pageParam.isApply && !pageParam.isEditing" (ionChange)="ionSegmentChange()"  style='margin-top:16px;'[(ngModel)]="segmentValue">
-    <ion-segment-button *ngIf="!pageParam.isApproval" value="apply"  >
+    <ion-segment-button *ngIf="!pageParam.isApproval && pageParam.isContainerIn" value="apply"  >
       Apply
     </ion-segment-button>
     <ion-segment-button value="list" >
@@ -100,6 +100,19 @@
           </ion-select>
         </ion-item>
 
+         <!--<ion-item *ngIf="pageParam.isApproval">-->
+          <!--<ion-label >Search by</ion-label>-->
+          <!--<ion-select  [(ngModel)]="filter.cmbSearch" interface="popover">-->
+            <!--<ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.filterRule,'cmbSearch')" [selected]="true" [value]="object.value" >{{object.text}}</ion-option>-->
+          <!--</ion-select>-->
+        <!--</ion-item>-->
+
+
+        <!--<ion-item *ngIf="pageParam.isApproval">-->
+          <!--<ion-label >Key word</ion-label>-->
+          <!--<ion-input [(ngModel)]="filter.keyWord"></ion-input>-->
+        <!--</ion-item>-->
+
 
         <!--<ion-item>-->
         <!--<ion-label>Leave Type</ion-label>-->
@@ -119,7 +132,9 @@
 
 
 
-    <span *ngIf="this.listData"><p padding="" *ngIf="  listData.total == 0">No record</p></span>
+
+
+    <span *ngIf="this.listData"><p padding="" *ngIf="  listData.totalRecord && +listData.totalRecord == 0">No record</p></span>
 
     <ion-grid *ngIf="this.listData">
       <ion-row >
@@ -128,7 +143,7 @@
           <ion-card >
             <ion-card-header  (click)="record.isOpen = !record.isOpen">
               <ion-item no-padding="">
-                <h2>{{pageParam.isApproval ? record.data5 : record.visitorcategory_name | ifEmptyThenDash}}</h2>
+                <h2>{{ record.visitorcategory_name | ifEmptyThenDash}}</h2>
                 <span item-right="">
                 <ion-icon name="arrow-down" *ngIf="record.isOpen"></ion-icon>
                 <ion-icon name="arrow-up" *ngIf="!record.isOpen"></ion-icon>
@@ -151,6 +166,18 @@
                   <span>{{record.status_str| ifEmptyThenDash}}</span>
                 </ion-item>
 
+
+
+                <ion-item *ngIf="pageParam.isApproval">
+
+                  <span >{{ record.employee | ifEmptyThenDash }}</span>
+                </ion-item>
+
+                <ion-item *ngIf="pageParam.isApproval">
+
+                  <span >{{ record.container_out == 't' ? "Container out" : "Container in"  | ifEmptyThenDash }}</span>
+                </ion-item>
+
                 <!--<ion-item *ngIf="record.visitor_name; let result">-->
                 <!--Visitor Name-->
                 <!--<span  [style.color]="this.getStatusColor(record.status)" item-end="">{{result}} </span>-->
@@ -160,33 +187,44 @@
                 <!--Created By(Id)-->
                 <!--<span item-end="">{{record.emp_id}} </span>-->
                 <!--</ion-item>-->
-                <ion-item *ngIf="!pageParam.isApproval">
+                <ion-item >
                   Created date
                   <span item-end="">{{record.created_date | ifEmptyThenDash:record.employee}}</span>
                 </ion-item>
+
+                <ion-item *ngIf="pageParam.isApproval">
+                  Visitor name
+                  <span item-end="">{{record.visitor_name | ifEmptyThenDash}}</span>
+                </ion-item>
+
+
                 <ion-item>
                   Visitation date
-                  <span item-end="">{{pageParam.isApproval ? record.data1 : record.visitation_date | ifEmptyThenDash}}</span>
+                  <span item-end="">{{record.visitation_date | ifEmptyThenDash}}</span>
                 </ion-item>
                 <ion-item>
                   Visitation time
-                  <span item-right="">{{pageParam.isApproval ? record.data2 : record.visitation_time | ifEmptyThenDash }}</span>
+                  <span item-right="">{{record.visitation_time | ifEmptyThenDash }}</span>
                 </ion-item>
 
                 <ion-item>
                   Purpose
-                  <span item-right="">{{pageParam.isApproval ? record.data3 : record.purpose | ifEmptyThenDash }}</span>
+                  <span item-right="">{{record.purpose | ifEmptyThenDash }}</span>
                 </ion-item>
 
-                <ion-item>
-                  Reference
-                  <span item-right="">{{pageParam.isApproval ? record.data3 : record.port_name | ifEmptyThenDash }}</span>
+                <ion-item *ngIf="!pageParam.isApproval">
+                  No. Reference
+                  <span item-right="">{{ record.visitor_id | ifEmptyThenDash }}</span>
                 </ion-item>
 
-                <ion-item>
+                <ion-item *ngIf="!pageParam.isApproval">
                   Port name
-                  <span item-right="">{{ record.data4  | ifEmptyThenDash }}</span>
+                  <span item-right="">{{ record.port_name | ifEmptyThenDash }}</span>
                 </ion-item>
+
+
+
+
 
               </ion-list>
 

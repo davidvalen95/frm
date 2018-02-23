@@ -177,6 +177,7 @@ export class WorkoutsideApplyPage {
     var dateFrom = new BaseForm("date from", "work_date_from");
     dateFrom.setInputTypeDate({min:new Date()});
     dateFrom.value = (this.pageParam.dateFrom || BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.work_date_from))).toISOString();
+    dateFrom.isReadOnly = this.pageParam.isFromAbsenceRecord;
     dateFrom.changeListener.subscribe((data)=>{
       if (new Date(dateTo.value) < new Date(dateFrom.value)) {
         dateTo.value = dateFrom.value;
@@ -192,6 +193,8 @@ export class WorkoutsideApplyPage {
     var dateTo = new BaseForm("date to", "work_date_to");
     dateTo.setInputTypeDate({min:new Date()});
     dateTo.value = (this.pageParam.dateFrom || BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.work_date_to))).toISOString();
+    dateTo.isReadOnly = this.pageParam.isFromAbsenceRecord;
+
     dateTo.changeListener.subscribe((data: BaseForm) => {
       this.setDataDetailSection(null,dateFrom,dateTo,firstDayConfig);
     });

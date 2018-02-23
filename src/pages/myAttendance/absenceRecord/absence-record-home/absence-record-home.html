@@ -149,13 +149,22 @@
 
 
               <ion-list class="visitationMini" ngClass="ionContent" >
-
+                <ion-item >
+                  Remark
+                  <!--<span  [style.color]="this.getStatusColor(record.status)" item-end="">{{record.status | ifEmptyThenDash}} </span>-->
+                  <span  item-end="">{{record.remark| ifEmptyThenDash}}</span>
+                </ion-item>
 
               </ion-list>
 
 
-              <p padding="">Apply to one below</p>
-              <ion-row no-padding>
+
+
+
+
+
+              <p *ngIf="record.remark.toLowerCase() != 'absent'" padding="">Apply to one below</p>
+              <ion-row no-padding *ngIf="record.remark.toLowerCase() != 'absent'">
                 <!--<ion-col>-->
                 <!--<button ion-button clear small color="danger" icon-start>-->
                 <!--<ion-icon name='close-circle'></ion-icon>-->

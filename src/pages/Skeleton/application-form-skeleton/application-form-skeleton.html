@@ -19,7 +19,7 @@
       <floating-input  *ngFor="let currentBaseForm of this.baseForms" [parentForm]="parentForm" [baseForm]="currentBaseForm"></floating-input>
     </ion-list>
 
-    <button class="submitButton" ion-button=""  type="button" (click)="leavePage()" color="light">Cancel</button>
+    <button class="submitButton" ion-button=""  type="button" (click)="leavePage()" color="warning">Cancel</button>
     <button  class="submitButton" ion-button=""  type="submit"  align-items-center="" color="primary">Submit</button>
   </form>
 </ion-content>

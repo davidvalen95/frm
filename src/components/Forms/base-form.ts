@@ -219,6 +219,27 @@ export class BaseForm {
 
   }
 
+  public setInputTypeSelectTrueFalse() {
+    if (!this.isSelectProcessing) {
+      this.selectOptions      = [];
+      this.isSelectProcessing = true;
+      this.placeholder        = `Select ${this.label}`;
+      this.inputType          = InputType.select;
+      this.selectOptions      = [{
+        key:"Yes",value:"true",
+      },{
+        key: "No", value: "false",
+      }];
+
+      this.isSelectProcessing = false;
+
+
+    }
+
+    return this;
+
+  }
+
   public setInputTypeSelectChain<T>(observable: Observable<T>, processData: (data: T) => KeyValue[], isFirstDefault:boolean = false) {
     this.placeholder = `Select ${this.label}`;
 
@@ -245,10 +266,11 @@ export class BaseForm {
   }
 
   public setInputTypeSearchBar(url: string, httpParams: HttpParams, paramBindEvent: string[], processData: (serverResponse: any) => KeyValue[]) {
-    // this.placeholder = `Search ${this.label}`;
+    this.placeholder = `Search ${this.label}`;
 
+    this.value = "-";
     this.isSearchBar      = true;
-    this.inputType        = InputType.searchBar;
+    this.inputType        = InputType.text;
     // this.isReadOnly       = true
     this.searchBarSetting = {
       url: url,
@@ -311,7 +333,7 @@ export class BaseForm {
     //    return;
     // this.lastBroadcastWithNumber++;
     //# IONCHANGE ANEH TRIGGER 4 KALI
-    console.log('broadcastIonChange', origin);
+    // console.log('broadcastIonChange', origin, this.name, this.value);
     // if (this.lastBroadcastWithNumber % 4 > 0) {
     //   return;
     // }
@@ -364,7 +386,6 @@ export class BaseForm {
       case InputType.email:
       case InputType.number:
       case InputType.password:
-      case InputType.searchBar:
       case InputType.text:
         return this.value !== '' ? this.value : "-";
       case InputType.select:
@@ -380,7 +401,7 @@ export class BaseForm {
         return bank;
 
       default:
-        return this.value;
+        return "-";
     }
 
   }
@@ -418,6 +439,18 @@ export class BaseForm {
     return this;
   }
 
+  public getSelectOptionJsonOrigin() : KeyValue{
+    var filter = this.selectOptions.filter((data)=>{
+      return data.value == this.value;
+    });
+
+    if(filter[0]){
+      return filter[0];
+    }else{
+      return null;
+    }
+  }
+
 
 }
 
@@ -445,7 +478,7 @@ export interface InputStyle {
 }
 
 export enum InputType {
-  text, select, password, email, date, number, searchBar, textarea, file
+  text, select, password, email, date, number, textarea, file
 }
 
 export enum LabelType {

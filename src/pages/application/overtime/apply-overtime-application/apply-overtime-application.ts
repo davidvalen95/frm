@@ -67,7 +67,9 @@ export class ApplyOvertimeApplicationPage {
       this.applyRule = data;
       this.applyRule.data = this.helperProvider.mergeObject(this.applyRule.data, this.applyRule.datatmp || this.applyRule.data);
 
+      this.setupButtonLogic();
       this.setupForms();
+
 
       if (!this.pageParam.isApply) {
         this.getHistory();
@@ -76,7 +78,6 @@ export class ApplyOvertimeApplicationPage {
         this.setupApprovalForms();
       }
 
-      this.setupButtonLogic();
 
     }).catch((rejected) => {
       this.helperProvider.presentToast("Error");

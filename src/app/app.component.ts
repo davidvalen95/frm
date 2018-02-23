@@ -14,7 +14,6 @@ import {ApiProvider, MenusApiInterface} from "../providers/api/api";
 import {UserProvider} from "../providers/user/user";
 import {DatePicker} from "@ionic-native/date-picker";
 import {shim} from 'promise.prototype.finally';
-import {ContainerInPage} from "../pages/container-in/container-in";
 import {LoginPage} from "../pages/login/login";
 import {RootParamsProvider} from "../providers/root-params/root-params";
 import {EmptyPage} from "../pages/empty/empty";
@@ -35,6 +34,7 @@ import {AbsenceRecordHomePage} from "../pages/myAttendance/absenceRecord/absence
 import {CalenderPage} from "../pages/calender/calender";
 import {IncompleteRecordHomePage} from "../pages/myAttendance/incompleteRecord/incomplete-record-home/incomplete-record-home";
 import {Badge} from "@ionic-native/badge";
+import {AnnouncementHomePage} from "../pages/announcement/announcement-home/announcement-home";
 @Component({
     templateUrl: 'app.html'
 })
@@ -105,6 +105,7 @@ export class MyApp {
         // Reset the content nav to have just this page
         // we wouldn't want the back button to show in this scenario
 
+      console.log('theId',pageString);
         this.rootPage = EmptyPage;
 
         setTimeout(() => {
@@ -122,7 +123,11 @@ export class MyApp {
                 case "home":
                     this.rootPage = HomePage
                     break;
-
+                case "announcement":
+                  this.rootParams.announcementParam = {isApproval: false};
+                  this.rootPage = AnnouncementHomePage;
+                  // this.nav.push(AnnouncementHomePage, this.rootParams.announcementParam )
+                  break;
 
                 case "myCalender":
                     this.rootPage = CalenderPage
@@ -155,7 +160,11 @@ export class MyApp {
                     this.rootPage = VisitationApplicationPage;
                     break;
                 case "containerInApplication":
-                    this.rootParams.containerInHomeParam = {isApproval:false};
+                    this.rootParams.containerInHomeParam = {isApproval:false, isContainerIn:true};
+                    this.rootPage = ContainerInHomePage;
+                    break;
+                case "containerOutApplication":
+                    this.rootParams.containerInHomeParam = {isApproval:false, isContainerIn:false};
                     this.rootPage = ContainerInHomePage;
                     break;
                 //==============================================
@@ -210,8 +219,8 @@ export class MyApp {
                     this.rootParams.visitationApplicationParam = params;
                     this.rootPage = VisitationApplicationPage
                     break;
-                case "containerInApproval":
-                    this.rootParams.containerInHomeParam = {isApproval:true};
+                case "containerApproval":
+                    this.rootParams.containerInHomeParam = {isApproval:true,isContainerIn:true};
                     this.rootPage = ContainerInHomePage;
                     break;
                 //===============================================
@@ -353,6 +362,7 @@ export interface ApplyBaseInterface<T> {
     isApproval: boolean;
     list?: T;
     title?: string;
+    isFromAbsenceRecord? :boolean;
 }
 
 export interface HomeBaseInterface {

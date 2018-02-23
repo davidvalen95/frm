@@ -35,14 +35,14 @@ export class ContainerInHomePage {
 
 
 
-  public title: string = "Overtime Application";
+  public title: string = "Container Application";
   public visitationData: ContainerInDataInterface[] = [];
 
   public segmentValue: string = "list";
   public filter: VisitationFilterApi = new VisitationFilterApi();
   public isInfiniteEnable: boolean = true;
 
-  public pageParam: ContainerInHomeParam = {isApproval: false};
+  public pageParam: ContainerInHomeParam = {isApproval: false, isContainerIn :true};
 
 
 
@@ -59,10 +59,13 @@ export class ContainerInHomePage {
     console.log("visitationApplicationBadge", this.rootParam.visitationApplicationParam);
 
     this.pageParam = this.rootParam.containerInHomeParam;
-    this.title = this.pageParam.isApproval ? "Container In Approval" : "Container In Application";
 
-    this.getList();
+    var inOut = this.pageParam.isContainerIn ? "In" : "Out";
+    this.title = this.pageParam.isApproval ? `Container Approval` : `Container ${inOut} Application`;
+
     this.getFilter();
+    this.getList();
+
 
 
   }
@@ -96,7 +99,7 @@ export class ContainerInHomePage {
 
 
   ionViewDidLeave() {//didenter
-
+    // this.userProvider.getBadge(true);
   }
 
   ionViewDidLoad() {
@@ -113,6 +116,8 @@ export class ContainerInHomePage {
       isEditing:true,isApply:false,
       isApproval: this.pageParam.isApproval,
       list: currentList,
+      title: this.title,
+      isContainerIn: this.pageParam.isApproval ? currentList.container_out != 't' : this.pageParam.isContainerIn,
       onDidLeave: ()=>{
         this.getList();
       }
@@ -142,8 +147,7 @@ export class ContainerInHomePage {
     // http://hrms.dxn2u.com:8888/hrm_test2/s/OvertimeApplication_active?_dc=1518061538463&mobile=true&cmbEmployee=MY080127&cmbYear=2018&cmbMonth=0&cmbStatus=&page=1&start=0&limit=25&callback=Ext.data.JsonP.callback65
 
 
-
-    var url = `${ApiProvider.HRM_URL}${this.pageParam.isApproval ? "s/VisitationApplicationApproval_active" :"s/VisitationApplication_active"}`;
+    var url = `${ApiProvider.HRM_URL}${this.pageParam.isApproval ? "s/VisitationApplicationApproval_active" : (this.pageParam.isContainerIn ? "s/VisitationApplication_active" : "s/VisitationApplicationContainerout_active")}`;
 
     var params: any = {
       mobile: "true",
@@ -158,6 +162,7 @@ export class ContainerInHomePage {
 
     };
 
+    this.filter["keyword"] = this.filter.keyWord;
     params = this.helperProvider.mergeObject(params, this.filter);
 
     if(this.pageParam.isApproval){
@@ -189,6 +194,7 @@ export class ContainerInHomePage {
       isApply: true,isEditing: false,
       isApproval:this.pageParam.isApproval,
       title: this.title,
+      isContainerIn: this.pageParam.isContainerIn,
 
       onDidLeave: ()=>{
         this.getList();
@@ -226,14 +232,15 @@ export class ContainerInHomePage {
     // http://hrms.dxn2u.com:8888/hrm_test2/s/OvertimeApplication_top?mobile=true&cmd=filter&user_id=MY080127&callback=Ext.data.JsonP
 
 
-    var url = `${ ApiProvider.HRM_URL }${this.pageParam.isApproval ? "s/VisitationApplicationApproval_top" : "s/VisitationApplication_top"}`;
+    var url = `${ ApiProvider.HRM_URL }${this.pageParam.isApproval ? "s/VisitationApplication_top" : "s/VisitationApplication_top"}`;
 
 
     var params = {
       mobile: "true",
       cmd: "filter",
       container: true,
-      user_id: this.userProvider.userSession.empId
+      user_id: this.userProvider.userSession.empId,
+      approval: this.pageParam.isApproval,
     }
 
     var config:ApiGetConfigInterface = {
@@ -252,4 +259,5 @@ export class ContainerInHomePage {
 
 export interface ContainerInHomeParam extends  HomeBaseInterface{
 
+  isContainerIn:boolean;
 }

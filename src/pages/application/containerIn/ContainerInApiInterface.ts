@@ -5,11 +5,13 @@ export interface ContainerInListInterface {
   id: string;
   created_date: string;
   badge: string;
-  total: string;
+  total: number;
+  totalRecord: number;
   data?: ContainerInListDataInterface[];
   records: ContainerInListDataInterface[];
   success: boolean;
-  emp_id: string
+  emp_id: string;
+  visitor_id:string;
 
 
 }
@@ -37,18 +39,11 @@ export interface ContainerInListDataInterface {
 
   isOpen: boolean;
 
+
+
   // //# approval
-  // data0: string; //# empName
-  // data1: string; //# create
-  // data2: string; //#
-  // data3: string; //#
-  // data4: string; //#
-  // data5: string; //#
-  // data6: string; //#
-  // data7: string; //#
-  // data8: string; //#
-  // data9: string; //#
-  // tid: string;
+  container_out: string; //t/ f
+  employee:string;
 }
 
 
@@ -84,6 +79,8 @@ export interface ContainerInRuleInterface {
   approved: number;
   employee:string;
   created_date:string;
+
+  dxnSealNo:string[];
 
 
 
@@ -173,6 +170,9 @@ export interface ContainerInDataInterface extends ApproverBaseInterface {
   emp_id: string;
 
 
+  dxn_sealno:string;
+  sealno_reason:string;
+  inspector_sealno:string;
 
   //#missing
   port_name:string;

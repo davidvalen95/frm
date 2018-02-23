@@ -38,7 +38,7 @@ export class AbsenceRecordHomePage {
 
 
 
-  public title: string = "Overtime Application";
+  public title: string = "Absence Record";
   public visitationData: VisitationDataApiInterface[] = [];
 
   public segmentValue: string = "list";
@@ -196,6 +196,7 @@ export class AbsenceRecordHomePage {
       isApply: true,isEditing: false,
       isApproval:this.pageParam.isApproval,
       title: title,
+      isFromAbsenceRecord: true,
       onDidLeave: ()=>{
         this.getList();
       }

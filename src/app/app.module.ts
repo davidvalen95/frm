@@ -22,7 +22,6 @@ import {SearchBarPage} from "../pages/search-bar/search-bar";
 import {shim} from "promise.prototype.finally";
 import {VisitationDetailPage} from "../pages/visitation-detail/visitation-detail";
 import {PipesModule} from "../pipes/pipes.module";
-import {ContainerInPage} from "../pages/container-in/container-in";
 import {LoginPage} from "../pages/login/login";
 import {RootParamsProvider} from '../providers/root-params/root-params';
 import {EmptyPage} from "../pages/empty/empty";
@@ -54,6 +53,8 @@ import {CalenderPage} from "../pages/calender/calender";
 import {Badge} from "@ionic-native/badge";
 import {AsyncPipe} from "@angular/common";
 import {HostFormComponent} from "../components/host-form/host-form";
+import {AnnouncementHomePage} from "../pages/announcement/announcement-home/announcement-home";
+import {AnnouncementApplyPage} from "../pages/announcement/announcement-apply/announcement-apply";
 
 
 //tes
@@ -71,11 +72,12 @@ import {HostFormComponent} from "../components/host-form/host-form";
 
 
         HomePage,
+        AnnouncementHomePage,
+        AnnouncementApplyPage,
         ListPage,
         MyApp,
         SearchBarPage,
 
-        ContainerInPage,
         LoginPage,
         EmptyPage,
 
@@ -124,11 +126,12 @@ import {HostFormComponent} from "../components/host-form/host-form";
 
 
       HomePage,
+      AnnouncementHomePage,
+      AnnouncementApplyPage,
       ListPage,
       MyApp,
       SearchBarPage,
 
-      ContainerInPage,
       LoginPage,
       EmptyPage,
 

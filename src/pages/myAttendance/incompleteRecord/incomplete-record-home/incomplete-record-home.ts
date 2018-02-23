@@ -33,7 +33,7 @@ import {
 })
 export class IncompleteRecordHomePage {
 
-  public title: string = "Workoutside Application";
+  public title: string = "Incomplete Record";
   public visitationData: VisitationDataApiInterface[] = [];
 
   public segmentValue: string = "list";
@@ -57,7 +57,7 @@ export class IncompleteRecordHomePage {
     console.log("visitationApplicationBadge", this.rootParam.visitationApplicationParam);
 
     this.pageParam = this.rootParam.workoutsideHomeParam;
-    this.title = this.pageParam.isApproval ? "Workoutside Approval" : "Workoutside Application";
+    this.title = "Incomplete Record";
 
     this.getFilter();
     this.getList();
@@ -181,6 +181,7 @@ export class IncompleteRecordHomePage {
     //   },
     //   title: this.title,
     // };
+
     // this.navCtrl.push(WorkoutsideApplyPage, param)
   }
 

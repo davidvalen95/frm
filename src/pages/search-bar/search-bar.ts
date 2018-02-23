@@ -22,11 +22,14 @@ export class SearchBarPage {
   public title: string            = "Search";
   public selectOptions: KeyValue[];
   public previousInterval: number = -1;
+  public pageParam: SearchBarParam;
 
   @ViewChild('ionSearchbar') public ionSearchbar: Searchbar
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public httpClient: HttpClient) {
     this.baseForm = navParams.get("baseForm");
+    this.pageParam = navParams.data;
+
     this.title    = `Search ${this.baseForm.label}`;
 
   }
@@ -51,18 +54,15 @@ export class SearchBarPage {
 
   }
 
-  onItemClicked(selectOption: KeyValue) {
-    this.navCtrl.pop()
-    setTimeout(()=>{
-      this.baseForm.value = selectOption.value
+  onItemClicked(selected: KeyValue) {
+    this.baseForm.value = selected.value
 
-    },500);
+    this.navCtrl.pop();
   }
 }
 
 
-export interface ParamSearchBarPage {
+export interface SearchBarParam {
   baseForm: BaseForm
-  // callBackFinishSearch(selectOption:KeyValue)
 }
 

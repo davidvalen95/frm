@@ -7,7 +7,8 @@
 
   <ion-content>
 
-      <ion-list *ngFor="let menu of (this.userProvider.homeMenu )">
+
+      <ion-list class="menuList" *ngFor="let menu of (this.userProvider.homeMenu )">
       <!--<ion-list *ngFor="let menu of (this.userProvider.menuReplaySubject | async)">-->
 
         <ion-list-header *ngIf="menu.menu.length > 0" (click)="menu.isOpen = !menu.isOpen">
@@ -36,7 +37,7 @@
           <!--<img src="menu."/>-->
           <img item-left="" style="width:25px;height:25px;" *ngIf="menu.image" src="{{menu.image}}"/>
           {{menu.name}}
-          <ion-badge color="dangerDim1" *ngIf="menu.badge && menu.badge.count && child.badge.count > 0">{{menu.badge.count}}</ion-badge>
+          <ion-badge color="dangerDim1" *ngIf="menu.badge && menu.badge.count > 0">{{menu.badge.count}}</ion-badge>
         </ion-list-header>
 
       </ion-list>
