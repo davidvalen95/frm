@@ -35,6 +35,7 @@ import {CalenderPage} from "../pages/calender/calender";
 import {IncompleteRecordHomePage} from "../pages/myAttendance/incompleteRecord/incomplete-record-home/incomplete-record-home";
 import {Badge} from "@ionic-native/badge";
 import {AnnouncementHomePage} from "../pages/announcement/announcement-home/announcement-home";
+import {Pro} from "@ionic/pro";
 @Component({
     templateUrl: 'app.html'
 })
@@ -47,6 +48,9 @@ export class MyApp {
 
 
 
+
+        this.checkChannel();
+        this.performAutomaticUpdate();
 
 
         this.initializeApp();
@@ -332,6 +336,47 @@ export class MyApp {
 
 
 
+
+  async checkChannel() {
+
+
+
+
+    try {
+      await this.platform.ready();
+
+      const res = await Pro.deploy.info();
+
+      this.helperProvider.showAlert(res.binary_version);
+      console.log('channelPro', res);
+    } catch (err) {
+      console.log(err);
+      // We encountered an error.
+      // Here's how we would log it to Ionic Pro Monitoring while also catching:
+
+      Pro.monitoring.exception(err);
+    }
+  }
+
+
+  async performAutomaticUpdate() {
+    try {
+      const resp = await Pro.deploy.checkAndApply(true, function(progress){
+        this.downloadProgress = progress;
+      });
+
+      if (resp.update){
+        // We found an update, and are in process of redirecting you since you put true!
+      }else{
+        // No update available
+      }
+    } catch (err) {
+      // We encountered an error.
+      // Here's how we would log it to Ionic Pro Monitoring while also catching:
+
+      // Pro.monitoring.exception(err);
+    }
+  }
 
 }
 
