@@ -367,14 +367,17 @@ export class MyApp {
 
       if (resp.update){
         // We found an update, and are in process of redirecting you since you put true!
+
+        console.log('channel found update')
       }else{
         // No update available
       }
     } catch (err) {
+      console.log('performAutomaticUpdateCatch',err);
       // We encountered an error.
       // Here's how we would log it to Ionic Pro Monitoring while also catching:
 
-      // Pro.monitoring.exception(err);
+      Pro.monitoring.exception(err);
     }
   }
 
