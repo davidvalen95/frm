@@ -49,8 +49,8 @@ export class MyApp {
 
 
 
-        this.checkChannel();
-        this.performAutomaticUpdate();
+        // this.checkChannel();
+        // this.performAutomaticUpdate();
 
 
         this.initializeApp();
