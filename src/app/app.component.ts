@@ -55,7 +55,6 @@ export class MyApp {
 
         this.initializeApp();
         this.headerColor.tint('#112244');
-        // used for an example of ngFor and navigation
         this.checkPermission();
 
 
@@ -351,7 +350,7 @@ export class MyApp {
 
       const res = await Pro.deploy.info();
 
-      this.helperProvider.showAlert(res.binary_version);
+      // this.helperProvider.showAlert(res.binary_version);
       console.log('channelPro', res);
     } catch (err) {
       console.log(err);
