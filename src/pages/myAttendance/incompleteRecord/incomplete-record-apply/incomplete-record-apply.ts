@@ -33,12 +33,11 @@ import {AttachmentRuleInterface} from "../../../application/leave/ApiInterface";
 export class IncompleteRecordApplyPage {
 
 
-
   public title: string;
-  public segmentValue: string             = "form";
-  public pageParam: IncompleteRecordApplyInterface = {isEditing: false, isApproval: false, isApply: true};
-  public baseForms: BaseForm[]            = [];
-  public approvalBaseForms: BaseForm[]    = [];
+  public segmentValue: string                                    = "form";
+  public pageParam: IncompleteRecordApplyInterface               = {isEditing: false, isApproval: false, isApply: true};
+  public baseForms: BaseForm[]                                   = [];
+  public approvalBaseForms: BaseForm[]                           = [];
   public apiReplaySubject: { [key: string]: ReplaySubject<any> } = {};
   public attachmentValueContainer: object                        = {};
   public applyRule: IncompleteRecordRuleInterface;
@@ -52,15 +51,16 @@ export class IncompleteRecordApplyPage {
   public approvalHistoriesContainer: MatureKeyValueContainer[] = [];
 
   public sectionDataDetail: SectionFloatingInputInterface[] = [];
-  public isDoneFetch:boolean = false;
-
+  public isDoneFetch: boolean                               = false;
 
 
   @ViewChild(Navbar) navbar: Navbar;
-  @ViewChild("parentForm") parentForm:NgForm;
+  @ViewChild("parentForm") parentForm: NgForm;
+
   constructor(public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
     this.pageParam = navParams.data;
-    this.title = this.pageParam.title || "" ;
+    console.log('pageParam', this.pageParam)
+    this.title = this.pageParam.title || "";
 
     // console.log('applyLeaveApplicationData', this.pageParam.leaveApplicationTop , this.pageParam.leaveApplicationTop.info,  this.pageParam.leaveApplicationTop.info.available);
 
@@ -69,7 +69,10 @@ export class IncompleteRecordApplyPage {
     this.apiGetApplyRule().toPromise().then((data: IncompleteRecordRuleInterface) => {
       this.applyRule      = data;
       this.applyRule.data = this.helperProvider.mergeObject(this.applyRule.data, this.applyRule.datatmp || this.applyRule.data);
+      this.applyRule.data = this.helperProvider.mergeObject(this.applyRule.data, this.applyRule.captured || this.applyRule.data);
+      this.applyRule.data = this.helperProvider.mergeObject(this.applyRule.data, this.applyRule.attendance || this.applyRule.data);
 
+      console.log(this.applyRule);
       this.setupButtonLogic();
 
       this.setupForms();
@@ -156,9 +159,6 @@ export class IncompleteRecordApplyPage {
   setupForms() {
 
 
-
-
-
     var employee: BaseForm = new BaseForm("Employee", "employee");
     employee.value         = this.pageParam.isEditing ? this.applyRule.data.emp_id : "";
     employee.isReadOnly    = true;
@@ -166,7 +166,7 @@ export class IncompleteRecordApplyPage {
 
     var date        = new BaseForm("Date", "att_date");
     date.isReadOnly = true;
-    date.value      = this.applyRule.data.att_date;
+    date.value      = this.pageParam.isApproval ? this.applyRule.att_date : this.applyRule.data.att_date;
 
 
     var year        = new BaseForm("Year", "year");
@@ -174,64 +174,66 @@ export class IncompleteRecordApplyPage {
     year.value      = this.applyRule.data.year;
 
 
-    var recordType = new BaseForm("Record Type","record_type");
-    recordType.value = this.applyRule.data.record_type;
+    var recordType        = new BaseForm("Record Type", "record_type");
+    recordType.value      = this.pageParam.isApproval ? this.applyRule.att_type : this.applyRule.data.record_type;
     recordType.isReadOnly = true;
-    recordType.setInputTypeSelectChain<IncompleteRecordRuleInterface>(this.apiGetApplyRule(),(data:IncompleteRecordRuleInterface)=>{
-      var keyValue: KeyValue[] = [];
 
-      data.cmb_record_type.forEach((textValue)=>{
-        keyValue.push({
-          key: textValue.text,
-          value: textValue.value,
+
+    if (!this.pageParam.isApproval) {
+      recordType.setInputTypeSelectChain<IncompleteRecordRuleInterface>(this.apiGetApplyRule(), (data: IncompleteRecordRuleInterface) => {
+        var keyValue: KeyValue[] = [];
+
+
+        data.cmb_record_type.forEach((textValue) => {
+          keyValue.push({
+            key: textValue.text,
+            value: textValue.value,
+          })
         })
+
+
+        return keyValue;
       })
+    }
 
 
-      return keyValue;
-    })
-
-
-    var timeCapture:BaseForm[] = [];
-    this.applyRule.captured.forEach((string,index)=>{
-      var capture = new BaseForm(`Time Captured ${index + 1}`,"");
-      capture.value = string;
+    var timeCapture: BaseForm[] = [];
+    this.applyRule.captured.forEach((string, index) => {
+      var capture        = new BaseForm(`Time Captured ${index + 1}`, "");
+      capture.value      = string;
       capture.isReadOnly = true;
       timeCapture.push(capture);
     })
 
 
-
-
-
-    var timeIn = new BaseForm("Time in","time_in");
-    timeIn.value = this.applyRule.data.time_in;
+    var timeIn        = new BaseForm("Time in", "time_in");
+    timeIn.value      = this.applyRule.data.time_in;
     timeIn.isReadOnly = timeIn.value != "";
     timeIn.setInputTypeTime();
 
 
-    var restOut = new BaseForm("Rest Out","rest_out");
+    var restOut   = new BaseForm("Rest Out", "rest_out");
     restOut.value = this.applyRule.data.rest_out;
     // restOut.isReadOnly = restOut.value != "";
     restOut.setInputTypeTime();
 
 
-    var restIn = new BaseForm("Rest In","rest_in");
+    var restIn   = new BaseForm("Rest In", "rest_in");
     restIn.value = this.applyRule.data.rest_in;
     // restIn.isReadOnly = restIn.value != "";
     restIn.setInputTypeTime();
 
-    var timeOut = new BaseForm("time out","time_out");
+    var timeOut   = new BaseForm("time out", "time_out");
     timeOut.value = this.applyRule.data.time_out;
     // timeOut.isReadOnly = timeOut.value != "";
     timeOut.setInputTypeTime();
 
-    var reasonType = new BaseForm("Reason Type","reason_type");
+    var reasonType   = new BaseForm("Reason Type", "reason_type");
     reasonType.value = this.applyRule.data.reason_type;
-    reasonType.setInputTypeSelectChain<IncompleteRecordRuleInterface>(this.apiGetApplyRule(),(data:IncompleteRecordRuleInterface)=>{
-      var keyValue:KeyValue[] = [];
+    reasonType.setInputTypeSelectChain<IncompleteRecordRuleInterface>(this.apiGetApplyRule(), (data: IncompleteRecordRuleInterface) => {
+      var keyValue: KeyValue[] = [];
 
-      data.cmb_reason_type.forEach((textValue)=>{
+      data.cmb_reason_type.forEach((textValue) => {
         keyValue.push({
           key: textValue.text,
           value: textValue.value,
@@ -241,13 +243,19 @@ export class IncompleteRecordApplyPage {
 
     })
 
-    var reason = new BaseForm("Reason","reason");
+    var reason   = new BaseForm("Reason", "reason");
     reason.value = this.applyRule.data.reason;
     reason.setInputTypeTextarea();
 
 
-    this.baseForms.push(employee,date, year,recordType,...timeCapture, timeIn,restOut,restIn,timeOut,reasonType,reason);
+    var currentStatus        = new BaseForm("Current status", "");
+    currentStatus.isReadOnly = true;
+    currentStatus.isHidden   = !this.pageParam.isApproval;
+    currentStatus.value      = this.applyRule.current_status;
+    currentStatus.isDisabled = true;
 
+
+    this.baseForms.push(employee, date, year, recordType, ...timeCapture, timeIn, restOut, restIn, timeOut, reasonType, reason, currentStatus);
 
 
   }
@@ -258,7 +266,7 @@ export class IncompleteRecordApplyPage {
       currentBaseForm.isReadOnly = (this.isCanSubmit && !this.pageParam.isApproval) ? currentBaseForm.isReadOnly : true;
     })
 
-    this.sectionDataDetail.forEach(currentInputSection=>{
+    this.sectionDataDetail.forEach(currentInputSection => {
       currentInputSection.baseForms.forEach((currentBaseForm: BaseForm) => {
         currentBaseForm.isReadOnly = (this.isCanSubmit && !this.pageParam.isApproval) ? currentBaseForm.isReadOnly : true;
       })
@@ -288,15 +296,15 @@ export class IncompleteRecordApplyPage {
       param["approve_remark"] = form.value.approver_remark;
 
 
-      var id           = this.pageParam.list.id || this.pageParam.list.tid;
-      id = id.slice(0,id.indexOf(";"));
+      var id = this.pageParam.list.id || this.pageParam.list.tid;
+      id     = id.slice(0, id.indexOf(";"));
 
-      param["id"]             = id;
-      param["sts"]            = "update";
-      param["tid"]            = id;
-      param["userid"]         = this.userProvider.userSession.empId;
-      param["mobile"]         = "true";
-      param["hospital_name"]  = "";
+      param["id"]            = id;
+      param["sts"]           = "update";
+      param["tid"]           = id;
+      param["userid"]        = this.userProvider.userSession.empId;
+      param["mobile"]        = "true";
+
       // param["detail_id"]      = -1;
       console.log('formAPprovalSubmit', param);
 
@@ -324,17 +332,17 @@ export class IncompleteRecordApplyPage {
       console.log('jsonraw', json);
 
 
-      var id           = this.pageParam.list.id || this.pageParam.list.tid;
-      id = id.slice(0,id.indexOf(";"));
-      json["id"]             = id;
-      json["tid"]            = id;
-      json["emp_id"] = this.applyRule.data.emp_id;
+      var id            = this.pageParam.list.id || this.pageParam.list.tid;
+      id                = id.slice(0, id.indexOf(";"));
+      json["id"]        = id;
+      json["tid"]       = id;
+      json["emp_id"]    = this.applyRule.data.emp_id;
       // json["half_date"]  = form.value.leave_date_from;
-      json["sts"]    = this.pageParam.isEditing ? "update" : "save";
-      json["userid"] = this.userProvider.userSession.empId;
-      json["mobile"] = true;
+      json["sts"]       = this.pageParam.isEditing ? "update" : "save";
+      json["userid"]    = this.userProvider.userSession.empId;
+      json["mobile"]    = true;
       json["detail_id"] = -1;
-      json           = this.helperProvider.convertIsoToServerDate(json, ["work_date_from","work_date_to"]);
+      json              = this.helperProvider.convertIsoToServerDate(json, ["work_date_from", "work_date_to"]);
 
 
       json = this.helperProvider.mergeObject(json, this.attachmentValueContainer);
@@ -410,7 +418,7 @@ export class IncompleteRecordApplyPage {
     if (!this.apiReplaySubject.applyRule) {
       this.apiReplaySubject.applyRule = new ReplaySubject(0);
 
-      var url    = `${ApiProvider.HRM_URL}${this.pageParam.isApproval ? "s/IncompleteRecordApplicationApproval_top" : "s/IncompletedRecord_top"}`;
+      var url    = `${ApiProvider.HRM_URL}${this.pageParam.isApproval ? "s/AttendanceApproval_top" : "s/IncompletedRecord_top"}`;
       var params = {
         mobile: "true",
         cmd: this.pageParam.isEditing ? "edit" : "add",
@@ -517,17 +525,17 @@ export class IncompleteRecordApplyPage {
   }
 
 
-  private removeWrongDate(originJson:object){
+  private removeWrongDate(originJson: object) {
 
-    var json = Object.assign({},originJson);
+    var json = Object.assign({}, originJson);
 
-    var indexOf:string[] = ["work_date","time_in","rest_in","rest_out","time_out"]
+    var indexOf: string[] = ["work_date", "time_in", "rest_in", "rest_out", "time_out"]
 
-    console.log("beforeRemoveWrongDate",originJson);
+    console.log("beforeRemoveWrongDate", originJson);
     //# delete any form that contains
-    for (var key in json){
-      indexOf.forEach((string)=>{
-        if(key.indexOf(string)>=0 && (key.indexOf("work_date_from") == -1) && key.indexOf("work_date_to") == -1){
+    for (var key in json) {
+      indexOf.forEach((string) => {
+        if (key.indexOf(string) >= 0 && (key.indexOf("work_date_from") == -1) && key.indexOf("work_date_to") == -1) {
           delete json[key];
         }
       })
@@ -535,8 +543,8 @@ export class IncompleteRecordApplyPage {
 
 
     //# copy to json
-    this.sectionDataDetail.forEach((floatingInput:SectionFloatingInputInterface)=>{
-      floatingInput.baseForms.forEach((currentBaseForm:BaseForm)=>{
+    this.sectionDataDetail.forEach((floatingInput: SectionFloatingInputInterface) => {
+      floatingInput.baseForms.forEach((currentBaseForm: BaseForm) => {
         json[currentBaseForm.name] = currentBaseForm.value;
       })
     })
@@ -544,10 +552,9 @@ export class IncompleteRecordApplyPage {
     return json;
 
 
-
   }
 }
 
-export interface IncompleteRecordApplyInterface extends ApplyBaseInterface<IncompleteRecordListDataInterface>{
+export interface IncompleteRecordApplyInterface extends ApplyBaseInterface<IncompleteRecordListDataInterface> {
 
 }

@@ -14,6 +14,16 @@ export interface IncompleteRecordListInterface{
   success: boolean;
   emp_id:string
   // records: IncompleteRecordListDataInterface[];
+
+
+
+  //#attendance approval
+  data0?:string; //employee
+  data1?:string; //date
+  data2?:string; // record type
+  data3?:string; //status
+  data4?:string;// reason
+  tid?:string;
 }
 
 export interface IncompleteRecordListDataInterface{
@@ -41,6 +51,7 @@ export interface IncompleteRecordListDataInterface{
 
 
 
+
 }
 
 
@@ -65,6 +76,12 @@ export interface IncompleteRecordRuleInterface{
   datatmp:any;
   status?: string;
   allowEdit?: boolean;
+
+
+  //attendance approval
+  att_date:string;
+  att_type:string;
+  current_status:string;
 
 }
 

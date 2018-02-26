@@ -175,7 +175,7 @@ export class WorkoutsideApplyPage {
     createdDate.value      = this.applyRule.created_date;
 
     var dateFrom = new BaseForm("date from", "work_date_from");
-    dateFrom.setInputTypeDate({min:new Date()});
+    dateFrom.setInputTypeDate({});
     dateFrom.value = (this.pageParam.dateFrom || BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.work_date_from))).toISOString();
     dateFrom.isReadOnly = this.pageParam.isFromAbsenceRecord;
     dateFrom.changeListener.subscribe((data)=>{
@@ -191,7 +191,7 @@ export class WorkoutsideApplyPage {
     // dateFrom.isReadOnly = this.pageParam.isEditing;
 
     var dateTo = new BaseForm("date to", "work_date_to");
-    dateTo.setInputTypeDate({min:new Date()});
+    dateTo.setInputTypeDate({});
     dateTo.value = (this.pageParam.dateFrom || BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.work_date_to))).toISOString();
     dateTo.isReadOnly = this.pageParam.isFromAbsenceRecord;
 
@@ -243,8 +243,12 @@ export class WorkoutsideApplyPage {
     this.setNotEditable();
 
     setTimeout(()=>{
-      this.setDataDetailSection(this.applyRule.detail,dateFrom,dateTo,firstDayConfig);
-      this.isDoneFetch = true;
+
+      if(!this.pageParam.isFromAbsenceRecord){
+        this.setDataDetailSection(this.applyRule.detail,dateFrom,dateTo,firstDayConfig);
+        this.isDoneFetch = true;
+      }
+
     },500)
   }
 
@@ -563,12 +567,12 @@ export class WorkoutsideApplyPage {
         description: "",
         baseForms: [timeIn,restOut,restIn,timeOut,workDate],
         isOpen:true,
-      }
+      };
+      this.sectionDataDetail.push(section);
 
 
 
       //# other than  0 listen to 0
-      this.sectionDataDetail.push(section);
       if(index>0 && firstDayConfig.value === "true"){
         var firstTimein = this.sectionDataDetail[0].baseForms[0]
         firstTimein.changeListener.subscribe((data)=>{
@@ -594,6 +598,8 @@ export class WorkoutsideApplyPage {
 
     })
 
+
+    console.log('workoutsideDataDetail',this.applyRule,dataDetail, this.sectionDataDetail)
 
     // this.dataDetailRule.sectionDataDetail = sectionContainer;
     this.setNotEditable();

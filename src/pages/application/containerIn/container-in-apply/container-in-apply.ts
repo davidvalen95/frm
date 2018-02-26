@@ -229,7 +229,7 @@ export class ContainerInApplyPage {
     visitationTime.setInputTypeTime();
 
     var deliveryType   = new BaseForm("Delivery type", "delivery_type");
-    deliveryType.value = this.applyRule.data.delivery_type;
+    setTimeout(()=>{    deliveryType.value = this.applyRule.data.delivery_type;},300)
     deliveryType.setInputTypeSelectChain<ContainerInRuleInterface>(this.apiGetApplyRule(), (data: ContainerInRuleInterface) => {
       var keyValue: KeyValue[] = [];
       data.cmbDeliveryType.forEach(raw => {
@@ -335,12 +335,6 @@ export class ContainerInApplyPage {
     //# container Out
 
 
-    this.sectionFloatings.push({
-      name: "Container Information",
-      isOpen: false,
-      baseForms: [referenceNo, containerName, containerSize, containerNo, containerSealNo, specifyReason, isWithoutContainerSealNo, inspectorSealNo, dxnSealno, transportationCompany, portName,]
-    });
-
 
     deliveryType.changeListener.subscribe(data => {
 
@@ -363,6 +357,14 @@ export class ContainerInApplyPage {
         containerNo.toggleHidden(true);
       }
     })
+
+    this.sectionFloatings.push({
+      name: "Container Information",
+      isOpen: false,
+      baseForms: [referenceNo, containerName, containerSize, containerNo, containerSealNo, specifyReason, isWithoutContainerSealNo, inspectorSealNo, dxnSealno, transportationCompany, portName,]
+    });
+
+
 
 
     //endregion
@@ -724,33 +726,34 @@ export class ContainerInApplyPage {
     var url = this.pageParam.isApproval ? "" : application;
 
 
+    var closure = (response)=> {
+      console.log('responseClosure', response);
+      var message = response.message || "Cannot retrieve message";
+      if (response.success) {
+        this.helperProvider.presentToast(message);
+
+        setTimeout(() => {
+          this.navCtrl.pop();
+
+        }, 500)
+      } else {
+        this.helperProvider.showAlert(message);
+      }
+    }
+
     // this.apiProvider.submitFormWithProgress<SuccessMessageInterface>(url, json, this.responseClosure);
 
     if (this.pageParam.isContainerIn) {
-      this.apiProvider.submitFormWithProgress<SuccessMessageInterface>(url, json, this.responseClosure.prototype);
+      this.apiProvider.submitFormWithProgress<SuccessMessageInterface>(url, json, closure);
 
     } else {
-      this.apiProvider.submitGet<SuccessMessageInterface>(url, json, this.responseClosure.prototype);
+      this.apiProvider.submitGet<SuccessMessageInterface>(url, json, closure);
 
     }
 
 
   }
 
-  private responseClosure(response) {
-    console.log('responseClosure', response);
-    var message = response.message || "Cannot retrieve message";
-    if (response.success) {
-      this.helperProvider.presentToast(message);
-
-      setTimeout(() => {
-        this.navCtrl.pop();
-
-      }, 500)
-    } else {
-      this.helperProvider.showAlert(message);
-    }
-  }
 
 
   private attachmentToggle(rule: AttachmentRuleInterface, baseForms: BaseForm[]) {

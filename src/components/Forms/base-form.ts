@@ -387,6 +387,7 @@ export class BaseForm {
       case InputType.number:
       case InputType.password:
       case InputType.text:
+      case InputType.textarea:
         return this.value !== '' ? this.value : "-";
       case InputType.select:
 

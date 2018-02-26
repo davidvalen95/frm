@@ -85,17 +85,19 @@ export class AnnouncementHomePage {
 
   pushDetailPage(currentList: AnnouncementListDataInterface) {
 
+    //
+    // var param: AnnouncementApplyParamInterface = {
+    //   isEditing:true,isApply:false,
+    //   isApproval: this.pageParam.isApproval,
+    //   list: currentList,
+    //   title: this.title,
+    //   onDidLeave: ()=>{
+    //     this.getList();
+    //   }
+    // }
+    // this.navCtrl.push(AnnouncementApplyPage, param);
 
-    var param: AnnouncementApplyParamInterface = {
-      isEditing:true,isApply:false,
-      isApproval: this.pageParam.isApproval,
-      list: currentList,
-      title: this.title,
-      onDidLeave: ()=>{
-        this.getList();
-      }
-    }
-    this.navCtrl.push(AnnouncementApplyPage, param);
+    this.helperProvider.showAlert(currentList.sortcont, currentList.subject);
   }
 
 

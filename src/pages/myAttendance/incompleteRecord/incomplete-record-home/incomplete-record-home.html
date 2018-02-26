@@ -80,22 +80,31 @@
                         [value]="object.value">{{object.text}}</ion-option>
           </ion-select>
         </ion-item>
-        <ion-item>
-          <ion-label>Status</ion-label>
-          <ion-select [(ngModel)]="filter.cmbStatus" interface="popover">
-            <ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.filterRule,'cmbStatus')"
-                        [selected]="true" [value]="object.value">{{object.text}}</ion-option>
-          </ion-select>
-        </ion-item>
 
-        <ion-item>
+
+        <ion-item *ngIf="pageParam.isApproval">
           <ion-label>Record Type</ion-label>
-          <ion-select [(ngModel)]="filter.cmbStatus" interface="popover">
-            <ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.filterRule,'cmbType')"
-                        [selected]="true" [value]="object.value">{{object.text}}</ion-option>
+          <ion-select [(ngModel)]="filter.cmbYear" interface="popover">
+          <!--<ion-option value="" selected="">&#45;&#45;All&#45;&#45;</ion-option>-->
+           <ion-option *ngFor="let i of this.helperProvider.getCmbRule(this.filterRule,'cmbType')" selected=""
+                      [value]="i.value">{{i.text}}</ion-option>
           </ion-select>
+          </ion-item>
+
+
+        <ion-item *ngIf="pageParam.isApproval">
+        <ion-label>Search by</ion-label>
+        <ion-select [(ngModel)]="filter.cmbSearch" interface="popover">
+        <ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.filterRule,'cmbSearch')" [selected]="true"
+                    [value]="object.value">{{object.text}}</ion-option>
+        </ion-select>
         </ion-item>
 
+
+        <ion-item *ngIf="pageParam.isApproval">
+        <ion-label>Key word</ion-label>
+        <ion-input [(ngModel)]="filter.keyWord"></ion-input>
+        </ion-item>
 
         <!--<ion-item>-->
         <!--<ion-label>Leave Type</ion-label>-->
@@ -123,7 +132,7 @@
           <ion-card>
             <ion-card-header (click)="record.isOpen = !record.isOpen">
               <ion-item no-padding="">
-                <h2>{{helperProvider.ucWord(pageParam.isApproval ? record.data5 : record.att_date_str |
+                <h2>{{helperProvider.ucWord(pageParam.isApproval ? record.data4 : record.att_date_str |
                   ifEmptyThenDash)}}</h2>
                 <span item-right="">
                 <ion-icon name="arrow-down" *ngIf="record.isOpen"></ion-icon>
@@ -143,7 +152,26 @@
                 <ion-item>
                   Record Type
                   <span
-                    item-end="">{{(pageParam.isApproval ? record.data1 : record.record_type_str) | ifEmptyThenDash}}</span>
+                    item-end="">{{(pageParam.isApproval ? record.data2 : record.record_type_str) | ifEmptyThenDash}}</span>
+                </ion-item>
+
+                <ion-item *ngIf="pageParam.isApproval">
+                  Employee
+                  <span
+                    item-end="">{{record.data0 | ifEmptyThenDash}}</span>
+                </ion-item>
+
+
+                <ion-item *ngIf="pageParam.isApproval">
+                  Status
+                  <span
+                    item-end="">{{record.data3 | ifEmptyThenDash}}</span>app
+                </ion-item>
+
+                <ion-item *ngIf="pageParam.isApproval">
+                  Reason
+                  <span
+                    item-end="">{{record.data4 | ifEmptyThenDash}}</span>
                 </ion-item>
 
 

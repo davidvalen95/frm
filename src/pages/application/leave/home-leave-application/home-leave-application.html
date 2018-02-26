@@ -187,9 +187,9 @@
                 <ion-icon name="arrow-down" *ngIf="record.isOpen"></ion-icon>
                 <ion-icon name="arrow-up" *ngIf="!record.isOpen"></ion-icon>
                 </span>
-                <small [innerHtml]=" (this.pageParam.isApproval ? record.data6 : record.status) | keepAsHtml" > </small>
+                <!--<small [innerHtml]=" (this.pageParam.isApproval ? record.data6 : record.status) | keepAsHtml" > </small>-->
               </ion-item>
-              <!--<p><small>{{record.status}}</small></p>-->
+              <p><small [innerHtml]="record.status | keepAsHtml"></small></p>
             </ion-card-header>
 
 
@@ -199,11 +199,11 @@
 
               <ion-list class="visitationMini" ngClass="ionContent" >
 
-                <ion-item *ngIf="!pageParam.isApproval">
-                  Status
-                  <!--<span  [style.color]="this.getStatusColor(record.status)" item-end="">{{record.status | ifEmptyThenDash}} </span>-->
-                  <span item-end="">{{record.status_str | ifEmptyThenDash}}</span>
-                </ion-item>
+                <!--<ion-item *ngIf="!pageParam.isApproval">-->
+                  <!--Status-->
+                  <!--&lt;!&ndash;<span  [style.color]="this.getStatusColor(record.status)" item-end="">{{record.status | ifEmptyThenDash}} </span>&ndash;&gt;-->
+                  <!--<span item-end="">{{record.status_str | ifEmptyThenDash}}</span>-->
+                <!--</ion-item>-->
 
                 <ion-item *ngIf="pageParam.isApproval">
                   {{record.data0}}

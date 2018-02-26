@@ -23,7 +23,7 @@ export class ApiProvider {
     public static PHP_URL: string = "http://hrms.dxn2u.com/hrmsphptest/";
     public static IS_API_LIVE: boolean = false;
     public static PHP_IONIC_URL: string = "http://hrms.dxn2u.com/hrmsionicphp/test/";
-    //
+
 
     //# LOCAL URL
     // public static BASE_URL: string = "http://localhost:8080";
@@ -50,7 +50,7 @@ export class ApiProvider {
   //   public static IS_API_LIVE: boolean = false;
   //   public static PHP_IONIC_URL: string = "http://hrms.dxn2u.com/hrmsionicphp/test/";
   //   public static PHP_URL: string = "http://hrms.dxn2u.com/hrmsphptest/";
-  //
+
 
 
 

@@ -15,4 +15,7 @@
 
 <ion-content padding>
 
+  <div *ngIf="this.pageParam && this.pageParam.list">
+    {{this.pageParam.list.sortcont}}
+  </div>
 </ion-content>

@@ -157,7 +157,7 @@ export class ApplyLeaveApplicationPage {
   setupButtonLogic() {
     this.isCanDelete  = this.pageParam.isEditing && this.applyRule.approved == 0;
     this.isCanSubmit  = !this.pageParam.isEditing || ( this.pageParam.isEditing && this.applyRule.approved == 0);
-    this.isCanApprove = this.pageParam.isApproval && this.applyRule.approved == 0 && this.applyRule.allowEdit;
+    this.isCanApprove = this.pageParam.isApproval && this.applyRule.allowEdit;
   }
 
 

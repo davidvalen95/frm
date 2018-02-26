@@ -56,8 +56,8 @@ export class IncompleteRecordHomePage {
   constructor(public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
     console.log("visitationApplicationBadge", this.rootParam.visitationApplicationParam);
 
-    this.pageParam = this.rootParam.workoutsideHomeParam;
-    this.title = "Incomplete Record";
+    this.pageParam = this.rootParam.incompleteRecordHomeParam;
+    this.title = this.pageParam.isApproval ? "Attendance Approval" :  "Incomplete Record";
 
     this.getFilter();
     this.getList();
@@ -139,7 +139,7 @@ export class IncompleteRecordHomePage {
 
 
 
-    var url = `${ApiProvider.HRM_URL}${this.pageParam.isApproval ? "s/IncompletedRecord_active?" :"s/IncompletedRecord_active??"}`;
+    var url = `${ApiProvider.HRM_URL}${this.pageParam.isApproval ? "s/AttendanceApproval_active?" :"s/IncompletedRecord_active??"}`;
 
     var params: any = {
       mobile: "true",
@@ -191,9 +191,9 @@ export class IncompleteRecordHomePage {
 
     // http://hrms.dxn2u.com:8888/hrm_test2/s/OvertimeApplication_top?mobile=true&cmd=filter&user_id=MY080127&callback=Ext.data.JsonP
 
-
-    this.filter.cmbStatus = "PE";
-    var url = `${ ApiProvider.HRM_URL }${this.pageParam.isApproval ? "s/IncompletedRecord_top" : "s/IncompletedRecord_top"}`;
+    this.filter.cmbStatus = this.pageParam.isApproval ? "PA" : "PE";
+    this.filter.cmbSearch = "a.emp_id";
+    var url = `${ ApiProvider.HRM_URL }${this.pageParam.isApproval ? "s/AttendanceApproval_top" : "s/IncompletedRecord_top"}`;
 
 
     var params = {

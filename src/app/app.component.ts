@@ -200,6 +200,10 @@ export class MyApp {
 
 
                 //# ============================================= APPROVAL
+                case "attendanceApproval":
+                    this.rootPage = IncompleteRecordHomePage;
+                    this.rootParams.incompleteRecordHomeParam = {isApproval: true};
+                    break;
                 case "leaveApproval":
                     this.rootPage = HomeLeaveApplicationPage;
                     this.rootParams.homeLeaveApplicationParam = {isApproval: true}

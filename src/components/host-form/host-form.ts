@@ -25,11 +25,14 @@ export class HostFormComponent {
 
 
   @Input('parentForm') parentForm: NgForm;
-  @Input('isFnf') isFnf: boolean         = false;
-  @Input('isEditing') isEditing: boolean = false;
+  @Input('isFnf') isFnf: boolean             = false;
+  @Input('isEditing') isEditing: boolean     = false;
   @Input('isCanSubmit') isCanSubmit: boolean = false;
 
   @Input('hostData') hostData: HostFormDataInterface;
+
+
+  @Input('formSetting') formSetting: HostFormSettingInterface;
 
   public sectionBaseForm: SectionFloatingInputInterface = {
     name: "Host Information",
@@ -38,7 +41,8 @@ export class HostFormComponent {
     baseForms: []
   };
   public extraHost: BaseForm[]                          = [];
-
+  public otherHostField: BaseForm                       = null;
+  public flag: BaseForm                                 = null;
 
   constructor(public userProvider: UserProvider, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public alertController: AlertController) {
 
@@ -51,8 +55,9 @@ export class HostFormComponent {
 
 
   public setupForm() {
-    var hostType: BaseForm = new BaseForm("Host Type", "host_type");
+    var hostType: BaseForm = new BaseForm(`${this.formSetting.sectionTitle} type`, "host_type");
     hostType.value         = "-"
+    hostType.isHidden      = !this.formSetting.isNeedMe;
 
     hostType.setInputTypeSelect([{
       key: "I am the host",
@@ -72,10 +77,6 @@ export class HostFormComponent {
       return selectOptions
     }));
     // hostIdSearch.isHidden = true;
-
-
-
-
 
 
     setTimeout(() => {
@@ -160,7 +161,7 @@ export class HostFormComponent {
 
 
       } else {
-        hostType.value    = 'f';
+        hostType.value = 'f';
         // var counter =0 ;
         //
         // var bait = setInterval(()=>{
@@ -171,7 +172,7 @@ export class HostFormComponent {
         //     clearInterval(bait);
         //   }
         // },200)
-        hostType.isHidden = true;
+        // hostType.isHidden = true;
       }
 
 
@@ -180,8 +181,6 @@ export class HostFormComponent {
     hostIdSearch.changeListener.subscribe((model: BaseForm) => {
 
       // console.log('broadcastionChangeFromHostIdSearch', model);
-
-
 
 
       if (model.value == "") {
@@ -219,7 +218,7 @@ export class HostFormComponent {
     hostFormState.value         = "t";
 
 
-    var extraHostBar: BaseForm    = new BaseForm("Backup Host(to Edit)", "extraHostBar");
+    var extraHostBar: BaseForm    = new BaseForm(`Add Other ${this.formSetting.sectionTitle}`, `${this.formSetting.otherHostContainerName}bar`);
     extraHostBar.rules.isRequired = false;
     var httpParams: HttpParams    = new HttpParams().set('autocomplete', 'true').set('loc_id', 'FnF');
 
@@ -233,8 +232,6 @@ export class HostFormComponent {
 
     extraHostBar.changeListener.subscribe((data: BaseForm) => {
       if (data.value == "") {
-        data.value = "";
-        this.helperProvider.presentToast("Host already exist in the application");
         return;
       }
       //#check if exist
@@ -250,23 +247,44 @@ export class HostFormComponent {
       if (coutnerExist < 2) { //# self is 1
         this.addAnotherHost(data.value);
 
+      } else {
+        this.helperProvider.presentToast(`${this.formSetting.sectionTitle} already exist in the application`);
+
       }
       data.value = "";
     })
 
 
-    this.sectionBaseForm.baseForms.push(hostType, hostIdSearch, hostId, hostName, hostDepartment, hostSection, ext, extraHostBar);
+    var otherHostField   = new BaseForm("", this.formSetting.otherHostContainerName);
+    otherHostField.value = "";
+    otherHostField.toggleHidden(true, false);
+
+    var flag   = new BaseForm("", this.formSetting.flagName);
+    flag.value = "f";
+    flag.toggleHidden(true, false);
+    this.flag = flag;
+
+    this.otherHostField = otherHostField
+
+    this.sectionBaseForm.baseForms.push(hostType, hostIdSearch, hostId, hostName, hostDepartment, hostSection, ext, extraHostBar, otherHostField, flag);
+
+    this.sectionBaseForm.name = this.formSetting.sectionTitle;
+
+    this.hostData.otherHostId.split(";").forEach((currentSplit)=>{
+      this.addAnotherHost(currentSplit);
+
+    });
+
     this.setNotEditable()
 
   }
-
 
 
   private setNotEditable() {
 
 
     this.sectionBaseForm.baseForms.forEach((currentBaseForm: BaseForm) => {
-        currentBaseForm.isReadOnly = (this.isCanSubmit) ? currentBaseForm.isReadOnly : true;
+      currentBaseForm.isReadOnly = (this.isCanSubmit) ? currentBaseForm.isReadOnly : true;
     });
 
     this.sectionBaseForm.isOpen = (!this.isCanSubmit ) //# kalo gabisa submit atau lagi approval di open
@@ -280,7 +298,7 @@ export class HostFormComponent {
     if (value == "") {
       return;
     }
-    var hostForm: BaseForm               = new BaseForm("Extra Host", `extraHost[${this.extraHost.length}]`);
+    var hostForm: BaseForm               = new BaseForm(`Extra ${this.formSetting.sectionTitle}`, `extraHost[${this.extraHost.length}]`);
     hostForm.value                       = value;
     hostForm.rules.isRequired            = false;
     hostForm.buttonRightSuccess.isHidden = false;
@@ -294,7 +312,9 @@ export class HostFormComponent {
         hostForm.value      = "";
         hostForm.isDisabled = true;
         hostForm.isHidden   = true;
-        var index           = this.sectionBaseForm.baseForms.indexOf(hostForm);
+        this.convertIdFormat();
+
+        var index = this.sectionBaseForm.baseForms.indexOf(hostForm);
         this.sectionBaseForm.baseForms.splice(index, 1);
       })
     })
@@ -354,13 +374,61 @@ export class HostFormComponent {
     this.extraHost.push(hostForm);
     this.sectionBaseForm.baseForms.push(hostForm);
 
+    this.convertIdFormat();
+
+  }
+
+
+  private convertIdFormat() {
+    var bankOtherHostId: string[] = [];// # cek if exist for uniqe
+    var counterGetId: number      = 0;//counter if ready
+    var otherHostId               = "";
+
+    this.otherHostField.value = "";
+    this.flag.value           = 'f';
+
+    for (var key in this.extraHost) {
+      var currentBaseForm: BaseForm = this.extraHost[key];
+      // this.formValues["other_host_id"] += `${currentBaseForm.value}`;
+      if (currentBaseForm.value !== ''
+        && bankOtherHostId.indexOf(currentBaseForm.value) < 0
+        && !currentBaseForm.isDisabled
+      ) {
+
+        this.flag.value = 't';
+        //
+        bankOtherHostId.push("" + currentBaseForm.value);
+        this.apiProvider.getEmployeeInformation(currentBaseForm.value).then((data: EmployeeInformationInterface) => {
+          this.otherHostField.value += `${data.emp_id};`;
+          console.log('convertIdFormat', bankOtherHostId, counterGetId, otherHostId,)
+          counterGetId++;
+          // this.formValues[key] = "";
+          // if (counterGetId == bankOtherHostId.length) {
+          //   this.formValues["other_host_id"] = otherHostId;
+          //   console.log('convertIdFormatdone', this.formValues["other_host_id"]);
+          // }
+        }).catch((error) => {
+          this.helperProvider.presentToast("" + error);
+        })
+
+
+      }
+    }
 
   }
 }
 
 
 export interface HostFormDataInterface {
-  hostId: string;
-  otherHostId: string;
-  hostExt;
+  hostId: string;//#
+  otherHostId: string;//# syuply ; ; ; ;
+  hostExt;//# ext
+}
+
+interface HostFormSettingInterface {
+  otherHostContainerName; //# buat kirim ke server format ; ; ;
+  flagName;//# buat website ada toggle add other host id?
+  sectionTitle;//# setionFormTitle
+  isNeedMe: boolean;//# if is not  me then not shown
+
 }

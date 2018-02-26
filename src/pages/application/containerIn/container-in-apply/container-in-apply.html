@@ -44,9 +44,35 @@
             otherHostId: this.applyRule.data.other_host_id,
              hostExt: this.applyRule.data.other_host_ext
 
-            }"
+          }"
 
-            [isCanSubmit]="(this.isCanSubmit && !this.pageParam.isApproval && this.pageParam.isContainerIn)"
+          [isCanSubmit]="(this.isCanSubmit && !this.pageParam.isApproval && this.pageParam.isContainerIn)"
+          [formSetting]="{
+              otherHostContainerName: 'other_host_id',
+              flagName: 'add_other_host',
+              sectionTitle: 'Host Information',
+              isNeedMe: true
+
+          }"
+
+        ></host-form>
+
+
+        <host-form  *ngIf="this.applyRule" [parentForm]="parentForm"  [isFnf]="this.applyRule.isFnf" [isEditing]="this.pageParam.isEditing"
+                    [hostData]="{
+            hostId: this.applyRule.data.host_id,
+            otherHostId: this.applyRule.data.members,
+             hostExt: this.applyRule.data.other_host_ext
+
+          }"
+
+                    [isCanSubmit]="(this.isCanSubmit && !this.pageParam.isApproval && this.pageParam.isContainerIn)"
+                    [formSetting]="{
+              otherHostContainerName: 'members',
+              flagName: 'add_member',
+              sectionTitle: 'Team Member View',
+              isNeedMe: false
+          }"
 
         ></host-form>
 
