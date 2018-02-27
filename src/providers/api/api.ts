@@ -65,15 +65,15 @@ export class ApiProvider {
 
     /**
      * get menu samping per tipe user, di chain dengan login
-     * @returns {Promise<MenusApiInterface[]>}
+     * @returns {Promise<MenuInterface[]>}
      */
-    getMenu(userId: string): Promise<MenusApiInterface[]> {
+    getMenu(userId: string): Promise<MenuInterface[]> {
         var menuUrl = ApiProvider.HRM_URL + "s/com.ssoft.hrm.EmployeeMenu?mobile=true";
         var params = {
             user_id: userId,
         };
         console.log(params);
-        return this.httpClient.get<MenusApiInterface[]>(menuUrl, {withCredentials:true,params: params}).toPromise();
+        return this.httpClient.get<MenuInterface[]>(menuUrl, {withCredentials:true,params: params}).toPromise();
     }
 
     /**
@@ -451,15 +451,17 @@ export class ApiProvider {
 
 }//class
 
-export interface MenusApiInterface {
+export interface MenuInterface {
     hasSubmenu?: boolean;
-    menu?: MenusApiInterface[];
+    menu?: MenuInterface[];
     name;
     id;
     isOpen: boolean;
     image?: string;
     badge?:BadgeConfig;
     homeNotificationTarget?: string;
+    apiId?:string;
+    isHidden?:boolean;
 }
 
 export interface BadgeConfig{
@@ -486,6 +488,7 @@ export interface UserSessionApiInterface {
     isLoggedIn: boolean;
     isFnF?: boolean;
     isFnFReady?: boolean;
+    password?:string;
 }
 
 export class VisitationFilterApi {
@@ -635,6 +638,8 @@ export interface TextValueInterface {
 export interface SuccessMessageInterface{
   success:boolean;
   message:string;
+
+  status?:string;
 }
 
 

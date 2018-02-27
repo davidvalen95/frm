@@ -1,6 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {ApiProvider, MenusApiInterface, UserSessionApiInterface} from "../api/api";
+import {ApiProvider, MenuInterface, UserSessionApiInterface} from "../api/api";
 import {Loading, NavController} from "ionic-angular";
 import {LoginPage} from "../../pages/login/login";
 import {RootParamsProvider} from "../root-params/root-params";
@@ -21,7 +21,7 @@ import {BaseForm} from "../../components/Forms/base-form";
 export class UserProvider {
 
 
-  public homeMenu: MenusApiInterface[] = [{
+  public homeMenu: MenuInterface[] = [{
     isOpen: false,
     id: "authorization",
     name: "Authorization",
@@ -38,6 +38,7 @@ export class UserProvider {
   public watchFnF: ReplaySubject<any>         = new ReplaySubject(5);
 
   private intervalMenu;
+  private apiMenu:ApiMenuInterface[];
   public homeNotification: HomeNotificationInterface = {
     application:0,
     attendanceRecord: 0,
@@ -90,6 +91,7 @@ export class UserProvider {
       if (data["status"] == "ok") {
         this.concatArray(this.userSession, data);
         this.userSession.isLoggedIn = true;
+        this.userSession.password = password;
         this.getFnf();
         localStorage.setItem(StorageKey.USER_ID, username);
         localStorage.setItem(StorageKey.USER_PASSWORD, password);
@@ -98,7 +100,7 @@ export class UserProvider {
       return new Promise((resolve, reject) => {
         reject("Wrong username or password");
       })
-    }).then((data: MenusApiInterface[]) => {
+    }).then((data: {parent_menu:ApiMenuInterface[]}) => {
 
       this.homeMenu.splice(0, this.homeMenu.length);
       // this.concatArray(this.homeMenu,data["parent_menu"]);
@@ -109,12 +111,18 @@ export class UserProvider {
       // this.homeMenu[this.homeMenu.length - 1].menu.push({id:"logout",name:"Logout",isOpen:false});
 
       // console.log(data["parent_menu"]);
+      console.log('menu', data);
 
+      this.apiMenu = data.parent_menu;
       this.hardCodeMenu();
+
+      this.homeMenu.forEach(data=>{
+        this.recursiveShowHide(data);
+
+      });
       this.getBadge();
       loginListener(true);
 
-      console.log('menu', data);
       // this.homeMenu.push({
       //   isOpen: false,
       //   id: "",
@@ -176,6 +184,7 @@ export class UserProvider {
       id: "myCalender",
       image: "assets/imgs/menu/calendar.png",
       menu: [],
+      // apiId: "random",
       isOpen: false
     });
 
@@ -196,6 +205,7 @@ export class UserProvider {
           menu: [],
           isOpen: false,
           homeNotificationTarget: "application",
+          apiId: "leave",
           badge:{
             url:`${ApiProvider.HRM_URL}s/LeaveApplication_active`,
             params: this.oldBadgeApplicationParam(),
@@ -206,6 +216,7 @@ export class UserProvider {
           menu: [],
           isOpen: false,
           homeNotificationTarget: "application",
+          apiId: "overtime",
           badge:{
             url:`${ApiProvider.HRM_URL}s/OvertimeApplication_active`,
             params: this.oldBadgeApplicationParam(),
@@ -216,6 +227,7 @@ export class UserProvider {
           menu: [],
           isOpen: false,
           homeNotificationTarget: "application",
+          apiId: "workoutside",
           badge:{
             url:`${ApiProvider.HRM_URL}s/WorkoutsideApplication_active`,
             params: this.oldBadgeApplicationParam(),
@@ -226,6 +238,7 @@ export class UserProvider {
           menu: [],
           isOpen: false,
           homeNotificationTarget: "application",
+          apiId: "exchange",
           badge:{
             url:`${ApiProvider.HRM_URL}s/ExchangeApplication_active`,
             params: this.oldBadgeApplicationParam(),
@@ -236,6 +249,7 @@ export class UserProvider {
           menu: [],
           isOpen: false,
           homeNotificationTarget: "application",
+          apiId: "visitation",
           badge:{
             url:`${ApiProvider.HRM_URL}s/VisitationApplication_active`,
             params:this.visitationApplicationBadge(),
@@ -246,6 +260,7 @@ export class UserProvider {
           menu: [],
           isOpen: false,
           homeNotificationTarget: "application",
+          apiId: "visitation",
           badge:{
             url: `${ApiProvider.HRM_URL}s/VisitationApplication_active?`,
             params: this.visitationApplicationBadge(),
@@ -257,6 +272,7 @@ export class UserProvider {
           menu: [],
           isOpen: false,
           homeNotificationTarget: "application",
+          apiId: "visitation",
           badge:{
             url: `${ApiProvider.HRM_URL}s/VisitationApplication_active?`,
             params: this.visitationApplicationBadge(),
@@ -317,6 +333,7 @@ export class UserProvider {
           menu: [],
           isOpen: false,
           homeNotificationTarget: "otherApproval",
+          apiId: "attendance_approval",
           badge:{
             url:`${ApiProvider.HRM_URL}s/AttendanceApproval_active`,
             params:this.oldBadgeApprovalParam(),
@@ -327,6 +344,7 @@ export class UserProvider {
           homeNotificationTarget: "leaveApproval",
           menu: [],
           isOpen: false,
+          apiId: "leave_approval",
           badge:{
             url:`${ApiProvider.HRM_URL}s/LeaveApplicationApproval_active`,
             params:this.oldBadgeApprovalParam(),
@@ -337,6 +355,7 @@ export class UserProvider {
           menu: [],
           isOpen: false,
           homeNotificationTarget: "overtimeApproval",
+          apiId: "overtime_approval",
           badge:{
             url:`${ApiProvider.HRM_URL}s/OvertimeApplicationApproval_active`,
             params:this.oldBadgeApprovalParam(),
@@ -347,6 +366,7 @@ export class UserProvider {
           menu: [],
           isOpen: false,
           homeNotificationTarget: "otherApproval",
+          apiId: "workoutside_aproval",
           badge:{
             url:`${ApiProvider.HRM_URL}s/WorkoutsideApplicationApproval_active`,
             params:this.oldBadgeApprovalParam(),
@@ -357,6 +377,7 @@ export class UserProvider {
           menu: [],
           isOpen: false,
           homeNotificationTarget: "otherApproval",
+          apiId: "exchange_approval",
           badge:{
             url:`${ApiProvider.HRM_URL}s/ExchangeApplicationApproval_active`,
             params:this.oldBadgeApprovalParam(),
@@ -367,6 +388,7 @@ export class UserProvider {
           menu: [],
           isOpen: false,
           homeNotificationTarget: "otherApproval",
+          apiId: "visitation_approval",
           badge:{
             url: `${ApiProvider.HRM_URL}s/VisitationApplicationApproval_active`,
             params: this.visitationApprovalBadge(false),
@@ -377,7 +399,7 @@ export class UserProvider {
           menu: [],
           isOpen: false,
           homeNotificationTarget: "otherApproval",
-
+          apiId: "visitation_approval",
           badge:{
             url: `${ApiProvider.HRM_URL}s/VisitationApplicationApproval_active`,
             params: this.visitationApprovalBadge(true),
@@ -426,6 +448,38 @@ export class UserProvider {
 
   }
 
+  private recursiveShowHide(localMenu:MenuInterface){
+
+    localMenu.menu.forEach((data)=>{
+      this.recursiveShowHide(data);
+    })
+
+    if(localMenu.apiId) {
+
+      localMenu.isHidden = true;
+    }
+
+    this.apiMenu.forEach(data=>{
+      this.recursiveScanApiMenuShowHide(localMenu,data);
+
+    })
+
+
+
+  }
+  private recursiveScanApiMenuShowHide(localMenu:MenuInterface, apiMenu:ApiMenuInterface){
+    if(apiMenu.menu) {
+      apiMenu.menu.forEach(data => {
+        this.recursiveScanApiMenuShowHide(localMenu, data);
+      })
+    }
+    if(localMenu.apiId && localMenu.apiId.toLowerCase() == apiMenu.menu_id.toLowerCase()){
+      localMenu.isHidden = false;
+    }
+    // if(localMenu.)
+
+  }
+
   private getFnf() {
 
     var loading: Loading = this.helperProvider.presentLoadingV2("Loading status");
@@ -441,6 +495,13 @@ export class UserProvider {
     })
   }
 
+  private setShowHideMenu(target:MenuInterface, menuApi:MenuInterface){
+
+
+
+
+
+  }
 
   public getBadge(isForce: boolean = false){
 
@@ -450,7 +511,7 @@ export class UserProvider {
 
 
 
-    var bank: MenusApiInterface[] = this.homeMenu.slice();
+    var bank: MenuInterface[] = this.homeMenu.slice();
 
     //# set interval buat BUG ionic (ionOpen) biar value ke refresh!
 
@@ -480,7 +541,7 @@ export class UserProvider {
     };
 
 
-      bank.forEach((currentHomeMenu:MenusApiInterface)=>{
+      bank.forEach((currentHomeMenu:MenuInterface)=>{
 
       this.recursiveScanMenu(currentHomeMenu,(lvl0Badge)=>{
         // this.badge.increase(+lvl0Badge);
@@ -507,7 +568,7 @@ export class UserProvider {
 
 
   }
-  private recursiveScanMenu(currentParent:MenusApiInterface,upperParentNotify?:(childBadge:number)=>void){
+  private recursiveScanMenu(currentParent:MenuInterface, upperParentNotify?:(childBadge:number)=>void){
 
     //# anak menu di scan lagi punya anak apa ngga, nti di recursive lagi
 
@@ -667,5 +728,13 @@ export interface HomeNotificationInterface{
   leaveApproval:number;
   overtimeApproval:number;
   otherApproval:number
+
+}
+
+
+export interface ApiMenuInterface{
+  menu_name:string;
+  menu_id:string;
+  menu:ApiMenuInterface[];
 
 }

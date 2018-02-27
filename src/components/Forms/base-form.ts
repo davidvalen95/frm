@@ -79,6 +79,9 @@ export class BaseForm {
 
   }
 
+  public setInputTypePassword(){
+    this.inputType = InputType.password;
+  }
 
   public toggleHidden(isHidden: boolean = null, isRequiredWhenVisible: boolean = false) {
     var logic = isHidden != null ? isHidden : !this.isHidden;

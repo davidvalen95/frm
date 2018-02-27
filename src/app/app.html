@@ -11,7 +11,7 @@
       <ion-list class="menuList" *ngFor="let menu of (this.userProvider.homeMenu )">
       <!--<ion-list *ngFor="let menu of (this.userProvider.menuReplaySubject | async)">-->
 
-        <ion-list-header *ngIf="menu.menu.length > 0" (click)="menu.isOpen = !menu.isOpen">
+        <ion-list-header [hidden]="menu.isHidden" *ngIf="menu.menu.length > 0" (click)="menu.isOpen = !menu.isOpen">
           <ion-icon item-right="" *ngIf="menu.isOpen" name="arrow-down"></ion-icon>
           <ion-icon  item-right="" *ngIf="!menu.isOpen" name="arrow-up"></ion-icon>
           <img item-left="" style="width:25px;height:25px;" *ngIf="menu.image" src="{{menu.image}}"/>
@@ -33,7 +33,7 @@
 
 
         <!--single parent-->
-        <ion-list-header menuClose="" *ngIf="menu.menu.length <= 0" (click)="openPage(menu.id)">
+        <ion-list-header [hidden]="menu.isHidden" menuClose="" *ngIf="menu.menu.length <= 0" (click)="openPage(menu.id)">
           <!--<img src="menu."/>-->
           <img item-left="" style="width:25px;height:25px;" *ngIf="menu.image" src="{{menu.image}}"/>
           {{menu.name}}

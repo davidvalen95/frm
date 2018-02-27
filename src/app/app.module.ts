@@ -56,31 +56,33 @@ import {HostFormComponent} from "../components/host-form/host-form";
 import {AnnouncementHomePage} from "../pages/announcement/announcement-home/announcement-home";
 import {AnnouncementApplyPage} from "../pages/announcement/announcement-apply/announcement-apply";
 import {Pro} from "@ionic/pro";
-
-Pro.init('f4ce1597', {
-  appVersion: '1.9.09'
-})
-
-@Injectable()
-export class MyErrorHandler implements ErrorHandler {
-  ionicErrorHandler: IonicErrorHandler;
-
-  constructor(injector: Injector) {
-    try {
-      this.ionicErrorHandler = injector.get(IonicErrorHandler);
-    } catch(e) {
-      // Unable to get the IonicErrorHandler provider, ensure
-      // IonicErrorHandler has been added to the providers list below
-    }
-  }
-
-  handleError(err: any): void {
-    Pro.monitoring.handleNewError(err);
-    // Remove this if you want to disable Ionic's auto exception handling
-    // in development mode.
-    this.ionicErrorHandler && this.ionicErrorHandler.handleError(err);
-  }
-}
+import {ChangeMyPasswordPage} from "../pages/myProfile/change-my-password/change-my-password";
+import {ProfileInformationPage} from "../pages/myProfile/profile-information/profile-information";
+//
+// Pro.init('f4ce1597', {
+//   appVersion: '1.9.09'
+// })
+//
+// @Injectable()
+// export class MyErrorHandler implements ErrorHandler {
+//   ionicErrorHandler: IonicErrorHandler;
+//
+//   constructor(injector: Injector) {
+//     try {
+//       this.ionicErrorHandler = injector.get(IonicErrorHandler);
+//     } catch(e) {
+//       // Unable to get the IonicErrorHandler provider, ensure
+//       // IonicErrorHandler has been added to the providers list below
+//     }
+//   }
+//
+//   handleError(err: any): void {
+//     Pro.monitoring.handleNewError(err);
+//     // Remove this if you want to disable Ionic's auto exception handling
+//     // in development mode.
+//     this.ionicErrorHandler && this.ionicErrorHandler.handleError(err);
+//   }
+// }
 
 
 //tes
@@ -136,6 +138,12 @@ export class MyErrorHandler implements ErrorHandler {
 
         IncompleteRecordHomePage,
         IncompleteRecordApplyPage,
+
+
+
+
+        ChangeMyPasswordPage,
+        ProfileInformationPage,
     ],
     imports: [
         BrowserModule,
@@ -191,6 +199,9 @@ export class MyErrorHandler implements ErrorHandler {
       IncompleteRecordHomePage,
       IncompleteRecordApplyPage,
 
+
+      ChangeMyPasswordPage,
+      ProfileInformationPage,
 
 
 
