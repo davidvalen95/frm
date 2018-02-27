@@ -260,7 +260,7 @@ export class UserProvider {
           menu: [],
           isOpen: false,
           homeNotificationTarget: "application",
-          apiId: "visitation",
+          apiId: "visitation_container_in",
           badge:{
             url: `${ApiProvider.HRM_URL}s/VisitationApplication_active?`,
             params: this.visitationApplicationBadge(),
@@ -272,7 +272,7 @@ export class UserProvider {
           menu: [],
           isOpen: false,
           homeNotificationTarget: "application",
-          apiId: "visitation",
+          apiId: "visitation_container_out",
           badge:{
             url: `${ApiProvider.HRM_URL}s/VisitationApplication_active?`,
             params: this.visitationApplicationBadge(),
@@ -455,7 +455,7 @@ export class UserProvider {
     })
 
     if(localMenu.apiId) {
-
+      console.log('hiddenMenu', localMenu.name);
       localMenu.isHidden = true;
     }
 
@@ -474,6 +474,7 @@ export class UserProvider {
       })
     }
     if(localMenu.apiId && localMenu.apiId.toLowerCase() == apiMenu.menu_id.toLowerCase()){
+      console.log('showMenu', localMenu.apiId, apiMenu.menu_id);
       localMenu.isHidden = false;
     }
     // if(localMenu.)
@@ -543,7 +544,7 @@ export class UserProvider {
 
       bank.forEach((currentHomeMenu:MenuInterface)=>{
 
-      this.recursiveScanMenu(currentHomeMenu,(lvl0Badge)=>{
+      this.recursiveBadgeMenu(currentHomeMenu,(lvl0Badge)=>{
         // this.badge.increase(+lvl0Badge);
 
         if(currentHomeMenu.menu.length > 0 ){
@@ -568,7 +569,7 @@ export class UserProvider {
 
 
   }
-  private recursiveScanMenu(currentParent:MenuInterface, upperParentNotify?:(childBadge:number)=>void){
+  private recursiveBadgeMenu(currentParent:MenuInterface, upperParentNotify?:(childBadge:number)=>void){
 
     //# anak menu di scan lagi punya anak apa ngga, nti di recursive lagi
 
@@ -579,7 +580,7 @@ export class UserProvider {
 
 
     currentParent.menu.forEach((currentMenu)=>{
-      this.recursiveScanMenu(currentMenu,upperParentNotify)
+      this.recursiveBadgeMenu(currentMenu,upperParentNotify)
     })
 
     if(currentParent.badge && currentParent.badge.url != null){

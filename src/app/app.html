@@ -22,7 +22,7 @@
 
         <!--ngClass="[animation-expand-bottom]"-->
         <div *ngIf="menu.isOpen" ngClass="animation-expand-bottom" >
-           <ion-item menuClose=""  *ngFor="let child of menu.menu" (click)="openPage(child.id)">
+           <ion-item menuClose=""  [hidden]="child.isHidden"   *ngFor="let child of menu.menu" (click)="openPage(child.id)">
              <span item-left="">> </span>
              <img item-left="" style="width:25px;height:25px;" *ngIf="menu.image" src="{{menu.image}}"/>
              {{child.name}}
