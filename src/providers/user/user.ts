@@ -399,7 +399,7 @@ export class UserProvider {
           menu: [],
           isOpen: false,
           homeNotificationTarget: "otherApproval",
-          apiId: "visitation_approval",
+          apiId: "visitation_container_approval",
           badge:{
             url: `${ApiProvider.HRM_URL}s/VisitationApplicationApproval_active`,
             params: this.visitationApprovalBadge(true),
