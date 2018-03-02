@@ -42,6 +42,11 @@ export class LoginPage {
 
     this.setupForm()
     setTimeout(()=>{
+
+      if(this.localStorageProvider.getIsForgotMe()){
+        return;
+      }
+
       var username = this.localStorageProvider.getUsername();
       var password = this.localStorageProvider.getPassword();
       if( username && password ){

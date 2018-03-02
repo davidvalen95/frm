@@ -18,8 +18,14 @@ export class LocalStorageProvider {
   private static FORGOTME = "forgotme_asdf1234";
 
 
+
+
+
+
   constructor(public http: HttpClient, public helperProvider:HelperProvider) {
     console.log('Hello LocalStorageProvider Provider');
+
+
   }
 
   public setUsername(username:string){
@@ -33,20 +39,24 @@ export class LocalStorageProvider {
   }
 
   public setPassword(password:string){
+
     localStorage.setItem(LocalStorageProvider.PASSWORD,password)
   }
   public getPassword(){
     return localStorage.getItem(LocalStorageProvider.PASSWORD);
   }
   public removePassword(){
+
     localStorage.removeItem(LocalStorageProvider.PASSWORD);
   }
 
   public setIsForgotMe(isForgotme:string){
+    console.log('setisforgotme',isForgotme);
     localStorage.setItem(LocalStorageProvider.FORGOTME,isForgotme)
   }
   public getIsForgotMe():boolean{
     var result = localStorage.getItem(LocalStorageProvider.FORGOTME);
+    console.log('getisforgotme',result);
     if(result){
       return this.helperProvider.parseBoolean(result);
     }
@@ -64,4 +74,10 @@ export class LocalStorageProvider {
 
 
 
+}
+
+export interface LocalStorageProperties{
+   username:string;
+   password:string;
+   isForgotMe:boolean;
 }

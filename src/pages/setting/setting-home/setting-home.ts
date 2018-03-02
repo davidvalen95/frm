@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import {ChangeDetectorRef, Component} from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import {RootParamsProvider} from "../../../providers/root-params/root-params";
 import {UserProvider} from "../../../providers/user/user";
 import {LoginPage} from "../../login/login";
 import {AppVersion} from "@ionic-native/app-version";
 import {HelperProvider} from "../../../providers/helper/helper";
+import {LocalStorageProvider} from "../../../providers/local-storage/local-storage";
+import {NgModel} from "@angular/forms";
 
 /**
  * Generated class for the SettingHomePage page.
@@ -22,9 +24,10 @@ export class SettingHomePage {
 
   public title:string;
   public versionNumber:string = "";
-  constructor(public helperProvider:HelperProvider, public appVersion: AppVersion, public navCtrl: NavController, public navParams: NavParams, public rootParam:RootParamsProvider, public userProvider:UserProvider) {
+  public isAutoLogin:boolean;
+  constructor(private cdr: ChangeDetectorRef, public localStorageProvider:LocalStorageProvider, public helperProvider:HelperProvider, public appVersion: AppVersion, public navCtrl: NavController, public navParams: NavParams, public rootParam:RootParamsProvider, public userProvider:UserProvider) {
     this.title = "Setting";
-
+    this.isAutoLogin = !this.localStorageProvider.getIsForgotMe();
     this.appVersion.getVersionNumber().then((data)=>{
       this.versionNumber = data;
     }).catch(rej=>{
@@ -44,6 +47,7 @@ export class SettingHomePage {
 
 
 
+
   logout(){
     setTimeout(() => {
       this.navCtrl.setRoot(LoginPage);
@@ -51,5 +55,9 @@ export class SettingHomePage {
     }, 500)
     this.userProvider.logout();
 
+  }
+
+  public commitLocalStorage(){
+    this.localStorageProvider.setIsForgotMe(""+(!this.isAutoLogin));
   }
 }
