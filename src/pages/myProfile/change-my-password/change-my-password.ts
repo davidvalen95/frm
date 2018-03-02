@@ -34,9 +34,9 @@ export class ChangeMyPasswordPage {
 
   ionViewDidLoad() {
     // console.log('ionViewDidLoad ChangeMyPasswordPage');
-    this.navbar.backButtonClick = (e: UIEvent) => {
-      this.leavePage();
-    }
+    // this.navbar.backButtonClick = (e: UIEvent) => {
+    //   this.leavePage();
+    // }
 
   }
 

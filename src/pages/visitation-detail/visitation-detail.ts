@@ -90,7 +90,7 @@ export class VisitationDetailPage {
         isOpen: true,
       }, {
         name: "Host Information",
-        key: ["host_ext", "host_id", "host_name"],
+        key: ["host_ext", "host_id", "host_name__", "host_ext"],
         value: [],
         isOpen: true,
         isHidden: false,
@@ -220,18 +220,21 @@ export class VisitationDetailPage {
         if (key == "host_id" && result.value != null) {
           //# get the name of host name
           this.apiProvider.getEmployeeInformation(result.value).then((data: EmployeeInformationInterface) => {
-            this.insertIntoKeyValue({key: "host_name", value: data.emp_name})
+            console.log('host_name',data);
+            this.insertIntoKeyValue({key: "host_name__", value: `${data.emp_name} (${data.dept_name})`})
 
           }).catch((rejected) => {
-            this.insertIntoKeyValue({key: "host_name", value: "No Information"})
+            this.insertIntoKeyValue({key: "host_name__", value: "No Information"})
 
           })
         }
         if (key == "other_host_id" && result.value != null) {
           //# get all the id's name
 
+
+          var bankSplit:string[] = [];
           (<string>result.value).split(";").forEach((split, index,) => {
-            if (split == "") {
+            if (split == "" &&  (<string>result.value).split(";").length == index) {
               return;
             }
             //# space to dinstinct name without being noticed
@@ -242,22 +245,32 @@ export class VisitationDetailPage {
             }
             // index+= 1;
 
-            setTimeout(()=>{
-              this.apiProvider.getEmployeeInformation(split).then((data: EmployeeInformationInterface) => {
+            if(bankSplit.indexOf(split) <=-1){
+              bankSplit.push((split));
+              setTimeout(()=>{
+                this.apiProvider.getEmployeeInformation(split).then((data: EmployeeInformationInterface) => {
 
-                //# register to the keycontainer
-                this.keyValueContainer[3].key.push("other host(id/name)" + space);
-                // this.keyValueContainer[3].key.concat(["other host(id/name)" + space]);
-                console.log("keyvaluecontainer", this.keyValueContainer);
-                //# nambah value ke keyvaluecontainer[3]
-                this.insertIntoKeyValue({key: "other host(id/name)" + space, value: split + " / " + data.emp_name})
+                  //# register to the keycontainer
+                  console.log('other_host_name',split);
+
+                  this.keyValueContainer[3].key.push("other host(id/name)" + space);
+                  // this.keyValueContainer[3].key.concat(["other host(id/name)" + space]);
+                  console.log("keyvaluecontainer", this.keyValueContainer);
+                  //# nambah value ke keyvaluecontainer[3]
+                  if(data.emp_name && data.emp_name != ""){
+                    this.insertIntoKeyValue({key: "other host(id/name)" + space, value: split + " / " + `${data.emp_name} (${data.dept_name})`})
+
+                  }
 
 
-              }).catch((rejected) => {
-                this.insertIntoKeyValue({key: "other_host_name", value: "No Information"})
+                }).catch((rejected) => {
+                  this.insertIntoKeyValue({key: "other_host_name", value: "No Information"})
 
-              })
-            },1000)
+                })
+              },1000)
+            }
+
+
 
 
           })
@@ -577,7 +590,7 @@ export class VisitationDetailPage {
       //   value = tempValue["visitorcategory_name"];
       // }
       key   = "with_vehicle";
-      value = this.visitationDetailObject.vehicle_info ? "Yes" : "No";
+      value = this.visitationDetailObject.vehicle_info.toLowerCase() == 't' ? "Yes" : "No";
 
 
     }
@@ -666,6 +679,7 @@ export class VisitationDetailPage {
             var post    = this.visitationDetailObject;
             post["act"] = "delete"
             post["tid"] = this.visitationData.id;
+            post["requisition_type"] = 'appointment';
 
             var message: string = "";
 

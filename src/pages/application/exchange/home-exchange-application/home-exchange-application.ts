@@ -64,7 +64,7 @@ export class HomeExchangeApplicationPage {
         //# jgn lupa yg ini
         this.pageParam = this.rootParam.homeExchangeApplicationParam;
 
-        this.title = this.pageParam.isApproval ? " Exchange Alt. Off Approval" : "Exchange Alt. Off Application";
+        this.title = this.pageParam.isApproval ? " Exchange Approval" : "Exchange Application";
         // this.title = this.pageParam.isApproval ? "Leave Approval" : "Leave Application";
 
 

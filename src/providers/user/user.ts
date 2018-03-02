@@ -366,7 +366,7 @@ export class UserProvider {
           menu: [],
           isOpen: false,
           homeNotificationTarget: "otherApproval",
-          apiId: "workoutside_aproval",
+          apiId: "workoutside_approval",
           badge:{
             url:`${ApiProvider.HRM_URL}s/WorkoutsideApplicationApproval_active`,
             params:this.oldBadgeApprovalParam(),

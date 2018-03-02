@@ -111,7 +111,7 @@ export class ApiProvider {
     //region ============= VisitationApplication ================
     getVisitationDetail(user: UserSessionApiInterface, tid: string): Promise<any> {
 
-        var httpParams: HttpParams = new HttpParams().set('user_id', user.empId).set('cmd', 'edit').set('tid', tid);
+        var httpParams: HttpParams = new HttpParams().set('user_id', user.empId).set('cmd', 'edit').set('tid', tid).set("container","false").set("requisition_type",'appointment');
         // this.httpClient.get(ApiProvider.HRM_URL + "s/VisitationApplication_top",{params:httpParams}).subscribe((data:any)=>{
         //   data["data"]
         //   console.log('visitationDetailKeyValue',data)
@@ -494,7 +494,7 @@ export interface UserSessionApiInterface {
 export class VisitationFilterApi {
     cmbYear?: string = "2018";
     cmbMonth?: string = "";
-    cmbStatus?: string = "";
+    cmbStatus?: string = "PA";
     acknowledged?: string = "";
     cmbDepartment?: string = "";//# for Approver
     cmbSection?: string = "";//# for Approver
@@ -572,7 +572,7 @@ export interface VisitationDataDetailInterface {
     time_in?: string;
     time_out?: string;
     until_date?: string;
-    vehicle_info?: boolean;
+    vehicle_info?: string;
     vehicle_no?: string;
     vehicle_type?: string;
     visitation_date?: string;

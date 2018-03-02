@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-navbar *ngIf="userProvider.userSession.isLoggedIn">
+  <ion-navbar #navbar *ngIf="userProvider.userSession.isLoggedIn">
     <button ion-button menuToggle >
       <ion-icon name="menu"></ion-icon>
     </button>
@@ -56,7 +56,7 @@
 
   <ion-grid style="text-align:center;max-width: 500px">
     <ion-row>
-      <ion-col class="circleMenu" col-4="" *ngFor="let circleMenu of circleMenus" menuToggle="">
+      <ion-col class="circleMenu" col-4="" *ngFor="let circleMenu of circleMenus" (click)="circleMenuOnClick(circleMenu)">
         <div class="imageContainer" >
           <img [src]="circleMenu.image"  width="100%"/>
           <div *ngIf="userProvider.homeNotification[circleMenu.badge] > 0" class="badge">

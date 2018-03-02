@@ -103,7 +103,9 @@ export class WorkoutsideApplyPage {
 
     //#override back button
     this.navbar.backButtonClick = (e: UIEvent) => {
-      this.leavePage();
+      this.leavePage();this.navbar.backButtonClick = (e: UIEvent) => {
+        this.leavePage();
+      }
     }
   }
 

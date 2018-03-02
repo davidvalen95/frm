@@ -131,7 +131,7 @@ export class AnnouncementHomePage {
       act: "list",
       mobile: "true",
       userid: this.userProvider.userSession.empId,
-      adate_from: this.helperProvider.getServerDateFormat(BaseForm.getAdvanceDate(-60,new Date())),
+      adate_from: this.helperProvider.getServerDateFormat(BaseForm.getAdvanceDate(-30,new Date())),
       adate_to: this.helperProvider.getServerDateFormat(BaseForm.getAdvanceDate(0,new Date())),
       limit: "3000",
       page:"1",

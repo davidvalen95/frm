@@ -171,6 +171,9 @@ export class AbsenceRecordHomePage {
       this.listData.data.forEach((currentLeaveList:AbsenceRecordListDataInterface)=>{
         currentLeaveList.isOpen = true;
       })
+      this.listData.data = this.listData.data.filter((dataFilter)=>{
+        return dataFilter.remark.toLowerCase().indexOf('absent') <= -1;
+      })
     });
   }
 

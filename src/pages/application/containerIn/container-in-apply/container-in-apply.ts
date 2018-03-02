@@ -361,7 +361,7 @@ export class ContainerInApplyPage {
     this.sectionFloatings.push({
       name: "Container Information",
       isOpen: false,
-      baseForms: [referenceNo, containerName, containerSize, containerNo, containerSealNo, specifyReason, isWithoutContainerSealNo, inspectorSealNo, dxnSealno, transportationCompany, portName,]
+      baseForms: [referenceNo, containerName, containerSize, containerNo, isWithoutContainerSealNo, containerSealNo, specifyReason , inspectorSealNo, dxnSealno, transportationCompany, portName,]
     });
 
 
@@ -392,11 +392,14 @@ export class ContainerInApplyPage {
 
       return keyValue;
     });
+    purpose.toggleHidden(true, false);
+
 
 
     var purposeSpecify   = new BaseForm("Please Specify Purpose", "purpose_specify");
     purposeSpecify.value = this.applyRule.data.purpose_specify;
-    purposeSpecify.toggleHidden(true, true);
+    // purposeSpecify.toggleHidden(true, true);
+    purposeSpecify.toggleHidden(true, false);
 
 
     purpose.changeListener.subscribe((data) => {
@@ -410,12 +413,9 @@ export class ContainerInApplyPage {
 
 
     var destination = new BaseForm("Destination", "destination_id");
-
     destination.value = this.applyRule.data.destination_id
-
     destination.setInputTypeSelectChain<ContainerInRuleInterface>(this.apiGetApplyRule(), (data: ContainerInRuleInterface) => {
       var keyValue: KeyValue[] = [];
-
       data.destination.forEach((tv) => {
         keyValue.push({
           key: tv.destination,
@@ -426,11 +426,11 @@ export class ContainerInApplyPage {
 
       return keyValue;
     });
-
+    destination.toggleHidden(true,false);
 
     var destinationSpecify   = new BaseForm("Please Specify destination", "destination_specify");
     destinationSpecify.value = this.applyRule.data.destination_specify
-    destinationSpecify.toggleHidden(true, true);
+    destinationSpecify.toggleHidden(true, false);
 
 
     destination.changeListener.subscribe((data) => {

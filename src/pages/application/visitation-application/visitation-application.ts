@@ -1003,7 +1003,10 @@ export class VisitationApplicationPage {
               if(key.indexOf("4") >-1){
                 currentAttachment.rules.isRequired = false;
               }
-              attachmentContainer.push(currentAttachment);
+              if(this.helperProvider.parseBoolean(data[key])){
+                attachmentContainer.push(currentAttachment);
+
+              }
               console.log("attachment",key,data[`${key}_desc`],currentAttachment);
 
 
@@ -1116,7 +1119,10 @@ export class VisitationApplicationPage {
               if(key.indexOf("4") >-1){
                 currentAttachment.rules.isRequired = false;
               }
-              attachmentContainer.push(currentAttachment);
+              if(this.helperProvider.parseBoolean(data[key])){
+                attachmentContainer.push(currentAttachment);
+
+              }
               console.log("attachment",key,data[`${key}_desc`],currentAttachment);
 
 
@@ -1581,6 +1587,7 @@ export class VisitationApplicationPage {
 
   getVisitation(page = 1): Promise<any> {
     this.visitationData   = [];
+    this.filter.filter_by = null;
     console.log('getVisitation', this.pageParam);
     if (this.pageParam.isApprover) {
 
@@ -1741,13 +1748,13 @@ export class VisitationApplicationPage {
 
 
 
-    if (!this.formValues['vehicle_no'] || this.formValues['vehicle_no'] == '') {
-      this.formValues['vehicle_info'] = 'f';
-    }
-
-    if (!this.formValues["visitor_id"] || this.formValues["visitor_id"] == "") {
-      this.formValues['visitor_id'] = "-";
-    }
+    // if (!this.formValues['vehicle_no'] || this.formValues['vehicle_no'] == '') {
+    //   this.formValues['vehicle_info'] = 'f';
+    // }
+    //
+    // if (!this.formValues["visitor_id"] || this.formValues["visitor_id"] == "") {
+    //   this.formValues['visitor_id'] = "-";
+    // }
 
 
     this.formValues['requisition_type'] = "appointment";

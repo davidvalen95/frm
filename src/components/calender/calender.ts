@@ -58,12 +58,12 @@ export class CalenderComponent {
 
   constructor(private calendar: Calendar, public helperProvider:HelperProvider) {
 
-    this.getDaysOfMonth();
 
   }
 
   ngAfterContentInit(){
 
+    this.getDaysOfMonth();
 
   }
 

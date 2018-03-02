@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import {Component, ViewChild} from '@angular/core';
+import {MenuController, Navbar, NavController} from 'ionic-angular';
 import {NgForm} from "@angular/forms";
 import {BaseForm, InputType} from "../../components/Forms/base-form";
 import {UserProvider} from "../../providers/user/user";
@@ -10,6 +10,10 @@ import {ApiProvider} from "../../providers/api/api";
 import {HelperProvider} from "../../providers/helper/helper";
 import {AnnouncementListInterface} from "../announcement/AnnouncementApi";
 import {AnnouncementHomePage} from "../announcement/announcement-home/announcement-home";
+import {CalenderPage} from "../calender/calender";
+import {RootParamsProvider} from "../../providers/root-params/root-params";
+import {HomeOvertimeApplicationPage} from "../application/overtime/home-overtime-application/home-overtime-application";
+import {HomeLeaveApplicationPage} from "../application/leave/home-leave-application/home-leave-application";
 
 @Component({
   selector: 'page-home',
@@ -18,10 +22,11 @@ import {AnnouncementHomePage} from "../announcement/announcement-home/announceme
 export class HomePage {
 
 
+
   public circleMenus:CircleMenuInterface[] = [];
   public announcement: AnnouncementListInterface;
   public announcementHomePage = AnnouncementHomePage;
-  constructor(public navCtrl: NavController, public userProvider:UserProvider, public httpClient:HttpClient, public helperProvider:HelperProvider) {
+  constructor(public rootParamProvider:RootParamsProvider, public menuController:MenuController, public navCtrl: NavController, public userProvider:UserProvider, public httpClient:HttpClient, public helperProvider:HelperProvider) {
     this.setupCircleMenu()
 
     this.apiExecuteGetAnnouncement();
@@ -44,6 +49,15 @@ export class HomePage {
   }
 
 
+  public circleMenuOnClick(menu:CircleMenuInterface){
+
+    if(menu.onClick){
+      menu.onClick();
+    }else{
+      this.menuController.open();
+    }
+  }
+
   private setupCircleMenu(){
 
     var application:CircleMenuInterface = {
@@ -63,12 +77,21 @@ export class HomePage {
       image: "assets/imgs/home/calender.png",
       title: "Calender",
       badge: "calender",
+      onClick: ()=>{
+        this.navCtrl.setRoot(CalenderPage);
+        // this.rootParamProvider.calen
+
+      }
     };
 
     var leaveApproval:CircleMenuInterface = {
       image: "assets/imgs/home/leave-approval.png",
       title: "Leave Approval",
       badge: "leaveApproval",
+      onClick:()=>{
+        this.rootParamProvider.homeLeaveApplicationParam = {isApproval:true};
+        this.navCtrl.setRoot(HomeLeaveApplicationPage);
+      },
     };
 
 
@@ -77,6 +100,11 @@ export class HomePage {
       title: "Overtime Approval",
 
       badge: "overtimeApproval",
+      onClick:()=>{
+        this.rootParamProvider.homeOvertimeApplicationParam = {isApproval:true};
+        this.navCtrl.setRoot(HomeOvertimeApplicationPage);
+      }
+
     };
 
 
@@ -108,7 +136,7 @@ export class HomePage {
         act: "list",
         mobile: "true",
         userid: this.userProvider.userSession.empId,
-        adate_from: this.helperProvider.getServerDateFormat(BaseForm.getAdvanceDate(-60,new Date())),
+        adate_from: this.helperProvider.getServerDateFormat(BaseForm.getAdvanceDate(-30,new Date())),
         adate_to: this.helperProvider.getServerDateFormat(BaseForm.getAdvanceDate(0,new Date())),
         limit: "3000",
         page:"1",
@@ -144,5 +172,6 @@ interface CircleMenuInterface{
   image:string,
   title:string,
   badge: string,
+  onClick?:()=>void;
 
-};
+}

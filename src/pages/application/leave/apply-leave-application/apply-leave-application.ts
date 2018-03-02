@@ -71,8 +71,11 @@ export class ApplyLeaveApplicationPage {
 
     // console.log('applyLeaveApplicationData', this.pageParam.leaveApplicationTop , this.pageParam.leaveApplicationTop.info,  this.pageParam.leaveApplicationTop.info.available);
 
-    var loader = this.helperProvider.presentLoadingV2("Loading");
-    this.apiGetApplyRule().toPromise().then((data: LeaveApplicationTopInterface) => {
+    var loader = this.helperProvider.presentLoadingV2("Please wait, retrieving your leave summary");
+
+    this.apiGetSummary().then((data)=>{
+      return this.apiGetApplyRule().toPromise();
+    }).then((data: LeaveApplicationTopInterface) => {
 
       // if(this.pageParam.isApproval){
       //   data = this.helperProvider.swapObject(data,"data","datatmp");
@@ -626,6 +629,28 @@ export class ApplyLeaveApplicationPage {
         this.navCtrl.pop()
       }, 300);
     })
+  }
+
+
+
+  public apiGetSummary():Promise<LeaveApplicationFilter> {
+
+    var url = `${ ApiProvider.HRM_URL }s/LeaveApplication_top?mobile=true`;
+
+    var params: HttpParams = new HttpParams().set("mobile", "true")
+      .append("cmd", "filter")
+      .append("user_id", this.userProvider.userSession.empId);
+
+    var promise: Promise<LeaveApplicationFilter> = this.httpClient.get<LeaveApplicationFilter>(url, {
+      withCredentials: true,
+      params: params
+    }).toPromise();
+
+
+    // var loader = this.helperProvider.presentLoadingV2("Loading summary");
+
+    return promise;
+
   }
 
 

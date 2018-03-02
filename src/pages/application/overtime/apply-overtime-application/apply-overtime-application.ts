@@ -166,7 +166,7 @@ export class ApplyOvertimeApplicationPage {
 
 
     var overtimeDate = new BaseForm("Date overtime", "ot_date");
-    overtimeDate.setInputTypeDate({min: new Date()});
+    overtimeDate.setInputTypeDate({});
     overtimeDate.value = BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.ot_date)).toISOString();
 
     this.applyRule.data.reason
