@@ -58,6 +58,8 @@ import {AnnouncementApplyPage} from "../pages/announcement/announcement-apply/an
 import {Pro} from "@ionic/pro";
 import {ChangeMyPasswordPage} from "../pages/myProfile/change-my-password/change-my-password";
 import {ProfileInformationPage} from "../pages/myProfile/profile-information/profile-information";
+import {SettingHomePage} from "../pages/setting/setting-home/setting-home";
+import {LocalStorageProvider} from '../providers/local-storage/local-storage';
 //
 // Pro.init('f4ce1597', {
 //   appVersion: '1.9.09'
@@ -87,141 +89,137 @@ import {ProfileInformationPage} from "../pages/myProfile/profile-information/pro
 
 //tes
 @NgModule({
-    declarations: [
-        ArrowOpenDirective,
-        FormErrorMessageComponent,
-        FloatingInputComponent,
-        DetailKeyValueComponent,
-        OpenUrlComponent,
-        SectionFloatingInputComponent,
-        CalenderComponent,
-        HostFormComponent,
+  declarations: [
+    ArrowOpenDirective,
+    FormErrorMessageComponent,
+    FloatingInputComponent,
+    DetailKeyValueComponent,
+    OpenUrlComponent,
+    SectionFloatingInputComponent,
+    CalenderComponent,
+    HostFormComponent,
 
 
+    HomePage,
+    AnnouncementHomePage,
+    AnnouncementApplyPage,
+    ListPage,
+    MyApp,
+    SearchBarPage,
 
-        HomePage,
-        AnnouncementHomePage,
-        AnnouncementApplyPage,
-        ListPage,
-        MyApp,
-        SearchBarPage,
+    LoginPage,
+    EmptyPage,
 
-        LoginPage,
-        EmptyPage,
-
-        CalenderPage,
-
-
-        VisitationDetailPage,
-        VisitationApplicationPage,
-
-        HomeLeaveApplicationPage,
-        ApplyLeaveApplicationPage,
-
-        HomeExchangeApplicationPage,
-        ApplyExchangeApplicationPage,
-        HomeOvertimeApplicationPage,
-        ApplyOvertimeApplicationPage,
-
-        WorkoutsideHomePage,
-        WorkoutsideApplyPage,
-
-        ContainerInApplyPage,
-        ContainerInHomePage,
+    CalenderPage,
 
 
+    VisitationDetailPage,
+    VisitationApplicationPage,
+
+    HomeLeaveApplicationPage,
+    ApplyLeaveApplicationPage,
+
+    HomeExchangeApplicationPage,
+    ApplyExchangeApplicationPage,
+    HomeOvertimeApplicationPage,
+    ApplyOvertimeApplicationPage,
+
+    WorkoutsideHomePage,
+    WorkoutsideApplyPage,
+
+    ContainerInApplyPage,
+    ContainerInHomePage,
 
 
-      //# myAttendance
-        AbsenceRecordHomePage,
-        AbsenceRecordApplyPage,
+    //# myAttendance
+    AbsenceRecordHomePage,
+    AbsenceRecordApplyPage,
 
-        IncompleteRecordHomePage,
-        IncompleteRecordApplyPage,
-
-
+    IncompleteRecordHomePage,
+    IncompleteRecordApplyPage,
 
 
-        ChangeMyPasswordPage,
-        ProfileInformationPage,
-    ],
-    imports: [
-        BrowserModule,
-        IonicModule.forRoot(MyApp),
-        FormsModule,
-        HttpClientModule,
-        PipesModule,
+    ChangeMyPasswordPage,
+    ProfileInformationPage,
+
+    SettingHomePage,
+  ],
+  imports: [
+    BrowserModule,
+    IonicModule.forRoot(MyApp),
+    FormsModule,
+    HttpClientModule,
+    PipesModule,
 
 
-
-    ],
-    bootstrap: [IonicApp],
-    entryComponents: [
-
-
-      HomePage,
-      AnnouncementHomePage,
-      AnnouncementApplyPage,
-      ListPage,
-      MyApp,
-      SearchBarPage,
-
-      LoginPage,
-      EmptyPage,
-
-      CalenderPage,
+  ],
+  bootstrap: [IonicApp],
+  entryComponents: [
 
 
-      VisitationDetailPage,
-      VisitationApplicationPage,
+    HomePage,
+    AnnouncementHomePage,
+    AnnouncementApplyPage,
+    ListPage,
+    MyApp,
+    SearchBarPage,
 
-      HomeLeaveApplicationPage,
-      ApplyLeaveApplicationPage,
+    LoginPage,
+    EmptyPage,
 
-      HomeExchangeApplicationPage,
-      ApplyExchangeApplicationPage,
-      HomeOvertimeApplicationPage,
-      ApplyOvertimeApplicationPage,
-
-      WorkoutsideHomePage,
-      WorkoutsideApplyPage,
-
-      ContainerInApplyPage,
-      ContainerInHomePage,
+    CalenderPage,
 
 
+    VisitationDetailPage,
+    VisitationApplicationPage,
+
+    HomeLeaveApplicationPage,
+    ApplyLeaveApplicationPage,
+
+    HomeExchangeApplicationPage,
+    ApplyExchangeApplicationPage,
+    HomeOvertimeApplicationPage,
+    ApplyOvertimeApplicationPage,
+
+    WorkoutsideHomePage,
+    WorkoutsideApplyPage,
+
+    ContainerInApplyPage,
+    ContainerInHomePage,
 
 
-      //# myAttendance
-      AbsenceRecordHomePage,
-      AbsenceRecordApplyPage,
+    //# myAttendance
+    AbsenceRecordHomePage,
+    AbsenceRecordApplyPage,
 
-      IncompleteRecordHomePage,
-      IncompleteRecordApplyPage,
-
-
-      ChangeMyPasswordPage,
-      ProfileInformationPage,
+    IncompleteRecordHomePage,
+    IncompleteRecordApplyPage,
 
 
+    ChangeMyPasswordPage,
+    ProfileInformationPage,
 
-    ],
-    providers: [
-        StatusBar,
-        SplashScreen,
-        {provide: ErrorHandler, useClass: IonicErrorHandler},
-        HeaderColor,
-        UserProvider,
-        ApiProvider,
-        DatePicker,
-        RootParamsProvider,
-        AndroidPermissions,
-        HelperProvider,
-        InAppBrowser,
-        AppVersion,
-        Calendar,
-        Badge
+    SettingHomePage,
 
-    ]
+  ],
+  providers: [
+    StatusBar,
+    SplashScreen,
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    HeaderColor,
+    UserProvider,
+    ApiProvider,
+    DatePicker,
+    RootParamsProvider,
+    AndroidPermissions,
+    HelperProvider,
+    InAppBrowser,
+    AppVersion,
+    Calendar,
+    Badge,
+    LocalStorageProvider
+
+  ]
 })
-export class AppModule {}
+export class AppModule {
+}

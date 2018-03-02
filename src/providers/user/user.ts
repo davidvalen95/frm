@@ -4,11 +4,11 @@ import {ApiProvider, MenuInterface, UserSessionApiInterface} from "../api/api";
 import {Loading, NavController} from "ionic-angular";
 import {LoginPage} from "../../pages/login/login";
 import {RootParamsProvider} from "../root-params/root-params";
-import {StorageKey} from "../../app/app.component";
 import {ReplaySubject} from "rxjs/ReplaySubject";
 import {HelperProvider} from "../helper/helper";
 import {Badge} from "@ionic-native/badge";
 import {BaseForm} from "../../components/Forms/base-form";
+import {LocalStorageProvider} from "../local-storage/local-storage";
 
 /*
   Generated class for the UserProvider provider.
@@ -49,7 +49,7 @@ export class UserProvider {
   };
   private lastBadgeFetch:Date;
 
-  constructor(public badge:Badge,public helperProvider: HelperProvider, public httpClient: HttpClient, public api: ApiProvider, public rootParam: RootParamsProvider) {
+  constructor(public badge:Badge,public helperProvider: HelperProvider, public httpClient: HttpClient, public api: ApiProvider, public rootParam: RootParamsProvider, public localStorageProvider:LocalStorageProvider) {
     this.userSession.isFnF      = false;
     this.userSession.isFnFReady = false;
     console.log('Hello UserProvider Provider');
@@ -93,8 +93,10 @@ export class UserProvider {
         this.userSession.isLoggedIn = true;
         this.userSession.password = password;
         this.getFnf();
-        localStorage.setItem(StorageKey.USER_ID, username);
-        localStorage.setItem(StorageKey.USER_PASSWORD, password);
+
+        this.localStorageProvider.setUsername(username);
+        this.localStorageProvider.setPassword(password);
+
         return this.api.getMenu(this.userSession.empId);
       }
       return new Promise((resolve, reject) => {
@@ -144,8 +146,9 @@ export class UserProvider {
 
   logout() {
     this.userSession = {isLoggedIn: false};
-    localStorage.removeItem(StorageKey.USER_PASSWORD);
-    localStorage.removeItem(StorageKey.USER_ID);
+
+    this.localStorageProvider.removeUsername();
+    this.localStorageProvider.removePassword();
     // localStorage.clear();
   }
 
@@ -436,11 +439,19 @@ export class UserProvider {
       isOpen: false
     });
 
+    //
+    // this.homeMenu.push({
+    //   name: "Logout",
+    //   id: "logout",
+    //   image: "assets/imgs/menu/logout.png",
+    //   menu: [],
+    //   isOpen: false
+    // });
 
     this.homeMenu.push({
-      name: "Logout",
-      id: "logout",
-      image: "assets/imgs/menu/logout.png",
+      name: "Setting",
+      id: "setting",
+      image: "assets/imgs/menu/setting.png",
       menu: [],
       isOpen: false
     });

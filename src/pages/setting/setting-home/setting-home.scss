@@ -1,0 +1,25 @@
+page-setting-home {
+
+
+
+  //.item-inner{
+  //  border: none !important;
+  //}
+
+  ion-content{
+    background: #F6F6F6!important;
+  }
+
+  ion-list{
+
+    &>*:first-child{
+      padding-top: 16px;
+
+    }
+    &>*:last-child{
+      padding-bottom: 16px;
+
+    }
+  }
+
+}

@@ -38,6 +38,7 @@ import {AnnouncementHomePage} from "../pages/announcement/announcement-home/anno
 import {Pro} from "@ionic/pro";
 import {ChangeMyPasswordPage} from "../pages/myProfile/change-my-password/change-my-password";
 import {ProfileInformationPage} from "../pages/myProfile/profile-information/profile-information";
+import {SettingHomePage} from "../pages/setting/setting-home/setting-home";
 
 @Component({
   templateUrl: 'app.html'
@@ -72,16 +73,8 @@ export class MyApp {
     //   message: `version: ${this.rootParams.version}, isPartial: ${this.rootParams.isPartial}`
     // }).present();
 
-    if (this.rootParams.isPartial) {
-
-
-      var room = localStorage.getItem(StorageKey.ROOM_ID) || "logout";
-      this.openPage(room);
-
-
-    } else {
       this.rootPage = LoginPage;
-    }
+
     this.apiExecuteCheckVersion();
 
   }
@@ -125,6 +118,9 @@ export class MyApp {
         case "logout":
           // this.userProvider.logout()
           this.logout();
+          break;
+        case "setting":
+          this.rootPage = SettingHomePage;
           break;
         case "home":
           this.rootPage = HomePage
@@ -396,13 +392,6 @@ export class MyApp {
       Pro.monitoring.exception(err);
     }
   }
-
-}
-
-export class StorageKey {
-  public static USER_ID       = "userId-Rumah0123asdfqwer";
-  public static ROOM_ID       = "roomId-Rumah0123asdfqwer";
-  public static USER_PASSWORD = "userPassword--Rumah0123asdfqwer";
 
 }
 

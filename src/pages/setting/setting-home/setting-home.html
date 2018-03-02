@@ -1,0 +1,57 @@
+<!--
+  Generated template for the VisitationApplicationPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+
+
+<ion-header >
+  <ion-navbar #navbar  >
+    <button ion-button menuToggle *ngIf="!this.rootParam.isPartial" >
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title text-center="" >{{title}}
+      <!--<span *ngIf="this.badge;let resultBadge" item-right=""><ion-badge *ngIf="(resultBadge.badgeVisitation != 0);"  color="danger" >{{resultBadge.badgeVisitation}}</ion-badge></span>-->
+
+    </ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding="" [ngClass]="{'partial':this.rootParam.isPartial}">
+
+
+
+  <ion-list>
+    <ion-item>
+      <ion-toggle checked="true"></ion-toggle>
+      <ion-label>
+        Notifications
+      </ion-label>
+      <ion-icon name="notifications" item-start=""></ion-icon>>
+    </ion-item>
+
+    <ion-item>
+      <ion-toggle checked="true"></ion-toggle>
+      <ion-label>
+        Auto login
+      </ion-label>
+      <ion-icon name='key' item-start></ion-icon>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        Help centre
+      </ion-label>
+      <ion-icon name='help-circle' item-start></ion-icon>
+    </ion-item>
+  </ion-list>
+
+
+  <button block="" (click)="logout()" style="margin-top: 52px" ion-button="" color="danger">Logout</button>
+  <p text-center="" style="color: gray">
+    v{{this.versionNumber}}
+  </p>
+</ion-content>
