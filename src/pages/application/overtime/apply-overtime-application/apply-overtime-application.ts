@@ -97,9 +97,9 @@ export class ApplyOvertimeApplicationPage {
   ionViewDidLoad() {
 
     //#override back button
-    this.navbar.backButtonClick = (e: UIEvent) => {
-      this.leavePage();
-    }
+    // this.navbar.backButtonClick = (e: UIEvent) => {
+    //   this.leavePage();
+    // }
   }
 
   ionViewDidLeave() {

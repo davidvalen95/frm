@@ -49,12 +49,13 @@ export class SettingHomePage {
 
 
   logout(){
-    setTimeout(() => {
-      this.navCtrl.setRoot(LoginPage);
+    this.helperProvider.showConfirmAlert("Are you sure to logout?",()=>{
+      setTimeout(() => {
+        this.navCtrl.setRoot(LoginPage);
 
-    }, 500)
-    this.userProvider.logout();
-
+      }, 500)
+      this.userProvider.logout();
+    });
   }
 
   public commitLocalStorage(){
