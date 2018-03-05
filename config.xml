@@ -126,4 +126,5 @@
         <variable name="MAX_STORE" value="2" />
     </plugin>
     <plugin name="cordova-plugin-local-notification" spec="^0.9.0-beta.2" />
+    <plugin name="cordova-plugin-statusbar" spec="^2.4.1" />
 </widget>

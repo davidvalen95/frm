@@ -14,6 +14,7 @@ import {CalenderPage} from "../calender/calender";
 import {RootParamsProvider} from "../../providers/root-params/root-params";
 import {HomeOvertimeApplicationPage} from "../application/overtime/home-overtime-application/home-overtime-application";
 import {HomeLeaveApplicationPage} from "../application/leave/home-leave-application/home-leave-application";
+import {Badge} from "@ionic-native/badge";
 
 @Component({
   selector: 'page-home',
@@ -26,7 +27,7 @@ export class HomePage {
   public circleMenus:CircleMenuInterface[] = [];
   public announcement: AnnouncementListInterface;
   public announcementHomePage = AnnouncementHomePage;
-  constructor(public rootParamProvider:RootParamsProvider, public menuController:MenuController, public navCtrl: NavController, public userProvider:UserProvider, public httpClient:HttpClient, public helperProvider:HelperProvider) {
+  constructor(public badge: Badge,public rootParamProvider:RootParamsProvider, public menuController:MenuController, public navCtrl: NavController, public userProvider:UserProvider, public httpClient:HttpClient, public helperProvider:HelperProvider) {
     this.setupCircleMenu()
 
     this.apiExecuteGetAnnouncement();
@@ -113,6 +114,14 @@ export class HomePage {
       title: "Other Approval",
 
       badge: "otherApproval",
+      onClick:()=>{
+        this.badge.increase(1).then((data)=>{
+          console.log('badgeIncrease',data)
+        }).catch((rej)=>{
+          console.log('badgeRejected',rej)
+        });
+        // console.log(this.badge.)
+      }
     };
 
 

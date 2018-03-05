@@ -550,7 +550,11 @@ export class UserProvider {
     };
 
 
-    this.badge.clear();
+    this.badge.clear().then((data)=>{
+      console.log('badgeClear',data)
+    }).catch(rej=>{
+      console.log('badgeClearRejected,',rej);
+    });
 
     bank.forEach((currentHomeMenu: MenuInterface) => {
 
@@ -559,7 +563,14 @@ export class UserProvider {
 
         if (currentHomeMenu.menu.length > 0) {
           currentHomeMenu.badge.count += lvl0Badge;
-          this.badge.increase(lvl0Badge);
+
+          this.badge.increase(lvl0Badge).then((data)=>{
+            console.log('badgeIncrease',data)
+          }).catch((rej)=>{
+            console.log('badgeRejected',rej)
+          });
+
+          // this.badge.increase(lvl0Badge);
 
         }
 
