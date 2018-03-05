@@ -183,7 +183,7 @@ export class UserProvider {
 
     })
     this.homeMenu.push({
-      name: "My Calender",
+      name: "My Calendar",
       id: "myCalender",
       image: "assets/imgs/menu/calendar.png",
       menu: [],
@@ -193,7 +193,7 @@ export class UserProvider {
 
 
     this.homeMenu.push({
-      name: "Application",
+      name: "My Application",
       id: "application",
       image: "assets/imgs/menu/application.png",
       badge:{
@@ -258,7 +258,7 @@ export class UserProvider {
             params:this.visitationApplicationBadge(),
           } ,
         }, {
-          name: "Container In Application",
+          name: "Container In",
           id: "containerInApplication",
           menu: [],
           isOpen: false,
@@ -270,7 +270,7 @@ export class UserProvider {
             count: 0,
           }
         },{
-          name: "Container Out Application",
+          name: "Container Out",
           id: "containerOutApplication",
           menu: [],
           isOpen: false,
@@ -321,8 +321,9 @@ export class UserProvider {
 
 
     this.homeMenu.push({
-      name: "Approval",
+      name: "My Approval",
       id: "approval",
+      apiId:"approval",
       image: "assets/imgs/menu/approval.png",
       badge:{
         params:null,
@@ -520,6 +521,7 @@ export class UserProvider {
 
 
     // this.badge.clear();
+
 
 
 

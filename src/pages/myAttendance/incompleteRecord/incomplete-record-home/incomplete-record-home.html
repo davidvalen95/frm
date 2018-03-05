@@ -82,29 +82,42 @@
         </ion-item>
 
 
-        <ion-item *ngIf="pageParam.isApproval">
-          <ion-label>Record Type</ion-label>
-          <ion-select [(ngModel)]="filter.cmbYear" interface="popover">
+
+        <ion-item *ngIf="!pageParam.isApproval" >
+          <ion-label>Status</ion-label>
+          <ion-select [(ngModel)]="filter.cmbStatus" interface="popover">
           <!--<ion-option value="" selected="">&#45;&#45;All&#45;&#45;</ion-option>-->
-           <ion-option *ngFor="let i of this.helperProvider.getCmbRule(this.filterRule,'cmbType')" selected=""
-                      [value]="i.value">{{i.text}}</ion-option>
+           <ion-option *ngFor="let i of this.helperProvider.getCmbRule(this.filterRule,'cmbStatus')" selected=""
+                       [value]="i.value">{{i.text}}</ion-option>
           </ion-select>
           </ion-item>
 
 
-        <ion-item *ngIf="pageParam.isApproval">
-        <ion-label>Search by</ion-label>
-        <ion-select [(ngModel)]="filter.cmbSearch" interface="popover">
-        <ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.filterRule,'cmbSearch')" [selected]="true"
-                    [value]="object.value">{{object.text}}</ion-option>
-        </ion-select>
-        </ion-item>
+        <ion-item >
+          <ion-label>Record Type</ion-label>
+          <ion-select [(ngModel)]="filter.cmbType" interface="popover">
+          <!--<ion-option value="" selected="">&#45;&#45;All&#45;&#45;</ion-option>-->
+           <ion-option *ngFor="let i of this.helperProvider.getCmbRule(this.filterRule,'cmbType')" selected=""
+                       [value]="i.value">{{i.text}}</ion-option>
+          </ion-select>
+          </ion-item>
 
 
-        <ion-item *ngIf="pageParam.isApproval">
-        <ion-label>Key word</ion-label>
-        <ion-input [(ngModel)]="filter.keyWord"></ion-input>
-        </ion-item>
+
+
+        <!--<ion-item *ngIf="pageParam.isApproval">-->
+        <!--<ion-label>Search by</ion-label>-->
+        <!--<ion-select [(ngModel)]="filter.cmbSearch" interface="popover">-->
+        <!--<ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.filterRule,'cmbSearch')" [selected]="true"-->
+                    <!--[value]="object.value">{{object.text}}</ion-option>-->
+        <!--</ion-select>-->
+        <!--</ion-item>-->
+
+
+        <!--<ion-item *ngIf="pageParam.isApproval">-->
+        <!--<ion-label>Key word</ion-label>-->
+        <!--<ion-input [(ngModel)]="filter.keyWord"></ion-input>-->
+        <!--</ion-item>-->
 
         <!--<ion-item>-->
         <!--<ion-label>Leave Type</ion-label>-->
@@ -188,7 +201,7 @@
                 <ion-col (click)="pushDetailPage(record)" text-center="">
                   <button ion-button block color="primary" icon-center>
                     <!--<ion-icon name='list-box'></ion-icon>-->
-                    Fill this
+                    {{pageParam.isApproval ? "Approval" :   "Fill this"}}
                   </button>
                 </ion-col>
                 <!--<ion-col text-right>-->

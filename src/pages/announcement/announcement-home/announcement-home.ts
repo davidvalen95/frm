@@ -97,7 +97,7 @@ export class AnnouncementHomePage {
     // }
     // this.navCtrl.push(AnnouncementApplyPage, param);
 
-    this.helperProvider.showAlert(currentList.sortcont, currentList.subject);
+    this.helperProvider.showAlert(currentList.content, currentList.subject);
   }
 
 

@@ -193,6 +193,7 @@ export class IncompleteRecordHomePage {
 
     this.filter.cmbStatus = this.pageParam.isApproval ? "PA" : "PE";
     this.filter.cmbSearch = "a.emp_id";
+    this.filter.cmbType = "";
     var url = `${ ApiProvider.HRM_URL }${this.pageParam.isApproval ? "s/AttendanceApproval_top" : "s/IncompletedRecord_top"}`;
 
 

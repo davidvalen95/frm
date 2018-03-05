@@ -180,7 +180,7 @@ export class MyApp {
         //# =========================================== MYATTENDANCE
 
         case "incompleteRecord":
-          this.rootParams.absenceRecordHomeParam = {isApproval: false};
+          this.rootParams.incompleteRecordHomeParam = {isApproval: false};
           this.rootPage                          = IncompleteRecordHomePage;
           break;
         case "absenceRecord":

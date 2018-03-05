@@ -143,6 +143,7 @@ export class VisitationDetailPage {
       this.keyValueContainer[3].isHidden = detail.host_id === null || detail.host_id == "";
       var otherHostId                           = (detail.other_host_id || "").split(';');
       var isIamOtherHost: boolean               = false;
+      var status = data["status"];
       otherHostId.map((value) => {
         if (value == '') {
           return;
@@ -161,12 +162,12 @@ export class VisitationDetailPage {
       //   visitationStatus &&
       //   detailStatus
       // ;
-      this.isCanApprove     = (detail.status == null || detail.status.toLowerCase() == 'pa' || detail.status.toLowerCase() == 'pe') && this.isApprover;
+      this.isCanApprove     = (status == null || status.toLowerCase() == 'pa' || status.toLowerCase() == 'pe') && this.isApprover;
       this.isCanAcknowledge = !detail.acknowledged &&
         isMeTheHost &&
         visitationStatus;
       //# pa pending approval, pe sybmited, im the host or creator, and not approve ack
-      this.isCanEdit        = !this.isCanApprove && !this.isCanAcknowledge && detail.status != null && (detail.status.toLowerCase() == 'pa' || detail.status.toLowerCase() == 'pe' ) && (detail.emp_id == this.userProvider.userSession.empId || isMeTheHost);
+      this.isCanEdit        = status != null && (status.toLowerCase() == 'pa' || status.toLowerCase() == 'pe' ) && (detail.emp_id == this.userProvider.userSession.empId || isMeTheHost);
 
 
       //#setup form

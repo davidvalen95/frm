@@ -20,14 +20,27 @@ page-visitation-application {
   }
 
 
-  .submitButton{
-
-
-    display: inline-block;
-    width: 47%;
-
-
-  }
+  //ion-slides{
+  //  position:relative !important;
+  //}
+  //ion-slide{
+  //  position:static !important;
+  //  padding-top: 60px;
+  //}
+  //.submitButton{
+  //
+  //
+  //  display: inline-block;
+  //  width: 47%;
+  //
+  //  position:fixed;
+  //  top:0px;
+  //
+  //
+  //}
+  //.submitButton:first-of-type{
+  //  left: 0px;
+  //}
 
   .visitationMini{
     ion-item{
@@ -46,6 +59,8 @@ page-visitation-application {
       color: blue;
     }
   }
+
+
 }
 
 

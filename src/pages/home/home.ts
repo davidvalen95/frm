@@ -75,7 +75,7 @@ export class HomePage {
 
     var calender:CircleMenuInterface = {
       image: "assets/imgs/home/calender.png",
-      title: "Calender",
+      title: "Calendar",
       badge: "calender",
       onClick: ()=>{
         this.navCtrl.setRoot(CalenderPage);

@@ -309,7 +309,7 @@ export class IncompleteRecordApplyPage {
       console.log('formAPprovalSubmit', param);
 
 
-      var url = `${ApiProvider.HRM_URL}s/IncompleteRecordApplicationApproval_op`;
+      var url = `${ApiProvider.HRM_URL}s/AttendanceApproval_op`;
       this.helperProvider.showConfirmAlert("Commit Approval", () => {
         this.apiProvider.submitGet<SuccessMessageInterface>(url, param, (data: SuccessMessageInterface) => {
           this.navCtrl.pop();

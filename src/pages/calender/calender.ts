@@ -56,7 +56,7 @@ export class CalenderPage {
     console.log("visitationApplicationBadge", this.rootParam.visitationApplicationParam);
 
     this.pageParam = this.rootParam.homeOvertimeApplicationParam;
-    this.title     = "Calender"
+    this.title     = "Calendar"
     this.getFilter();
     this.getList();
 
