@@ -7,7 +7,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>announcementApply</ion-title>
+    <ion-title>Announcement</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -16,6 +16,10 @@
 <ion-content padding>
 
   <div *ngIf="this.pageParam && this.pageParam.list">
-    {{this.pageParam.list.sortcont}}
+
+
+
+    <h4 text-center="">{{this.pageParam.list.subject}}</h4>
+    <p [innerHtml]="this.pageParam.list.content | keepAsHtml"></p>
   </div>
 </ion-content>

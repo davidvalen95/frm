@@ -20,6 +20,13 @@
 
 <ion-content padding="" [ngClass]="{'partial':this.rootParam.isPartial}">
 
+
+  <ion-refresher  [enabled]="!pageParam.isApply && !pageParam.isEditing" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+
+
   <ion-segment *ngIf="!pageParam.isApply && !pageParam.isEditing" (ionChange)="ionSegmentChange()"  style='margin-top:16px;'[(ngModel)]="segmentValue">
     <ion-segment-button value="apply" *ngIf="!this.isApprover" >
       Apply

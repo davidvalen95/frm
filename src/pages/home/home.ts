@@ -170,6 +170,10 @@ export class HomePage {
   }
 
 
+  public rootPageAnnouncement(){
+    this.navCtrl.setRoot(AnnouncementHomePage);
+  }
+
 
 }
 

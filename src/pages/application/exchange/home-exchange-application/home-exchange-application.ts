@@ -1,8 +1,8 @@
 import {Component, ViewChild} from '@angular/core';
 import {
-    Alert,
-    AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Segment,
-    Slides, ToastController,
+  Alert,
+  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Refresher, Segment,
+  Slides, ToastController,
 } from 'ionic-angular';
 import {
     ApiGetConfigInterface,
@@ -315,6 +315,10 @@ export class HomeExchangeApplicationPage {
 
     }
 
+  doRefresh(refresher:Refresher){
+    refresher.complete();
+    this.getList();
+  }
     public getList() {
         var loader = this.helperProvider.presentLoadingV2("Retrieving leave data");
         this.apiGetApplicationActive().toPromise().then((data: ExchangeApplicationActiveInterface) => {

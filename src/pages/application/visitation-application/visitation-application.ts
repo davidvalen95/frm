@@ -1,7 +1,7 @@
 import {Component, Input, ViewChild} from '@angular/core';
 import {
   Alert,
-  AlertController, Content, InfiniteScroll, IonicPage, Loading, Navbar, NavController, NavParams, Segment,
+  AlertController, Content, InfiniteScroll, IonicPage, Loading, Navbar, NavController, NavParams, Refresher, Segment,
   Slides, ToastController, ToolbarTitle
 } from 'ionic-angular';
 import {BaseForm, InputType, LabelType, KeyValue} from "../../../components/Forms/base-form";
@@ -1585,6 +1585,11 @@ export class VisitationApplicationPage {
     // this.isInfiniteEnable = true;
     // this.getList();
 
+  }
+
+  doRefresh(refresher:Refresher){
+    refresher.complete();
+    this.getVisitation();
   }
 
   getVisitation(page = 1): Promise<any> {

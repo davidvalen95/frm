@@ -1,7 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
 import {
   Alert,
-  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Segment,
+  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Refresher, Segment,
   Slides, ToastController,
 } from 'ionic-angular';
 import {
@@ -213,6 +213,13 @@ export class HomeLeaveApplicationPage {
     }
 
   }
+
+
+  doRefresh(refresher:Refresher){
+    refresher.complete();
+    this.getList();
+  }
+
 
   public getList() {
     // http://hrms.dxn2u.com:8888/hrm_test2/s/LeaveApplication_active?

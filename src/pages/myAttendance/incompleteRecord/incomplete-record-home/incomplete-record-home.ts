@@ -1,6 +1,6 @@
 import {Component, ViewChild} from '@angular/core';
 import {
-  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams,
+  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Refresher,
   ToastController
 } from 'ionic-angular';
 import {
@@ -131,6 +131,14 @@ export class IncompleteRecordHomePage {
     }
 
   }
+
+
+
+  doRefresh(refresher:Refresher){
+    refresher.complete();
+    this.getList();
+  }
+
 
   public getList() {
 

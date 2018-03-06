@@ -16,6 +16,8 @@ import {HelperProvider} from "../../providers/helper/helper";
 export class CalenderComponent {
 
 
+  selectedDay = -1;
+  bottomDescription:string = "";
   date: any = new Date();
   daysInThisMonth: any;
   daysInLastMonth: any;
@@ -55,6 +57,7 @@ export class CalenderComponent {
   calenderEvents:CalenderEventInterface[] = [];
 
   @Input('targetMonth') targetMonth:number = 1;
+  @Input('targetYear') targetYear:number = new Date().getFullYear();
 
   constructor(private calendar: Calendar, public helperProvider:HelperProvider) {
 
@@ -72,26 +75,26 @@ export class CalenderComponent {
     this.daysInLastMonth = [];
     this.daysInNextMonth = [];
     this.currentMonth    = this.monthNames[this.targetMonth];
-    this.currentYear     = this.date.getFullYear();
+    this.currentYear     = this.targetYear;
     if (this.targetMonth === new Date().getMonth()) {
       this.currentDate = new Date().getDate();
     } else {
       this.currentDate = 999;
     }
 
-    var firstDayThisMonth = new Date(this.date.getFullYear(), this.targetMonth, 1).getDay();
-    var prevNumOfDays     = new Date(this.date.getFullYear(), this.targetMonth, 0).getDate();
+    var firstDayThisMonth = new Date(this.targetYear, this.targetMonth, 1).getDay();
+    var prevNumOfDays     = new Date(this.targetYear, this.targetMonth, 0).getDate();
     for (var i = prevNumOfDays - (firstDayThisMonth - 1); i <= prevNumOfDays; i++) {
       this.daysInLastMonth.push(i);
     }
 
-    var thisNumOfDays = new Date(this.date.getFullYear(), this.targetMonth + 1, 0).getDate();
+    var thisNumOfDays = new Date(this.targetYear, this.targetMonth + 1, 0).getDate();
     for (var i = 0; i < thisNumOfDays; i++) {
       this.daysInThisMonth.push(i + 1);
     }
 
-    var lastDayThisMonth = new Date(this.date.getFullYear(), this.targetMonth + 1, 0).getDay();
-    var nextNumOfDays    = new Date(this.date.getFullYear(), this.targetMonth + 2, 0).getDate();
+    var lastDayThisMonth = new Date(this.targetYear, this.targetMonth + 1, 0).getDay();
+    var nextNumOfDays    = new Date(this.targetYear, this.targetMonth + 2, 0).getDate();
     for (var i = 0; i < (6 - lastDayThisMonth); i++) {
       this.daysInNextMonth.push(i + 1);
     }
@@ -106,20 +109,20 @@ export class CalenderComponent {
   }
 
   goToLastMonth() {
-    this.date = new Date(this.date.getFullYear(), this.targetMonth, 0);
+    this.date = new Date(this.targetYear, this.targetMonth, 0);
     this.getDaysOfMonth();
   }
 
   goToNextMonth() {
-    this.date = new Date(this.date.getFullYear(), this.targetMonth+2, 0);
+    this.date = new Date(this.targetYear, this.targetMonth+2, 0);
     this.getDaysOfMonth();
   }
 
 
   loadEventThisMonth() {
     this.eventList = new Array();
-    var startDate = new Date(this.date.getFullYear(), this.targetMonth, 1);
-    var endDate = new Date(this.date.getFullYear(), this.targetMonth+1, 0);
+    var startDate = new Date(this.targetYear, this.targetMonth, 1);
+    var endDate = new Date(this.targetYear, this.targetMonth+1, 0);
     this.calendar.listEventsInRange(startDate, endDate).then(
       (msg) => {
         msg.forEach(item => {
@@ -134,8 +137,8 @@ export class CalenderComponent {
 
   checkEvent(day) {
     var hasEvent = false;
-    var thisDate1 = this.date.getFullYear()+"-"+(this.targetMonth+1)+"-"+day+" 00:00:00";
-    var thisDate2 = this.date.getFullYear()+"-"+(this.targetMonth+1)+"-"+day+" 23:59:59";
+    var thisDate1 = this.targetYear+"-"+(this.targetMonth+1)+"-"+day+" 00:00:00";
+    var thisDate2 = this.targetYear+"-"+(this.targetMonth+1)+"-"+day+" 23:59:59";
     this.eventList.forEach(event => {
       if(((event.startDate >= thisDate1) && (event.startDate <= thisDate2)) || ((event.endDate >= thisDate1) && (event.endDate <= thisDate2))) {
         hasEvent = true;
@@ -147,6 +150,7 @@ export class CalenderComponent {
   selectDate(day) {//start at 1
     var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
 
+    this.selectedDay = day;
     var currentDescription:CalenderDescriptionInterface[] = []
 
     this.calenderEvents.forEach((currentEvent:CalenderEventInterface)=>{
@@ -160,7 +164,7 @@ export class CalenderComponent {
     })
 
     console.log('currentDescription',currentDescription);
-    var message = "";
+    var message = `<p>Date ${day}</p>`;
     currentDescription.forEach((description:CalenderDescriptionInterface)=>{
       description.text.forEach(text=>{
         message += `<p>${text}</p>`;
@@ -169,7 +173,9 @@ export class CalenderComponent {
     })
 
 
-    this.helperProvider.showAlert(message,`Date: ${day}`);
+    // this.helperProvider.showAlert(message,`Date: ${day}`);
+
+    this.bottomDescription = message;
 
 
 

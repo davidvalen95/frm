@@ -1,7 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
 import {
   Alert,
-  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Segment,
+  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Refresher, Segment,
   Slides, ToastController,
 } from 'ionic-angular';
 import {
@@ -139,6 +139,13 @@ export class HomeOvertimeApplicationPage {
     }
 
   }
+
+
+  doRefresh(refresher:Refresher){
+    refresher.complete();
+    this.getList();
+  }
+
 
   public getList() {
 

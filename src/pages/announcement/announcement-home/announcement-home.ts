@@ -33,7 +33,10 @@ export class AnnouncementHomePage {
   public visitationData: AnnouncementListDataInterface[] = [];
 
   public segmentValue: string = "list";
-  public filter: VisitationFilterApi = new VisitationFilterApi();
+  public filter:{adate_from,adate_to} = {
+    adate_from: BaseForm.getAdvanceDate(-30 , new Date).toISOString(),
+    adate_to: new Date().toISOString(),
+  };
   public isInfiniteEnable: boolean = true;
 
   public pageParam: AnnouncementHomeParamInterface = {isApproval: false};
@@ -85,19 +88,19 @@ export class AnnouncementHomePage {
 
   pushDetailPage(currentList: AnnouncementListDataInterface) {
 
-    //
-    // var param: AnnouncementApplyParamInterface = {
-    //   isEditing:true,isApply:false,
-    //   isApproval: this.pageParam.isApproval,
-    //   list: currentList,
-    //   title: this.title,
-    //   onDidLeave: ()=>{
-    //     this.getList();
-    //   }
-    // }
-    // this.navCtrl.push(AnnouncementApplyPage, param);
 
-    this.helperProvider.showAlert(currentList.content, currentList.subject);
+    var param: AnnouncementApplyParamInterface = {
+      isEditing:true,isApply:false,
+      isApproval: this.pageParam.isApproval,
+      list: currentList,
+      title: this.title,
+      onDidLeave: ()=>{
+        // this.getList();
+      }
+    }
+    this.navCtrl.push(AnnouncementApplyPage, param);
+
+    // this.helperProvider.showAlert(currentList.content, currentList.subject);
   }
 
 
@@ -131,8 +134,8 @@ export class AnnouncementHomePage {
       act: "list",
       mobile: "true",
       userid: this.userProvider.userSession.empId,
-      adate_from: this.helperProvider.getServerDateFormat(BaseForm.getAdvanceDate(-30,new Date())),
-      adate_to: this.helperProvider.getServerDateFormat(BaseForm.getAdvanceDate(0,new Date())),
+      adate_from: this.helperProvider.getServerDateFormat(new Date(this.filter.adate_from)),
+      adate_to:  this.helperProvider.getServerDateFormat(new Date(this.filter.adate_to)),
       limit: "3000",
       page:"1",
       start: "0",

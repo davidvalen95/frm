@@ -1,6 +1,6 @@
 import {Component, ViewChild} from '@angular/core';
 import {
-  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams,
+  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Refresher,
   ToastController
 } from 'ionic-angular';
 import {HomeBaseInterface} from "../../../../app/app.component";
@@ -139,6 +139,12 @@ export class ContainerInHomePage {
       }, 100);
     }
 
+  }
+
+
+  doRefresh(refresher:Refresher){
+    refresher.complete();
+    this.getList();
   }
 
   public getList() {

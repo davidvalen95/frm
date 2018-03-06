@@ -24,7 +24,7 @@
       <ion-col col-1 *ngFor="let lastDay of daysInLastMonth" class="last-month" (click)="goToLastMonth()">{{lastDay}}
       </ion-col>
       <ion-col col-1 *ngFor="let day of daysInThisMonth; let i = index" (click)="selectDate(day)">
-        <span [ngClass]="{'currentDate':currentDate===day,'otherDate':currentDate!==day}">{{day}}</span>
+        <span [ngClass]="{'currentDate':currentDate===day,'otherDate':currentDate!==day,'selected':day==this.selectedDay}">{{day}}</span>
 
         <div>
             <span *ngFor="let event of calenderEvents"><div *ngFor="let currentDescription of event.description" style="display: inline-block;margin:0;"><div *ngIf="currentDescription.dateIndex == i" [ngStyle]="{background:event.color}" class="event-bullet"></div></div></span>
@@ -57,10 +57,16 @@
   </ion-list>
 </div>
 
-<div class="legend">
-  <p style="margin-top: 12px"> <b>Legend</b></p>
-  <div style="margin-top: 12px" *ngFor="let event of calenderEvents">
-    <div style="width:15px;height:15px;vertical-align: middle" [ngStyle]="{background:event.color}" class="event-bullet"></div>
-    {{event.legend | ucWord}}
-  </div>
+<!--<div class="legend">-->
+  <!--<p style="margin-top: 12px"> <b>Legend</b></p>-->
+  <!--<div style="margin-top: 12px" *ngFor="let event of calenderEvents">-->
+    <!--<div style="width:15px;height:15px;vertical-align: middle" [ngStyle]="{background:event.color}" class="event-bullet"></div>-->
+    <!--{{event.legend | ucWord}}-->
+  <!--</div>-->
+<!--</div>-->
+
+
+<h5 text-center="">Date Information</h5>
+<div [innerHtml]="this.bottomDescription | keepAsHtml">
+
 </div>

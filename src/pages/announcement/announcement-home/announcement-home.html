@@ -4,12 +4,12 @@
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-<ion-header >
-  <ion-navbar #navbar  >
-    <button ion-button menuToggle *ngIf="!this.rootParam.isPartial" >
+<ion-header>
+  <ion-navbar #navbar>
+    <button ion-button menuToggle *ngIf="!this.rootParam.isPartial">
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title text-center="" >{{title}}
+    <ion-title text-center="">{{title}}
       <!--<span *ngIf="this.badge;let resultBadge" item-right=""><ion-badge *ngIf="(resultBadge.badgeVisitation != 0);"  color="danger" >{{resultBadge.badgeVisitation}}</ion-badge></span>-->
 
     </ion-title>
@@ -21,25 +21,23 @@
 <ion-content padding="" [ngClass]="{'partial':this.rootParam.isPartial}">
 
   <!--<ion-segment *ngIf="!pageParam.isApply && !pageParam.isEditing" (ionChange)="ionSegmentChange()"  style='margin-top:16px;'[(ngModel)]="segmentValue">-->
-    <!--<ion-segment-button *ngIf="!pageParam.isApproval" value="apply"  >-->
-      <!--Apply-->
-    <!--</ion-segment-button>-->
-    <!--<ion-segment-button value="list" >-->
-      <!--List-->
-    <!--</ion-segment-button>-->
+  <!--<ion-segment-button *ngIf="!pageParam.isApproval" value="apply"  >-->
+  <!--Apply-->
+  <!--</ion-segment-button>-->
+  <!--<ion-segment-button value="list" >-->
+  <!--List-->
+  <!--</ion-segment-button>-->
   <!--</ion-segment>-->
 
 
   <!---->
 
-  <div  [ngSwitch]="segmentValue">
-
-
+  <div [ngSwitch]="segmentValue">
 
 
     <div *ngIf="segmentValue == 'apply'">
-      <ion-grid >
-        <ion-row >
+      <ion-grid>
+        <ion-row>
 
         </ion-row>
       </ion-grid>
@@ -49,93 +47,59 @@
   </div>
 
 
-
-
-
-
-
-
   <div *ngIf="segmentValue == 'list'">
 
     <!--<button  *ngIf="!this.pageParam.isApprover" style="margin-bottom:24px;" (click)="newApply()" ion-button="" block="" color="danger">Apply</button>-->
 
 
-    <!--<ion-list style="border: 1px solid #C4C4C4; border-radius:5px;">-->
+    <ion-list style="border: 1px solid #C4C4C4; border-radius:5px;">
 
-      <!--<ion-item  (click)="filter.isOpen = !filter.isOpen">-->
-        <!--<h3>Search for {{title}}</h3>-->
-        <!--<span item-end="">-->
-              <!--<ion-icon name="arrow-down" *ngIf="filter.isOpen"></ion-icon>-->
-              <!--<ion-icon name="arrow-up" *ngIf="!filter.isOpen"></ion-icon>-->
-            <!--</span>-->
-      <!--</ion-item>-->
-      <!--<span *ngIf="filter.isOpen" class="animation-expand-bottom">-->
-
-        <!--<ion-item>-->
-          <!--<ion-label>Year</ion-label>-->
-          <!--<ion-select [(ngModel)]="filter.cmbYear" interface="popover">-->
-            <!--&lt;!&ndash;<ion-option value="" selected="">&#45;&#45;All&#45;&#45;</ion-option>&ndash;&gt;-->
-            <!--<ion-option *ngFor="let i of this.helperProvider.getCmbRule(this.filterRule,'cmbYear')" selected="" [value]="i.value">{{i.text}}</ion-option>-->
-          <!--</ion-select>-->
-        <!--</ion-item>-->
-        <!--<ion-item>-->
-          <!--<ion-label>Month</ion-label>-->
-          <!--<ion-select [(ngModel)]="filter.cmbMonth" interface="popover">-->
-
-            <!--<ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.filterRule,'month')" [value]="object.value" >{{object.text}}</ion-option>-->
-          <!--</ion-select>-->
-        <!--</ion-item>-->
-        <!--<ion-item *ngIf="!pageParam.isApproval">-->
-          <!--<ion-label >Status</ion-label>-->
-          <!--<ion-select  [(ngModel)]="filter.cmbStatus" interface="popover">-->
-            <!--<ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.filterRule,'cmbStatus')" [selected]="true" [value]="object.value" >{{object.text}}</ion-option>-->
-          <!--</ion-select>-->
-        <!--</ion-item>-->
+      <ion-item (click)="filter.isOpen = !filter.isOpen">
+        <h3>Search for {{title}}</h3>
+        <span item-end="">
+              <ion-icon name="arrow-down" *ngIf="filter.isOpen"></ion-icon>
+              <ion-icon name="arrow-up" *ngIf="!filter.isOpen"></ion-icon>
+            </span>
+      </ion-item>
+      <span *ngIf="filter.isOpen" class="animation-expand-bottom">
+        <ion-item>
+          <ion-label>Date From</ion-label>
+          <ion-datetime [(ngModel)]="filter.adate_from" interface="popover">
+          </ion-datetime>
+        </ion-item>
 
 
-        <!--<ion-item *ngIf="pageParam.isApproval">-->
-          <!--<ion-label >Search by</ion-label>-->
-          <!--<ion-select  [(ngModel)]="filter.cmbSearch" interface="popover">-->
-            <!--<ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.filterRule,'cmbSearch')" [selected]="true" [value]="object.value" >{{object.text}}</ion-option>-->
-          <!--</ion-select>-->
-        <!--</ion-item>-->
+        <ion-item>
+          <ion-label>Date To</ion-label>
+          <ion-datetime [(ngModel)]="filter.adate_to" interface="popover">
+          </ion-datetime>
+        </ion-item>
 
-        <!--<ion-item *ngIf="pageParam.isApproval">-->
-          <!--<ion-label >Key word</ion-label>-->
-          <!--<ion-input [(ngModel)]="filter.keyWord"></ion-input>-->
-        <!--</ion-item>-->
+
+        <ion-item>
+          <button (click)="getList()" ion-button="" block="">Search</button>
+        </ion-item>
 
 
 
-        <!--&lt;!&ndash;<ion-item>&ndash;&gt;-->
-        <!--&lt;!&ndash;<ion-label>Leave Type</ion-label>&ndash;&gt;-->
-        <!--&lt;!&ndash;<ion-select  [(ngModel)]="filter.cmbType" interface="popover">&ndash;&gt;-->
-        <!--&lt;!&ndash;<ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.leaveApplicationTop,'cmbType')"  [value]="object.value" >{{object.text}}</ion-option>&ndash;&gt;-->
-        <!--&lt;!&ndash;</ion-select>&ndash;&gt;-->
-        <!--&lt;!&ndash;</ion-item>&ndash;&gt;-->
+        </span>
 
-          <!--<ion-item>-->
-            <!--<button (click)="getList()" ion-button="" block="">Search</button>-->
-          <!--</ion-item>-->
-
-        <!--</span>-->
-
-    <!--</ion-list>-->
+    </ion-list>
 
 
-    <h3>Announcement for past 30 days</h3>
 
-    <p style="background: #C4F0FF;padding-top:0;padding-bottom:0" no-padding="" >Announcement</p>
+    <p style="background: #C4F0FF;padding-top:0;padding-bottom:0" no-padding="">Announcement</p>
 
 
-    <span *ngIf="this.listData "><p padding="" *ngIf=" !this.listData.data || listData.total == 0">No Announcement</p></span>
+    <span *ngIf="this.listData "><p padding=""
+                                    *ngIf=" !this.listData.data || listData.total == 0">No Announcement</p></span>
 
     <ion-grid *ngIf="this.listData && this.listData.data">
-      <ion-row >
+      <ion-row>
         <!--<p>page: {{currentVisitationData.page}}/{{currentVisitationData.maxpage}}</p>-->
         <ion-col col-12="" col-sm-6="" col-md-4="" *ngFor="let record of listData.data">
-          <ion-card >
-            <ion-card-header  (click)="record.isOpen = !record.isOpen">
+          <ion-card>
+            <ion-card-header (click)="record.isOpen = !record.isOpen">
               <ion-item no-padding="">
                 <h2>{{helperProvider.ucWord(record.subject | ifEmptyThenDash)}}</h2>
                 <span item-right="">
@@ -143,7 +107,7 @@
                 <ion-icon name="arrow-up" *ngIf="!record.isOpen"></ion-icon>
                 </span>
 
-                <p [innerHtml]="record.description | keepAsHtml " ></p>
+                <small [innerHtml]="record.description | keepAsHtml "></small>
               </ion-item>
               <!--<p><small>{{record.status}}</small></p>-->
             </ion-card-header>
@@ -153,13 +117,12 @@
               <!--<div  ngClass=" animation-expand-bottom">-->
 
 
-              <ion-list class="visitationMini" ngClass="ionContent" >
+              <ion-list class="visitationMini" ngClass="ionContent">
 
                 <ion-item *ngIf="!pageParam.isApproval">
                   <!--<span  [style.color]="this.getStatusColor(record.status)" item-end="">{{record.status | ifEmptyThenDash}} </span>-->
-                  <span  [innerHtml]="record.sortcont | keepAsHtml"></span>
+                  <span [innerHtml]="record.sortcont | keepAsHtml"></span>
                 </ion-item>
-
 
 
               </ion-list>
@@ -187,7 +150,6 @@
 
               </ion-row>
             </div>
-
 
 
           </ion-card>
