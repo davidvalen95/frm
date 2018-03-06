@@ -376,11 +376,20 @@ export class WorkoutsideApplyPage {
       this.applyRule.history.forEach((data: OvertimeHistoryInterface, index) => {
         var keyValues: KeyValue[] = [];
         for (var key in data) {
+
           var value = data[key];
-          keyValues.push({
-            key: key,
-            value: value,
-          });
+
+          if(key == 'emp_name'){
+            value = `${data['emp_id']} - ${value}`;
+          }
+
+          if(key != 'emp_id' && key !='status'){
+            keyValues.push({
+              key: key,
+              value: value,
+            });
+          }
+
         }
 
 

@@ -150,11 +150,12 @@ export class UserProvider {
 
   logout() {
     this.userSession = {isLoggedIn: false};
-
     this.localStorageProvider.removeUsername();
     this.localStorageProvider.removePassword();
 
     this.lastBadgeFetch = null;
+
+    this.userPrevilege.isCanApprove = false;
     // localStorage.clear();
   }
 

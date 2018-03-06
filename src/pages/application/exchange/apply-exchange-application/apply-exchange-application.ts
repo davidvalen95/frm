@@ -228,14 +228,23 @@ export class ApplyExchangeApplicationPage {
         if (this.applyRule.history) {
 
             this.applyRule.history.forEach((data: ExchangeHistoryInterface, index) => {
-                var keyValues: KeyValue[] = [];
-                for (var key in data) {
-                    var value = data[key];
-                    keyValues.push({
-                        key: key,
-                        value: value,
-                    });
+              var keyValues: KeyValue[] = [];
+              for (var key in data) {
+
+                var value = data[key];
+
+                if(key == 'emp_name'){
+                  value = `${data['emp_id']} - ${value}`;
                 }
+
+                if(key != 'emp_id' && key !='status'){
+                  keyValues.push({
+                    key: key,
+                    value: value,
+                  });
+                }
+
+              }
 
 
                 this.approvalHistories.push({

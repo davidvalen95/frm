@@ -149,7 +149,7 @@
                 <ion-icon name="arrow-up" *ngIf="!record.isOpen"></ion-icon>
                 </span>
 
-                <small [innerHtml]="pageParam.isApproval ? record.data9 : record.status | keepAsHtml " ></small>
+                <p [innerHtml]="pageParam.isApproval ? record.data9 : record.status | keepAsHtml " ></p>
               </ion-item>
               <!--<p><small>{{record.status}}</small></p>-->
             </ion-card-header>

@@ -158,8 +158,10 @@ export class ApplyLeaveApplicationPage {
 
 
   setupButtonLogic() {
-    this.isCanDelete  = this.pageParam.isEditing && this.applyRule.approved == 0;
-    this.isCanSubmit  = !this.pageParam.isEditing || ( this.pageParam.isEditing && this.applyRule.approved == 0);
+    var dateFrom = BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.leave_date_from));
+    var isBackDate = new Date().getTime() - dateFrom.getTime() < 0;
+    this.isCanDelete  = this.pageParam.isEditing && this.applyRule.approved == 0 && !isBackDate;
+    this.isCanSubmit  = !this.pageParam.isEditing || ( this.pageParam.isEditing && this.applyRule.approved == 0 && !isBackDate);
     this.isCanApprove = this.pageParam.isApproval && this.applyRule.allowEdit;
   }
 
@@ -444,11 +446,20 @@ export class ApplyLeaveApplicationPage {
       this.applyRule.history.forEach((data: LeaveHistoryInterface, index) => {
         var keyValues: KeyValue[] = [];
         for (var key in data) {
+
           var value = data[key];
-          keyValues.push({
-            key: key,
-            value: value,
-          });
+
+          if(key == 'emp_name'){
+            value = `${data['emp_id']} - ${value}`;
+          }
+
+          if(key != 'emp_id' && key !='status'){
+            keyValues.push({
+              key: key,
+              value: value,
+            });
+          }
+
         }
         console.log('getHistory-3', this.approvalHistoriesContainer);
 
