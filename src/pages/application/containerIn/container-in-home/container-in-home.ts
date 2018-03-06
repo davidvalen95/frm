@@ -232,6 +232,7 @@ export class ContainerInHomePage {
     // http://hrms.dxn2u.com:8888/hrm_test2/s/OvertimeApplication_top?mobile=true&cmd=filter&user_id=MY080127&callback=Ext.data.JsonP
 
 
+    this.filter.cmbStatus = "";
     var url = `${ ApiProvider.HRM_URL }${this.pageParam.isApproval ? "s/VisitationApplication_top" : "s/VisitationApplication_top"}`;
 
 

@@ -138,6 +138,8 @@ export class VisitationApplicationPage {
         //# REPLACED WITH BROADCAST
       } else {
         // this.getList();
+        this.filter.cmbStatus = "";
+
 
       }
       console.log('enter !');

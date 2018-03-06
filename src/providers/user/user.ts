@@ -49,6 +49,10 @@ export class UserProvider {
   };
   private lastBadgeFetch: Date;
 
+  public userPrevilege: UserPrevilegeInterface = {
+    isCanApprove:false,
+  }
+
   constructor(public badge: Badge, public helperProvider: HelperProvider, public httpClient: HttpClient, public api: ApiProvider, public rootParam: RootParamsProvider, public localStorageProvider: LocalStorageProvider) {
     this.userSession.isFnF      = false;
     this.userSession.isFnFReady = false;
@@ -489,6 +493,10 @@ export class UserProvider {
       console.log('showMenu', localMenu.apiId, apiMenu.menu_id);
       localMenu.isHidden = false;
     }
+
+    if(apiMenu.menu_id.toLowerCase() == 'approval'){
+      this.userPrevilege.isCanApprove = true;
+    }
     // if(localMenu.)
 
   }
@@ -762,4 +770,8 @@ export interface ApiMenuInterface {
   menu_id: string;
   menu: ApiMenuInterface[];
 
+}
+
+export interface UserPrevilegeInterface{
+  isCanApprove:boolean;
 }

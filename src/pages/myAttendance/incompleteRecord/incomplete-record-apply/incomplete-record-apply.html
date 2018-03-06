@@ -71,7 +71,7 @@
 
   <div class="action-container" *ngIf="!this.pageParam.isApproval">
     <button ion-button=""  type="button" (click)="leavePage()" color="warning">Cancel</button>
-    <button  *ngIf="isCanSubmit"  ion-button=""  type="button" (click)="formSubmit(parentForm)" color="primary">{{pageParam.isEditing ? "Commit Edit" : "Submit"}}</button>
+    <button  *ngIf="isCanSubmit"  ion-button=""  type="button" (click)="formSubmit(parentForm)" color="primary">{{pageParam.isEditing ? "Update" : "Submit"}}</button>
     <!--<button  *ngIf="isCanDelete"  ion-button="" type="button" (click)="formDelete()" color="danger">Delete</button>-->
   </div>
 

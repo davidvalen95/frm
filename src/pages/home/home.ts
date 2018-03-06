@@ -89,6 +89,7 @@ export class HomePage {
       image: "assets/imgs/home/leave-approval.png",
       title: "Leave Approval",
       badge: "leaveApproval",
+      isHidden: !this.userProvider.userPrevilege.isCanApprove,
       onClick:()=>{
         this.rootParamProvider.homeLeaveApplicationParam = {isApproval:true};
         this.navCtrl.setRoot(HomeLeaveApplicationPage);
@@ -114,6 +115,7 @@ export class HomePage {
       title: "Other Approval",
 
       badge: "otherApproval",
+      isHidden: !this.userProvider.userPrevilege.isCanApprove,
       onClick:()=>{
         this.badge.increase(1).then((data)=>{
           console.log('badgeIncrease',data)
@@ -182,5 +184,6 @@ interface CircleMenuInterface{
   title:string,
   badge: string,
   onClick?:()=>void;
+  isHidden?:boolean;
 
 }
