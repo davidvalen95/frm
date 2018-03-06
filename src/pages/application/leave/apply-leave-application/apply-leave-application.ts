@@ -56,7 +56,7 @@ export class ApplyLeaveApplicationPage {
   public approvalHistoriesContainer: MatureKeyValueContainer[] = [];
 
   public availableDayContainer: MatureKeyValueContainer = {
-    name: "Annual leave available as",
+    name: "Annual leave available as of",
     isOpen: true,
     keyValue: [],
   }
@@ -358,7 +358,7 @@ export class ApplyLeaveApplicationPage {
 
 
       // this.httpClient.post(url, )
-      this.helperProvider.showConfirmAlert("Submit leave application?", () => {
+      this.helperProvider.showConfirmAlert("Submit Application?", () => {
 
         this.apiExecuteSubmitApplication(json);
       });

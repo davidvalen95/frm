@@ -283,7 +283,7 @@ export class ApplyOvertimeApplicationPage {
 
 
       // this.httpClient.post(url, )
-      this.helperProvider.showConfirmAlert("Submit leave application?", () => {
+      this.helperProvider.showConfirmAlert("Submit Application?", () => {
 
         this.apiExecuteSubmitApplication(json);
       });
