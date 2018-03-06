@@ -153,6 +153,8 @@ export class UserProvider {
 
     this.localStorageProvider.removeUsername();
     this.localStorageProvider.removePassword();
+
+    this.lastBadgeFetch = null;
     // localStorage.clear();
   }
 

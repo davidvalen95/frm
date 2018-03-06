@@ -319,8 +319,8 @@ export class HomeLeaveApplicationPage {
       //# coonvert 5.0 -> 5
 
       for (var key in data.info) {
-        if (isString(data.info[key]))
-          data.info[key] = data.info[key].replace(".0", "");
+        // if (isString(data.info[key]))
+          // data.info[key] = data.info[key].replace(".0", "");
       }
 
       this.leaveApplicationTop = data;

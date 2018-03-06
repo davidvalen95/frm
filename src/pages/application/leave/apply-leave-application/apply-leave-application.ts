@@ -224,6 +224,7 @@ export class ApplyLeaveApplicationPage {
     hospital.value = this.applyRule.data.hospital_name;
 
 
+
     var availableReplacement        = new BaseForm("Total available replacement leave", "");
     availableReplacement.isReadOnly = true;
 
@@ -535,7 +536,7 @@ export class ApplyLeaveApplicationPage {
 
     }
 
-    var loader = this.helperProvider.presentLoadingV2("Retrieving day");
+    // var loader = this.helperProvider.presentLoadingV2("Retrieving day");
 
     this.httpClient.get<DayRuleInterface>(url, {
       params: param,
@@ -544,7 +545,7 @@ export class ApplyLeaveApplicationPage {
       availableReplacement.value = data.total_available_rl;
       totalDay.value             = data.total_day;
     }).finally(() => {
-      loader.dismiss();
+      // loader.dismiss();
     });
   }
 
