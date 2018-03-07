@@ -161,6 +161,7 @@ export class CalenderComponent {
       })
 
 
+
       if(desc.length > 0){
         currentDescription.push(
           {text:desc[0].text,color:currentEvent.color,dateIndex:desc[0].dateIndex}
