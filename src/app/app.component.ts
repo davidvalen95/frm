@@ -240,7 +240,7 @@ export class MyApp {
           setTimeout(()=>{          this.nav.push(ChangeMyPasswordPage);},100);
 
           break;
-        case "myProfile":
+        case "profileInformation":
           this.rootPage = ProfileInformationPage;
           break;
 

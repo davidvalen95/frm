@@ -93,14 +93,6 @@
 
 
 
-        <ion-item *ngIf="!pageParam.isApproval" >
-          <ion-label>Status</ion-label>
-          <ion-select [(ngModel)]="filter.cmbStatus" interface="popover">
-          <!--<ion-option value="" selected="">&#45;&#45;All&#45;&#45;</ion-option>-->
-           <ion-option *ngFor="let i of this.helperProvider.getCmbRule(this.filterRule,'cmbStatus')" selected=""
-                       [value]="i.value">{{i.text}}</ion-option>
-          </ion-select>
-          </ion-item>
 
 
         <ion-item >
@@ -111,6 +103,31 @@
                        [value]="i.value">{{i.text}}</ion-option>
           </ion-select>
           </ion-item>
+
+
+        <ion-item >
+          <ion-label>Status</ion-label>
+          <ion-select [(ngModel)]="filter.cmbStatus" interface="popover">
+          <!--<ion-option value="" selected="">&#45;&#45;All&#45;&#45;</ion-option>-->
+           <ion-option *ngFor="let i of this.helperProvider.getCmbRule(this.filterRule,'cmbStatus')" selected=""
+                       [value]="i.value">{{i.text}}</ion-option>
+          </ion-select>
+          </ion-item>
+
+
+        <ion-item *ngIf="pageParam.isApproval">
+          <ion-label >Search by</ion-label>
+          <ion-select  [(ngModel)]="filter.cmbSearch" interface="popover">
+            <ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.filterRule,'cmbSearch')" [selected]="true" [value]="object.value" >{{object.text}}</ion-option>
+          </ion-select>
+        </ion-item>
+
+
+        <ion-item *ngIf="pageParam.isApproval">
+          <ion-label >Key word</ion-label>
+          <ion-input [(ngModel)]="filter.keyWord"></ion-input>
+        </ion-item>
+
 
 
 

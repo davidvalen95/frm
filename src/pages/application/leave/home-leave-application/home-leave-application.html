@@ -64,57 +64,12 @@
 
         <ion-card>
           <ion-card-header>Leave Summary</ion-card-header>
-          <ion-list padding="" class="summary">
-            <span class="description">Annual Leave Available as of {{helperProvider.getCurrentDate(false)}}</span>
-            <span style="color:green" class="detail" item-right="" class="detail" *ngIf="result.info">{{result.info.available}} Days</span>
-          </ion-list>
-
-          <ion-list padding="" class="summary">
-            <span class="description">Annual Leave Available as of {{result.info.nextDate}}</span>
-            <span style="color:green" class="detail" *ngIf="result.info">{{result.info.availableNext}} Days</span>
-          </ion-list>
-
-          <ion-list padding="" class="summary">
-            <span class="description">Annual Leave Entitlement (for the year)</span>
-            <span class="detail" *ngIf="result.info">{{result.info.entitle}} Days</span>
-          </ion-list>
-
-          <ion-list padding="" class="summary">
-            <span class="description">Annual Leave Carry Forward (last year)</span>
-            <span class="detail" *ngIf="result.info">{{result.info.carry}} Days</span>
-          </ion-list>
-
-          <ion-list padding="" class="summary">
-            <span class="description">Annual Leave adjustment as of {{helperProvider.getCurrentDate(false)}}</span>
-            <span class="detail" *ngIf="result.info">{{result.info.adjustment}} Days</span>
+          <ion-list *ngFor="let summary of this.summary" padding="" class="summary">
+            <span class="description">{{summary.key}}</span>
+            <span  [ngClass]="{colorGreen:summary.key.toLowerCase().indexOf('leave available as') >-1}" class="detail" item-right="" class="detail">{{summary.value}}</span>
           </ion-list>
 
 
-          <ion-list padding="" class="summary">
-            <span class="description">Total Leave (as at end of the year)</span>
-            <span class="detail" *ngIf="result.info">{{result.info.total_leave}} Days</span>
-          </ion-list>
-
-
-          <ion-list padding="" *ngIf="result.info && result.info.taken_al && result.info.taken_al  > 0 " class="summary">
-            <span class="description">Annual Leave Taken</span>
-            <span class="detail" >{{result.info.taken_al}} Days</span>
-          </ion-list>
-
-          <ion-list padding="" *ngIf="result.info && result.info.taken_el && result.info.taken_el > 0 " class="summary">
-            <span class="description">Emergency Leave Taken</span>
-            <span class="detail" >{{result.info.taken_el}} Days</span>
-          </ion-list>
-
-          <ion-list padding="" *ngIf="result.info && result.info.taken_rl && result.info.taken_rl > 0 " class="summary">
-            <span class="description">Replacement Leave Taken</span>
-            <span class="detail" >{{result.info.taken_rl}} Days</span>
-          </ion-list>
-
-          <ion-list padding="" class="summary">
-            <span class="description">Leave Balance (as at end of the year)</span>
-            <span class="detail" *ngIf="result.info">{{result.info.balance}} Days</span>
-          </ion-list>
 
 
 

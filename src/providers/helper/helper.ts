@@ -99,6 +99,22 @@ export class HelperProvider {
     return alert;
   }
 
+  public showConfirmRawAlert(message: string, handler:()=>void){
+    var alert:Alert = this.alertController.create({
+      title:"Confirmation",
+      message: `${message}`,
+      buttons:[
+        {text:"no",role:"cancel"},
+        {
+          text:"yes",
+          handler:handler
+        }
+      ]
+    })
+    alert.present();
+    return alert;
+  }
+
   /**
    * satu tombol OK
    * @param {string} message

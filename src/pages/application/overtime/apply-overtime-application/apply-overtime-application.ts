@@ -285,12 +285,12 @@ export class ApplyOvertimeApplicationPage {
       // this.httpClient.post(url, )
       var from = new Date("2018-03-06T" + form.value.ot_time_from);
       var to = new Date("2018-03-06T" +  form.value.ot_time_to);
-      var extraMessage = "";
+      var extraMessage = "Are you sure to submit Application?";
       if(from.getTime() > to.getTime()){
         extraMessage = "Overtime Time To less than Overtime Time From will be until next day OT, are you sure to continue?"
       }
       console.log(from,to, from.getTime(), to.getTime());
-      this.helperProvider.showConfirmAlert(`Submit Application? ${extraMessage}`, () => {
+      this.helperProvider.showConfirmRawAlert(` ${extraMessage}`, () => {
 
         this.apiExecuteSubmitApplication(json);
       });

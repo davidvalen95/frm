@@ -19,7 +19,10 @@ import {RootParamsProvider} from "../../../providers/root-params/root-params";
 })
 export class ProfileInformationPage {
 
+  public profileInformation:ProfileInformationInterface = {profile:""};
+  public title;
   constructor( public navCtrl: NavController, public navParams: NavParams,  public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+    this.title="Profile Information";
     this.getData();
   }
 
@@ -35,11 +38,19 @@ export class ProfileInformationPage {
     var params = {
       act: "profile",
       username: this.userProvider.userSession.empId,
-      // password: this.userProvider.userSession
+      password: this.userProvider.userSession.password
     };
     // this.userProvider.userSession.
 
 
-    // this.apiProvider.get()
+    this.apiProvider.get<ProfileInformationInterface>({url:url,params:params},(data)=>{
+      console.log('data',data);
+      this.profileInformation = data;
+    })
   }
+}
+
+
+interface ProfileInformationInterface{
+  profile:string;
 }

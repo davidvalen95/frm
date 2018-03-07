@@ -100,8 +100,8 @@ export class HomePage {
     var overtime:CircleMenuInterface = {
       image: "assets/imgs/home/overtime-approval.png",
       title: "Overtime Approval",
-
       badge: "overtimeApproval",
+      isHidden: !this.userProvider.userPrevilege.isCanApprove,
       onClick:()=>{
         this.rootParamProvider.homeOvertimeApplicationParam = {isApproval:true};
         this.navCtrl.setRoot(HomeOvertimeApplicationPage);

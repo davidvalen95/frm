@@ -576,18 +576,27 @@ export class ContainerInApplyPage {
       var json = this.helperProvider.convertToJson(form);
       console.log('jsonraw', json);
 
+
+      // this.pageParam.isEditing ? this.pageParam.list.id : -1;
+
+
       json["emp_id"]           = this.applyRule.data.emp_id;
       // json["half_date"]  = form.value.leave_date_from;
       json["sts"]              = this.pageParam.isEditing ? "update" : "save";
       json["act"]              = this.pageParam.isEditing ? "edit" : "add";
-      json["tid"]              = this.pageParam.isEditing ? this.pageParam.list.id : -1;
+      json["tid"]              = this.applyRule.data.id;
       json["userid"]           = this.userProvider.userSession.empId;
       json["mobile"]           = true;
-      json["id"]               = this.pageParam.isEditing ? this.pageParam.list.id : -1;
+      json["id"]               = this.applyRule.data.id;
       json                     = this.helperProvider.convertIsoToServerDate(json, ["visitation_date", "until_date"]);
       json["requisition_type"] = 'container';
       json["container_out"]    = !this.pageParam.isContainerIn;
       json["container_in"]     = this.pageParam.isContainerIn;
+
+      if(!this.pageParam.isContainerIn){
+        json["containerin_id"]     = this.applyRule.data.containerin_id;
+
+      }
 
 
       json = this.helperProvider.mergeObject(json, this.attachmentValueContainer);

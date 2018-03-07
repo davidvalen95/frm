@@ -20,8 +20,12 @@ import {
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {isString} from "ionic-angular/util/util";
 import {Observable} from "rxjs/Observable";
-import {LeaveApplicationActiveInterface, LeaveApplicationFilter, LeaveListInterface} from "../ApiInterface";
+import {
+  LeaveApplicationActiveInterface, LeaveApplicationFilter, LeaveApplicationTopInterface,
+  LeaveListInterface
+} from "../ApiInterface";
 import {HomeBaseInterface} from "../../../../app/app.component";
+import {KeyValue} from "../../../../components/Forms/base-form";
 
 /**
  * Generated class for the HomeLeaveApplicationPage page.
@@ -51,6 +55,8 @@ export class HomeLeaveApplicationPage {
   public leaveApplicationTop: LeaveApplicationFilter;
 
   public listData: LeaveApplicationActiveInterface;
+
+  public summary:KeyValue[] = [];
 
   public eventBroadcaster
   @ViewChild('infiniteScroll') public infiniteScroll: InfiniteScroll;
@@ -331,6 +337,14 @@ export class HomeLeaveApplicationPage {
       }
 
       this.leaveApplicationTop = data;
+      this.getSummary(data);
+
+
+
+
+
+
+
 
     }).catch(rejected => {
       console.log('apigetsummaryandlist', rejected);
@@ -338,6 +352,42 @@ export class HomeLeaveApplicationPage {
     }).finally(() => {
       loader.dismiss();
     })
+
+  }
+
+
+  public getSummary(applicationTop:LeaveApplicationFilter){
+    this.summary.push({key:`Annual Leave Entitlement (for the year)`,value:`${applicationTop.info.entitle}`});
+    this.summary.push({key:`Annual Leave Carry Forward (last year)`,value:`${applicationTop.info.carry}`});
+    this.summary.push({key:`Annual Leave Adjustment as of ${this.helperProvider.getCurrentDate(false)}`,value:`${applicationTop.info.adjustment}`});
+    this.summary.push({key:`Total Leave (as at end of the year)`,value:`${applicationTop.info.total_leave}`});
+
+    // if(applicationTop.info.taken_al > 0){
+    if(true){
+
+        this.summary.push({key:`Annual Leave Taken`,value:`${applicationTop.info.taken_al}`});
+    }
+
+    // if(applicationTop.info.taken_rl > 0){
+    if(true){
+      this.summary.push({key:`Replacement Leave Taken`,value:`${applicationTop.info.taken_rl}`});
+    }
+
+    // if(applicationTop.info.taken_el > 0){
+    if(true){
+      this.summary.push({key:`Emergency Leave Taken`,value:`${applicationTop.info.taken_el}`});
+    }
+    this.summary.push({key:`Unpaid Leave Taken`,value:`${applicationTop.info.taken_ul}`});
+    this.summary.push({key:`Special Paid Leave Taken`,value:`${applicationTop.info.taken_sl}`});
+    this.summary.push({key:`Mecial Paid Leave Taken`,value:`${applicationTop.info.taken_ol}`});
+    this.summary.push({key:`Annual Leave Available as of ${this.helperProvider.getCurrentDate(false)}`,value:`${applicationTop.info.available}`});
+
+    this.summary.push({key:`Annual Leave Available as of ${applicationTop.info.nextDate}`,value:`${applicationTop.info.availableNext}`});
+    this.summary.push({key:`Leave Balance (as at end of the year)`,value:`${applicationTop.info.balance}`});
+
+
+
+
 
   }
 

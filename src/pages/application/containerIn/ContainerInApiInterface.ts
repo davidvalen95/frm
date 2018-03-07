@@ -176,4 +176,8 @@ export interface ContainerInDataInterface extends ApproverBaseInterface {
 
   //#missing
   port_name:string;
+
+  id:string;
+
+  containerin_id?:string;
 }
