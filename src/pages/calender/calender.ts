@@ -188,6 +188,7 @@ export class CalenderPage {
               calenderEvent.description.push({
                 dateIndex: index,
                 text: arrayText,
+                color: '#000',
               })
             }
           });
