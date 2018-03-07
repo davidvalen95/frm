@@ -153,21 +153,29 @@ export class CalenderComponent {
     this.selectedDay = day;
     var currentDescription:CalenderDescriptionInterface[] = []
 
+
     this.calenderEvents.forEach((currentEvent:CalenderEventInterface)=>{
-      currentDescription = currentDescription.concat(
-        currentEvent.description.filter((description:CalenderDescriptionInterface)=>{
-          return description.dateIndex == (day-1);
-        })
-      )
+      console.log(currentEvent);
+      var desc = currentEvent.description.filter((description:CalenderDescriptionInterface)=>{
+        return description.dateIndex == (day-1);
+      })
+
+
+      if(desc.length > 0){
+        currentDescription.push(
+          {text:desc[0].text,color:currentEvent.color,dateIndex:desc[0].dateIndex}
+        )
+      }
 
 
     })
 
     console.log('currentDescription',currentDescription);
-    var message = `<p>Date ${day}</p>`;
+    // var message = `<p><b>${day}</b></p>`;
+    var message = ``;
     currentDescription.forEach((description:CalenderDescriptionInterface)=>{
       description.text.forEach(text=>{
-        message += `<p>${text}</p>`;
+        message += `<p><span class="event-bullet" style="background:${description.color};"></span> ${text}</p>`;
 
       })
     })
@@ -206,4 +214,5 @@ export interface CalenderEventInterface{
 export interface CalenderDescriptionInterface{
   dateIndex:number;
   text: string[];
+  color:string;
 }
