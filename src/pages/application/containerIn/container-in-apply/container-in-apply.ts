@@ -254,6 +254,7 @@ export class ContainerInApplyPage {
     //region containerInformation
     var containerName   = new BaseForm("Container name", "visitor_name")
     containerName.value = this.applyRule.data.visitor_name;
+    containerName.isReadOnly = !this.pageParam.isContainerIn;
 
     var containerSize   = new BaseForm("container size", "container_size");
     containerSize.value = this.applyRule.data.container_size;
@@ -267,6 +268,7 @@ export class ContainerInApplyPage {
       })
       return keyValue;
     })
+    containerSize.isReadOnly = !this.pageParam.isContainerIn;
 
 
     //when import
@@ -274,9 +276,9 @@ export class ContainerInApplyPage {
     containerNo.value = this.applyRule.data.visitor_no;
 
 
+
     var containerSealNo   = new BaseForm("Container seal no.", 'container_sealno');
     containerSealNo.value = this.applyRule.data.container_sealno;
-
 
     //=========
 
@@ -317,6 +319,8 @@ export class ContainerInApplyPage {
     var transportationCompany   = new BaseForm("Transportation company", "outsider_code");
     transportationCompany.value = this.applyRule.data.outsider_code;
     transportationCompany.setInputTypeSelect([]);
+    transportationCompany.isReadOnly = !this.pageParam.isContainerIn;
+
     // transportationCompany.setInputTypeSelectChain()
 
     //when export
@@ -350,12 +354,29 @@ export class ContainerInApplyPage {
       if (data.value.toLowerCase() == "import" && this.pageParam.isContainerIn) {
         referenceNo.toggleHidden(true);
         portName.toggleHidden(true);
+
       }
 
       if (data.value.toLowerCase() == 'export' && this.pageParam.isContainerIn) {
         containerSealNo.toggleHidden(true);
         containerNo.toggleHidden(true);
       }
+
+
+      if(data.value.toLowerCase() == "import"){
+        containerNo.isReadOnly = !this.pageParam.isContainerIn;
+        containerSealNo.isReadOnly = !this.pageParam.isContainerIn;
+        inspectorSealNo.isReadOnly = !this.pageParam.isContainerIn;
+
+        isWithoutContainerSealNo.toggleHidden(!this.pageParam.isContainerIn);
+        inspectorSealNo.toggleHidden(!this.pageParam.isContainerIn);
+        dxnSealno.toggleHidden(!this.pageParam.isContainerIn);
+      }
+
+
+
+
+
     })
 
     this.sectionFloatings.push({
