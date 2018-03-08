@@ -17,6 +17,7 @@ import {UserProvider} from "../../../../providers/user/user";
 import {RootParamsProvider} from "../../../../providers/root-params/root-params";
 import {Observable} from "rxjs/Observable";
 import {AttachmentRuleInterface} from "../../../application/leave/ApiInterface";
+import {FloatingInputComponent} from "../../../../components/Forms/floating-input/floating-input";
 
 /**
  * Generated class for the IncompleteRecordApplyPage page.
@@ -36,7 +37,7 @@ export class IncompleteRecordApplyPage {
   public title: string;
   public segmentValue: string                                    = "form";
   public pageParam: IncompleteRecordApplyInterface               = {isEditing: false, isApproval: false, isApply: true};
-  public baseForms: BaseForm[]                                   = [];
+  public baseForms: SectionFloatingInputInterface[]                                   = [];
   public approvalBaseForms: SectionFloatingInputInterface;
   public apiReplaySubject: { [key: string]: ReplaySubject<any> } = {};
   public attachmentValueContainer: object                        = {};
@@ -263,15 +264,42 @@ export class IncompleteRecordApplyPage {
     currentStatus.isDisabled = true;
 
 
-    this.baseForms.push(employee, date, year, recordType, ...timeCapture, timeIn, restOut, restIn, timeOut, reasonType, reason, currentStatus);
+    this.baseForms.push({
+      name: "General Information",
+      baseForms:[employee, date, year, recordType,reasonType, reason, currentStatus],
+      isOpen:true,
+      description:"",
+      isHidden: false,
+    })
+
+    this.baseForms.push({
+      name: "Data Captured",
+      baseForms: timeCapture,
+      isOpen:true,
+      description:"",
+      isHidden: false,
+    })
+
+    this.baseForms.push({
+      name: "Time Information",
+      baseForms: [timeIn, restOut, restIn, timeOut],
+      isOpen:true,
+      description:"",
+      isHidden: false,
+    })
+
+    this.setNotEditable();
 
 
   }
 
   private setNotEditable() {
 
-    this.baseForms.forEach((currentBaseForm: BaseForm) => {
-      currentBaseForm.isReadOnly = (this.isCanSubmit && !this.pageParam.isApproval) ? currentBaseForm.isReadOnly : true;
+    this.baseForms.forEach((sectionFloating) => {
+      sectionFloating.baseForms.forEach((currentBaseForm: BaseForm)=>{
+        currentBaseForm.isReadOnly = (this.isCanSubmit && !this.pageParam.isApproval) ? currentBaseForm.isReadOnly : true;
+
+      })
     })
 
     this.sectionDataDetail.forEach(currentInputSection => {

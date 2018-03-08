@@ -30,11 +30,12 @@
     <div [hidden]="segmentValue != 'form'">
 
       <form #parentForm="ngForm" (submit)="formSubmit(parentForm)">
-        <ion-list>
-          <floating-input  *ngFor="let currentBaseForm of this.baseForms" [parentForm]="parentForm" [baseForm]="currentBaseForm"></floating-input>
-        </ion-list>
+        <!--<ion-list>-->
+          <!--<floating-input  *ngFor="let currentBaseForm of this.baseForms" [parentForm]="parentForm" [baseForm]="currentBaseForm"></floating-input>-->
+        <!--</ion-list>-->
 
 
+        <section-floating-input *ngFor="let baseForm of baseForms" [parentForm]="parentForm" [container]="baseForm"></section-floating-input>
 
         <section-floating-input [parentForm]="parentForm" [container]="this.approvalBaseForms"></section-floating-input>
 
