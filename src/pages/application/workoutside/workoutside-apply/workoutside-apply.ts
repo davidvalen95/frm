@@ -127,13 +127,14 @@ export class WorkoutsideApplyPage {
   setupApprovalForms() {
 
     var status = new BaseForm("Status", "status")
+      .setValue(this.applyRule.data.status)
+
       .setInputTypeSelect([
         {key: 'Approve', value: "AP"},
         {key: 'Reject', value: "RE"}
       ],true)
-      .setValue(this.applyRule.data.status);
     if (this.applyRule.data.status.toLowerCase() != "") {
-      status.value = this.applyRule.data.status.toLowerCase() != "re" ? "AP" : "RE";
+       status.value = this.applyRule.data.status.toLowerCase() != "re" ? "AP" : "RE";
     }
 
     var approverRemark = new BaseForm("Approver Remark", "approver_remark")

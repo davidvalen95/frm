@@ -80,11 +80,12 @@ export class ApplyExchangeApplicationPage {
     setupApprovalForms() {
 
         var status = new BaseForm("Status", "status")
+            .setValue(this.applyRule.data.status)
             .setInputTypeSelect([
               {key: 'Approve', value: "AP"},
               {key: 'Reject', value: "RE"}
             ],true)
-            .setValue(this.applyRule.data.status);
+
 
         var approverRemark = new BaseForm("Approver Remark", "approver_remark")
             .setInputTypeTextarea()

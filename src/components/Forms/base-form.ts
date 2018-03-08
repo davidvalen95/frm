@@ -214,7 +214,9 @@ export class BaseForm {
       var text: string = "sdoifjiojdf";
 
       this.isSelectProcessing = false;
-      if(isFirstDefault && this.value == ""){
+      console.log("firstDefaultBefore",this.name,isFirstDefault,isFirstDefault && (!this.value || this.value == "" ),  this.value);
+
+      if(isFirstDefault && (!this.value || this.value == "" )){
         this.value = this.selectOptions[0].value;
         console.log("firstDefault", this.value);
       }
