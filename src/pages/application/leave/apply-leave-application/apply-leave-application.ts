@@ -23,6 +23,7 @@ import {
 import {leave} from "@angular/core/src/profile/wtf_impl";
 import {MatureKeyValueContainer} from "../../../../components/detail-key-value/detail-key-value";
 import {ApplyBaseInterface} from "../../../../app/app.component";
+import {SectionFloatingInputInterface} from "../../../../components/Forms/section-floating-input/section-floating-input";
 
 /**
  * Generated class for the ApplyLeaveApplicationPage page.
@@ -42,7 +43,7 @@ export class ApplyLeaveApplicationPage {
   public segmentValue: string                                    = "form";
   public pageParam: ApplyLeaveApplicationParam                   = {isEditing: false, isApproval: false, isApply: true};
   public baseForms: BaseForm[]                                   = [];
-  public approvalBaseForms: BaseForm[]                           = [];
+  public approvalBaseForms: SectionFloatingInputInterface                           ;
   public apiReplaySubject: { [key: string]: ReplaySubject<any> } = {};
   public attachmentValueContainer: object                        = {};
   public applyRule: LeaveApplicationTopInterface;
@@ -134,7 +135,7 @@ export class ApplyLeaveApplicationPage {
       .setInputTypeSelect([
         {key: 'Approve', value: "AP"},
         {key: 'Reject', value: "RE"}
-      ])
+      ],true)
       .setValue(this.applyRule.data.status);
 
     var approverRemark = new BaseForm("Approver Remark", "approver_remark")
@@ -151,7 +152,50 @@ export class ApplyLeaveApplicationPage {
     alertEmail.infoBottom = "Trigger alert email notification with approver remark for employee";
 
 
-    this.approvalBaseForms.push(status, approverRemark, alertEmail);
+
+
+    // al_total_leave?:string; //totalLeave
+    // al_balance?:string; // leaveBalance
+    // el_taken?:string;// emergency leave taken
+    // sl_taken?:string;//medical leave taken
+    // ul_taken?:string;//unpaid leave taken
+    // al_taken?:string; // annual leave taken
+
+    var totalLeave = new BaseForm("Total Leave","");
+    totalLeave.value = this.applyRule.al_total_leave;
+    totalLeave.isReadOnly = true;
+
+    var annual = new BaseForm("Annual Leave Taken","");
+    annual.value = this.applyRule.al_taken;
+    annual.isReadOnly = true;
+
+    var emergency = new BaseForm("emergency Leave taken","");
+    emergency.value =  this.applyRule.el_taken;
+    emergency.isReadOnly = true;
+
+    var medical = new BaseForm("medical leave taken","");
+    medical.value = this.applyRule.sl_taken;
+    medical.isReadOnly = true;
+
+    var unpaid = new BaseForm("unpaid leave taken","");
+    unpaid.value = this.applyRule.ul_taken;
+    unpaid.isReadOnly = true;
+
+    var balance = new BaseForm("leave balance","");
+    balance.value = this.applyRule.al_balance;
+    balance.isReadOnly = true;
+
+
+
+    this.approvalBaseForms = {
+      name: "For your approval",
+      baseForms: [totalLeave,annual,emergency,medical,unpaid, balance, status, approverRemark, alertEmail],
+      isHidden: false,
+      isOpen: true,
+      description: "",
+    }
+
+
 
 
   }
@@ -316,6 +360,12 @@ export class ApplyLeaveApplicationPage {
     baseForms.forEach((currentBaseForm: BaseForm) => {
       currentBaseForm.isReadOnly = (this.isCanSubmit && !this.pageParam.isApproval) ? currentBaseForm.isReadOnly : true;
     })
+
+    if(this.approvalBaseForms && this.approvalBaseForms.baseForms){
+      this.approvalBaseForms.baseForms.forEach((currentBaseForm:BaseForm)=>{
+        currentBaseForm.isReadOnly = (!this.isCanApprove);
+      })
+    }
   }
 
 

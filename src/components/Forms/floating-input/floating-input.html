@@ -152,7 +152,7 @@
 <!---->
 <!--for display onlu-->
 
-<p [hidden]="baseForm.isHidden || baseForm.isReadOnly || baseForm.infoBottom == ''" class="infoBottom">{{baseForm.infoBottom}}</p>
+<p [hidden]="baseForm.isHidden || baseForm.isReadOnly || baseForm.infoBottom == ''" class="infoBottom"  [innerHTML]="baseForm.infoBottom | keepAsHtml"></p>
 
 <div [hidden]="baseForm.isHidden" *ngIf="finalModel">
   <!--<span>{{debug()}}</span>-->

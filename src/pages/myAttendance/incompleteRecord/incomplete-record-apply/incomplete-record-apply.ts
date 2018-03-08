@@ -37,7 +37,7 @@ export class IncompleteRecordApplyPage {
   public segmentValue: string                                    = "form";
   public pageParam: IncompleteRecordApplyInterface               = {isEditing: false, isApproval: false, isApply: true};
   public baseForms: BaseForm[]                                   = [];
-  public approvalBaseForms: BaseForm[]                           = [];
+  public approvalBaseForms: SectionFloatingInputInterface;
   public apiReplaySubject: { [key: string]: ReplaySubject<any> } = {};
   public attachmentValueContainer: object                        = {};
   public applyRule: IncompleteRecordRuleInterface;
@@ -52,6 +52,8 @@ export class IncompleteRecordApplyPage {
 
   public sectionDataDetail: SectionFloatingInputInterface[] = [];
   public isDoneFetch: boolean                               = false;
+
+  public timeForms: BaseForm[] = [];
 
 
   @ViewChild(Navbar) navbar: Navbar;
@@ -130,7 +132,8 @@ export class IncompleteRecordApplyPage {
       .setInputTypeSelect([
         {key: 'Approve', value: "AP"},
         {key: 'Reject', value: "RE"}
-      ])
+      ],true)
+      .setValue(this.applyRule.data.status);
     if (this.applyRule.data.status.toLowerCase() != "") {
       status.value = this.applyRule.data.status.toLowerCase() != "re" ? "AP" : "RE";
     }
@@ -149,7 +152,7 @@ export class IncompleteRecordApplyPage {
     alertEmail.infoBottom = "Trigger alert email notification with approver remark for employee";
 
 
-    this.approvalBaseForms.push(status, approverRemark, alertEmail);
+    this.approvalBaseForms = {      name: "For your approval",      baseForms: [status, approverRemark, alertEmail],      isHidden: false,      isOpen: true,      description: "",    }
 
     this.setNotEditable();
 
@@ -228,6 +231,8 @@ export class IncompleteRecordApplyPage {
     // timeOut.isReadOnly = timeOut.value != "";
     timeOut.setInputTypeTime();
 
+    this.timeForms.push(timeIn,restOut,restIn,timeOut);
+
     var reasonType   = new BaseForm("Reason Type", "reason_type");
     reasonType.value = this.applyRule.data.reason_type;
     reasonType.setInputTypeSelectChain<IncompleteRecordRuleInterface>(this.apiGetApplyRule(), (data: IncompleteRecordRuleInterface) => {
@@ -271,9 +276,11 @@ export class IncompleteRecordApplyPage {
         currentBaseForm.isReadOnly = (this.isCanSubmit && !this.pageParam.isApproval) ? currentBaseForm.isReadOnly : true;
       })
     })
-    this.approvalBaseForms.forEach((approvalBaseForm: BaseForm) => {
-      approvalBaseForm.isReadOnly = (!this.isCanApprove);
-    })
+    if(this.approvalBaseForms && this.approvalBaseForms.baseForms){
+      this.approvalBaseForms.baseForms.forEach((currentBaseForm:BaseForm)=>{
+        currentBaseForm.isReadOnly = (!this.isCanApprove);
+      })
+    }
   }
 
   formSubmitApproval(form: NgForm) {
@@ -327,6 +334,46 @@ export class IncompleteRecordApplyPage {
 
     var test: object = {};
     if (form.valid) {
+
+
+
+
+
+
+
+      var check:{isValid:boolean,message:string}[] = [];
+
+        var timeIn = this.timeForms[0];
+        var restOut = this.timeForms[1];
+        var restIn = this.timeForms[2];
+        var timeOut = this.timeForms[3];
+
+
+        var day = "";
+        check.push(this.isValidResOutRestIn(day,restOut,restIn));
+        check.push(this.isValidRestOutTimeIn(day,restOut,timeIn));
+        check.push(this.isValidSkipRestin(day, timeIn,timeOut,restOut,restIn));
+        check.push(this.isValidTimeOutRestIn(day,timeOut,restIn));
+        check.push(this.isValidTimeoutToTimeIn(day, timeOut,timeIn));
+
+
+      var isValid = true;
+      var message = "";
+      check.forEach((data)=>{
+        if(!data.isValid){
+          isValid = false;
+          message += `<p>${data.message}</p>`
+        }
+      });
+      if(!isValid){
+        this.helperProvider.showAlert(message);
+        return;
+      }
+
+
+
+
+
       console.log('formvalue', form.value);
       var json = this.helperProvider.convertToJson(form);
       console.log('jsonraw', json);
@@ -562,6 +609,65 @@ export class IncompleteRecordApplyPage {
 
 
   }
+
+
+
+  private isValidTimeoutToTimeIn(date, timeIn, timeOut):{isValid:boolean,message:string}{
+    var timeInDate = new Date("2018-01-01T"+timeOut.value);
+    var timeOutDate = new Date("2018-01-01T"+timeIn.value);
+
+    var isValid = timeOutDate.getTime() >= timeInDate.getTime();
+    var message = isValid ? "" :  `Time Out cannot less than Time In! (${date}) `;
+
+    return {isValid:isValid,message:message};
+  }
+
+  private isValidSkipRestin(date, timeIn:BaseForm, timeOut:BaseForm, restOut:BaseForm, restIn:BaseForm):{isValid:boolean,message:string}{
+    var timeInDate = new Date("2018-01-01T"+timeIn.value);
+    var timeOutDate = new Date("2018-01-01T"+timeOut.value);
+    var restOutDate = new Date("2018-01-01T"+restOut.value);
+    var restInDate = new Date("2018-01-01T"+restIn.value);
+
+    var isValid = ( (timeIn.value != "00:00" && timeOut.value != "00.00") || (restOut.value == "00:00" && restIn.value == "00:00"));
+    var message = isValid ? "" :  `Rest-In must be 00:00 if you want to skip this date! (${date}) `;
+
+    return {isValid:isValid,message:message};
+  }
+
+
+
+  private isValidTimeOutRestIn(date, a:BaseForm, b:BaseForm):{isValid:boolean,message:string}{
+    var aDate = new Date("2018-01-01T"+a.value);
+    var bDate = new Date("2018-01-01T"+b.value);
+
+    var isValid = aDate.getTime() >= bDate.getTime();
+    var message = isValid ? "" :  `Time Out cannot less than Rest In! (${date}) `;
+
+    return {isValid:isValid,message:message};
+  }
+
+  private isValidResOutRestIn(date, a:BaseForm, b:BaseForm):{isValid:boolean,message:string}{
+    var aDate = new Date("2018-01-01T"+a.value);
+    var bDate = new Date("2018-01-01T"+b.value);
+
+    var isValid = aDate.getTime() >= bDate.getTime();
+    var message = isValid ? "" :  `Rest In cannot less than Rest Out! (${date}) `;
+
+    return {isValid:isValid,message:message};
+  }
+
+
+  private isValidRestOutTimeIn(date, a:BaseForm, b:BaseForm):{isValid:boolean,message:string}{
+    var aDate = new Date("2018-01-01T"+a.value);
+    var bDate = new Date("2018-01-01T"+b.value);
+
+    var isValid = aDate.getTime() >= bDate.getTime();
+    var message = isValid ? "" :  `Rest Out cannot less than Time In! (${date}) `;
+
+    return {isValid:isValid,message:message};
+  }
+
+
 }
 
 export interface IncompleteRecordApplyInterface extends ApplyBaseInterface<IncompleteRecordListDataInterface> {

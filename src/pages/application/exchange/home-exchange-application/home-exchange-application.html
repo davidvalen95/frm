@@ -84,12 +84,51 @@
 
                     </ion-select>
                 </ion-item>
+
+
                 <ion-item>
-                    <ion-label>Status</ion-label>
-                    <ion-select [(ngModel)]="filter.cmbStatus" interface="popover">
-                        <ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.exchangeApplicationTop,'cmbStatus')" [selected]="true" [value]="object.value" >{{object.text}}</ion-option>
-                    </ion-select>
+                  <ion-label >Status</ion-label>
+                  <ion-select  [(ngModel)]="filter.cmbStatus" interface="popover">
+                    <ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.filterRule,'cmbStatus')" [selected]="true" [value]="object.value" >{{object.text}}</ion-option>
+                  </ion-select>
                 </ion-item>
+
+              <ion-item *ngIf="pageParam.isApproval">
+                <ion-label>Department</ion-label>
+                <ion-select [(ngModel)]="filter.cmbDepartment" interface="popover">
+
+                  <ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.filterRule,'cmbDepartment')"
+                              [value]="object.value">{{object.text}}</ion-option>
+                </ion-select>
+              </ion-item>
+
+
+
+              <ion-item *ngIf="pageParam.isApproval">
+                <ion-label>Section</ion-label>
+                <ion-select [(ngModel)]="filter.cmbSection" interface="popover">
+
+                  <ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.filterRule,'cmbSection')"
+                              [value]="object.value">{{object.text}}</ion-option>
+                </ion-select>
+              </ion-item>
+
+
+
+
+              <ion-item *ngIf="pageParam.isApproval">
+                <ion-label >Search by</ion-label>
+                <ion-select  [(ngModel)]="filter.cmbSearch" interface="popover">
+                  <ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.filterRule,'cmbSearch')" [selected]="true" [value]="object.value" >{{object.text}}</ion-option>
+                </ion-select>
+              </ion-item>
+
+
+              <ion-item *ngIf="pageParam.isApproval">
+                <ion-label >Key word</ion-label>
+                <ion-input [(ngModel)]="filter.keyWord"></ion-input>
+              </ion-item>
+
 
                 <ion-item>
                     <button (click)="getList()" ion-button="" block="">Search</button>

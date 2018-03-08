@@ -151,7 +151,7 @@ export class MyApp {
           break;
         case "exchangeAltOff":
           this.rootPage                        = HomeExchangeApplicationPage;
-          this.rootParams.workoutsideHomeParam = {isApproval: false};
+          this.rootParams.homeExchangeApplicationParam = {isApproval: false};
 
           break;
 
@@ -236,8 +236,8 @@ export class MyApp {
         //# ==============================================MyProfile
 
         case "changeMyPassword":
-          this.rootPage = HomePage;
-          setTimeout(()=>{          this.nav.push(ChangeMyPasswordPage);},100);
+          this.rootPage = ChangeMyPasswordPage;
+          // setTimeout(()=>{          this.nav.push(ChangeMyPasswordPage);},100);
 
           break;
         case "profileInformation":

@@ -357,6 +357,11 @@ export class HomeLeaveApplicationPage {
 
 
   public getSummary(applicationTop:LeaveApplicationFilter){
+
+    this.summary.push({key:`Annual Leave Available as of ${this.helperProvider.getCurrentDate(false)}`,value:`${applicationTop.info.available}`});
+    this.summary.push({key:`Annual Leave Available as of ${applicationTop.info.nextDate}`,value:`${applicationTop.info.availableNext}`});
+
+
     this.summary.push({key:`Annual Leave Entitlement (for the year)`,value:`${applicationTop.info.entitle}`});
     this.summary.push({key:`Annual Leave Carry Forward (last year)`,value:`${applicationTop.info.carry}`});
     this.summary.push({key:`Annual Leave Adjustment as of ${this.helperProvider.getCurrentDate(false)}`,value:`${applicationTop.info.adjustment}`});
@@ -364,10 +369,8 @@ export class HomeLeaveApplicationPage {
 
     // if(applicationTop.info.taken_al > 0){
     if(true){
-
         this.summary.push({key:`Annual Leave Taken`,value:`${applicationTop.info.taken_al}`});
     }
-
     // if(applicationTop.info.taken_rl > 0){
     if(true){
       this.summary.push({key:`Replacement Leave Taken`,value:`${applicationTop.info.taken_rl}`});
@@ -380,9 +383,7 @@ export class HomeLeaveApplicationPage {
     this.summary.push({key:`Unpaid Leave Taken`,value:`${applicationTop.info.taken_ul}`});
     this.summary.push({key:`Special Paid Leave Taken`,value:`${applicationTop.info.taken_sl}`});
     this.summary.push({key:`Mecial Paid Leave Taken`,value:`${applicationTop.info.taken_ol}`});
-    this.summary.push({key:`Annual Leave Available as of ${this.helperProvider.getCurrentDate(false)}`,value:`${applicationTop.info.available}`});
 
-    this.summary.push({key:`Annual Leave Available as of ${applicationTop.info.nextDate}`,value:`${applicationTop.info.availableNext}`});
     this.summary.push({key:`Leave Balance (as at end of the year)`,value:`${applicationTop.info.balance}`});
 
 

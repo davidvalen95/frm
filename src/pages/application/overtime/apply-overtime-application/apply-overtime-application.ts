@@ -19,6 +19,7 @@ import {
 import {Observable} from "rxjs/Observable";
 import {NgForm} from "@angular/forms";
 import {MatureKeyValueContainer} from "../../../../components/detail-key-value/detail-key-value";
+import {SectionFloatingInputInterface} from "../../../../components/Forms/section-floating-input/section-floating-input";
 
 /**
  * Generated class for the ApplyOvertimeApplicationPage page.
@@ -38,7 +39,7 @@ export class ApplyOvertimeApplicationPage {
   public segmentValue: string                                    = "form";
   public pageParam: ApplyOvertimeApplicationParam                = {isEditing: false,isApproval:false, isApply:true};
   public baseForms: BaseForm[]                                   = [];
-  public approvalBaseForms: BaseForm[]                           = [];
+  public approvalBaseForms: SectionFloatingInputInterface;
 
   public apiReplaySubject: { [key: string]: ReplaySubject<any> } = {};
   public attachmentValueContainer: object                        = {};
@@ -61,6 +62,7 @@ export class ApplyOvertimeApplicationPage {
 
     // console.log('applyLeaveApplicationData', this.pageParam.leaveApplicationTop , this.pageParam.leaveApplicationTop.info,  this.pageParam.leaveApplicationTop.info.available);
 
+    this.title = this.pageParam.isApproval ? "Overtime Approval" : "Overtime Application";
 
     var loader = this.helperProvider.presentLoadingV2("Loading");
     this.apiGetApplyRule().toPromise().then((data: OvertimeRuleInterface) => {
@@ -81,6 +83,7 @@ export class ApplyOvertimeApplicationPage {
 
     }).catch((rejected) => {
       this.helperProvider.presentToast("Error");
+      console.log(rejected);
     }).finally(() => {
       loader.dismiss();
     });
@@ -123,7 +126,8 @@ export class ApplyOvertimeApplicationPage {
       .setInputTypeSelect([
         {key: 'Approve', value: "AP"},
         {key: 'Reject', value: "RE"}
-      ])
+      ],true)
+      .setValue(this.applyRule.data.status);
     if(this.applyRule.data.status.toLowerCase() != ""){
       status.value = this.applyRule.data.status.toLowerCase() != "re" ? "AP" : "RE";
     }
@@ -142,7 +146,7 @@ export class ApplyOvertimeApplicationPage {
     alertEmail.infoBottom = "Trigger alert email notification with approver remark for employee";
 
 
-    this.approvalBaseForms.push(status, approverRemark, alertEmail);
+    this.approvalBaseForms = {      name: "For your approval",      baseForms: [status, approverRemark, alertEmail],      isHidden: false,      isOpen: true,      description: "",    }
 
     this.setNotEditable();
 
@@ -212,9 +216,12 @@ export class ApplyOvertimeApplicationPage {
       currentBaseForm.isReadOnly = (this.isCanSubmit && !this.pageParam.isApproval) ? currentBaseForm.isReadOnly : true;
     })
 
-    this.approvalBaseForms.forEach((currentBaseForm:BaseForm)=>{
-      currentBaseForm.isReadOnly = (!this.isCanApprove);
-    })
+    if(this.approvalBaseForms && this.approvalBaseForms.baseForms){
+      this.approvalBaseForms.baseForms.forEach((currentBaseForm:BaseForm)=>{
+        currentBaseForm.isReadOnly = (!this.isCanApprove);
+      })
+    }
+
   }
 
   formSubmitApproval(form: NgForm) {

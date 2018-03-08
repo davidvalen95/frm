@@ -57,7 +57,7 @@ export class IncompleteRecordHomePage {
     console.log("visitationApplicationBadge", this.rootParam.visitationApplicationParam);
 
     this.pageParam = this.rootParam.incompleteRecordHomeParam;
-    this.title = this.pageParam.isApproval ? "Attendance Approval" :  "Incomplete Record";
+    this.title = this.pageParam.isApproval ? "Attendance Approval" :  "Attendance Record";
 
     this.getFilter();
     this.getList();

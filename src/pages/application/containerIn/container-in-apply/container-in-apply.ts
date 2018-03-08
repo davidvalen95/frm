@@ -46,7 +46,7 @@ export class ContainerInApplyPage {
   };
   public baseForms: BaseForm[]                                   = [];
   public sectionFloatings: SectionFloatingInputInterface[]       = []
-  public approvalBaseForms: BaseForm[]                           = [];
+  public approvalBaseForms: SectionFloatingInputInterface;
   public apiReplaySubject: { [key: string]: ReplaySubject<any> } = {};
   public attachmentValueContainer: object                        = {};
   public applyRule: ContainerInRuleInterface;
@@ -136,7 +136,8 @@ export class ContainerInApplyPage {
       .setInputTypeSelect([
         {key: 'Approve', value: "AP"},
         {key: 'Reject', value: "RE"}
-      ])
+      ],true)
+      .setValue(this.applyRule.data.status);
     if (this.applyRule.data.status.toLowerCase() != "") {
       status.value = this.applyRule.data.status.toLowerCase() != "re" ? "AP" : "RE";
     }
@@ -155,7 +156,18 @@ export class ContainerInApplyPage {
     alertEmail.infoBottom = "Trigger alert email notification with approver remark for employee";
 
 
-    this.approvalBaseForms.push(status, approverRemark, alertEmail);
+
+
+
+    this.approvalBaseForms = {
+      name: "For your approval",
+      baseForms: [status, approverRemark, alertEmail],
+      isHidden: false,
+      isOpen: true,
+      description: "",
+    }
+
+
 
     this.setNotEditable();
 
@@ -327,7 +339,7 @@ export class ContainerInApplyPage {
 
     var referenceNo   = new BaseForm("Reference No", 'visitor_id');
     referenceNo.value = this.applyRule.data.visitor_id;
-
+    // referenceNo.toggleHidden(true,false);
 
     var portName   = new BaseForm("port name", "port_name");
     portName.value = this.applyRule.data.port_name;
@@ -371,6 +383,8 @@ export class ContainerInApplyPage {
         isWithoutContainerSealNo.toggleHidden(!this.pageParam.isContainerIn);
         inspectorSealNo.toggleHidden(!this.pageParam.isContainerIn);
         dxnSealno.toggleHidden(!this.pageParam.isContainerIn);
+        referenceNo.toggleHidden(!this.pageParam.isContainerIn);
+        portName.toggleHidden(!this.pageParam.isContainerIn);
       }
 
 
@@ -537,9 +551,11 @@ export class ContainerInApplyPage {
 
       currentInputSection.isOpen = (!this.pageParam.isApproval) //#
     })
-    this.approvalBaseForms.forEach((approvalBaseForm: BaseForm) => {
-      approvalBaseForm.isReadOnly = (!this.isCanApprove);
-    })
+    if(this.approvalBaseForms && this.approvalBaseForms.baseForms){
+      this.approvalBaseForms.baseForms.forEach((currentBaseForm:BaseForm)=>{
+        currentBaseForm.isReadOnly = (!this.isCanApprove);
+      })
+    }
   }
 
   formSubmitApproval(form: NgForm) {

@@ -46,8 +46,10 @@ export interface ExchangeApplicationTopInterface {
     approved: number;
     changeDate: boolean;
     history?: ExchangeHistoryInterface[];
+    exchange_date_day:number;
 
-    //#approval
+
+  //#approval
     datatmp?: any;
     status?: string;
     allowEdit?: boolean;

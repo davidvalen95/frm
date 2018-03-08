@@ -19,6 +19,7 @@ import {
     ExchangeListInterface
 } from "../ApiInterface";
 import {MatureKeyValueContainer} from "../../../../components/detail-key-value/detail-key-value";
+import {SectionFloatingInputInterface} from "../../../../components/Forms/section-floating-input/section-floating-input";
 
 /**
  * Generated class for the ApplyExchangeApplicationPage page.
@@ -36,7 +37,7 @@ export class ApplyExchangeApplicationPage {
     public title: string = "";
     public pageParam: ApplyExchangeApplicationParam = {isEditing: false, isApproval: false, isApply: true};
     public baseForms: BaseForm[] = [];
-    public approvalBaseForms: BaseForm[] = [];
+    public approvalBaseForms: SectionFloatingInputInterface;
     public apiReplaySubject: {[key: string]: ReplaySubject<any>} = {};
     public applyRule: ExchangeApplicationTopInterface;
     public isCanApprove: boolean = false;
@@ -80,9 +81,9 @@ export class ApplyExchangeApplicationPage {
 
         var status = new BaseForm("Status", "status")
             .setInputTypeSelect([
-                {key: 'Approve', value: "AP"},
-                {key: 'Reject', value: "RE"}
-            ])
+              {key: 'Approve', value: "AP"},
+              {key: 'Reject', value: "RE"}
+            ],true)
             .setValue(this.applyRule.data.status);
 
         var approverRemark = new BaseForm("Approver Remark", "approver_remark")
@@ -99,7 +100,7 @@ export class ApplyExchangeApplicationPage {
         alertEmail.infoBottom = "Trigger alert email notification with approver remark for employee";
 
 
-        this.approvalBaseForms.push(status, approverRemark, alertEmail);
+        this.approvalBaseForms = {      name: "For your approval",      baseForms: [status, approverRemark, alertEmail],      isHidden: false,      isOpen: true,      description: "",    }
 
 
     }
@@ -134,16 +135,30 @@ export class ApplyExchangeApplicationPage {
         var exchange_date_from = new BaseForm("Exchange Date On", "exchange_date_from");
         exchange_date_from.setInputTypeDate({});
         exchange_date_from.value = (this.pageParam.dateFrom || BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.exchange_date_from))).toISOString();
-        // exchange_date_from.isReadOnly = this.pageParam.isFromAbsenceRecord;
+        exchange_date_from.isReadOnly = this.pageParam.isFromAbsenceRecord;
+        exchange_date_from.infoBottom =  "*Original Alternate Off Day";
+
+
 
         var exchange_date_to = new BaseForm("Exchange Date With", "exchange_date_to");
         exchange_date_to.setInputTypeDate({});
         exchange_date_to.value = (this.pageParam.dateFrom || BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.exchange_date_to))).toISOString();
         exchange_date_to.isReadOnly = this.pageParam.isFromAbsenceRecord;
 
+        exchange_date_from.changeListener.subscribe((data)=>{
+          exchange_date_to.value = data.value;
+          exchange_date_to.dateSetting.min = BaseForm.getAdvanceDate(-1 * +this.applyRule.exchange_date_day, new Date(exchange_date_from.value)).toISOString();exchange_date_from.value
+          exchange_date_to.dateSetting.max = BaseForm.getAdvanceDate(+this.applyRule.exchange_date_day, new Date(exchange_date_from.value)).toISOString();
+
+          console.log('exchangeDateTo',exchange_date_to.dateSetting, this.applyRule, new Date(exchange_date_from.value), exchange_date_from.value);
+
+        });
+
+
         var backup_person = new BaseForm("Backup Person on Exchange Date With", "backup_person");
         backup_person.setInputTypeText();
         backup_person.value = this.applyRule.data.backup_person;
+        backup_person.setIsRequired(false);
 
         var reason = new BaseForm("Reason", "reason");
         reason.inputType = InputType.textarea;
@@ -157,6 +172,12 @@ export class ApplyExchangeApplicationPage {
         baseForms.forEach((currentBaseForm: BaseForm) => {
             currentBaseForm.isReadOnly = (this.isCanSubmit && !this.pageParam.isApproval) ? currentBaseForm.isReadOnly : true;
         })
+
+      if(this.approvalBaseForms && this.approvalBaseForms.baseForms){
+        this.approvalBaseForms.baseForms.forEach((currentBaseForm:BaseForm)=>{
+          currentBaseForm.isReadOnly = (!this.isCanApprove);
+        })
+      }
     }
 
     formDelete() {

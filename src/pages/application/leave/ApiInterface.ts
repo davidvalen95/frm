@@ -133,6 +133,13 @@ export interface LeaveApplicationTopInterface {
   datatmp?:any;
   allowEdit?: boolean;
 
+  al_total_leave?:string; //totalLeave
+  al_balance?:string; // leaveBalance
+  el_taken?:string;// emergency leave taken
+  sl_taken?:string;//medical leave taken
+  ul_taken?:string;//unpaid leave taken
+  al_taken?:string; // annual leave taken
+
 
 }
 export interface DetailData extends ApproverBaseInterface{

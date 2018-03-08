@@ -303,7 +303,7 @@ export class UserProvider {
         count: 0,
       },
       menu: [{
-        name: "Incomplete Record",
+        name: "Attendance Record",
         id: "incompleteRecord",
         menu: [],
         isOpen: false,
@@ -691,7 +691,7 @@ export class UserProvider {
       mobile: true,
       searchBy: "a.emp_id",
       keyWord: "",
-      // cmbYear: (new Date()).getFullYear(),
+      cmbYear: "",
       cmbMonth: 0,
       cmbStatus: status,
       cmbType: '',
@@ -716,6 +716,8 @@ export class UserProvider {
       inactivepage: [1, 5],
       isBadge: true,
       user_id: this.userSession.empId,
+      cmbYear: "",
+
     }
 
 
@@ -732,6 +734,7 @@ export class UserProvider {
       limit: "3000",
       page: "1",
       start: "0",
+
     }
 
     return params;
@@ -746,6 +749,7 @@ export class UserProvider {
       keyword: "",
       cmbStatus: "PA",
       cmbSection: "",
+      cmbYear: "",
       cmbDepartment: "",
       isBadge: true,
       user_id: this.userSession.empId,

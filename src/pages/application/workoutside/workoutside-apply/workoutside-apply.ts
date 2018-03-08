@@ -39,7 +39,7 @@ export class WorkoutsideApplyPage {
   public segmentValue: string             = "form";
   public pageParam: WorkoutsideApplyParam = {isEditing: false, isApproval: false, isApply: true};
   public baseForms: BaseForm[]            = [];
-  public approvalBaseForms: BaseForm[]    = [];
+  public approvalBaseForms:SectionFloatingInputInterface;
   public apiReplaySubject: { [key: string]: ReplaySubject<any> } = {};
   public attachmentValueContainer: object                        = {};
   public applyRule: WorkoutsideRuleInterface;
@@ -130,7 +130,8 @@ export class WorkoutsideApplyPage {
       .setInputTypeSelect([
         {key: 'Approve', value: "AP"},
         {key: 'Reject', value: "RE"}
-      ])
+      ],true)
+      .setValue(this.applyRule.data.status);
     if (this.applyRule.data.status.toLowerCase() != "") {
       status.value = this.applyRule.data.status.toLowerCase() != "re" ? "AP" : "RE";
     }
@@ -149,7 +150,7 @@ export class WorkoutsideApplyPage {
     alertEmail.infoBottom = "Trigger alert email notification with approver remark for employee";
 
 
-    this.approvalBaseForms.push(status, approverRemark, alertEmail);
+    this.approvalBaseForms = {      name: "For your approval",      baseForms: [status, approverRemark, alertEmail],      isHidden: false,      isOpen: true,      description: "",    }
 
     this.setNotEditable();
 
@@ -158,12 +159,15 @@ export class WorkoutsideApplyPage {
 
   setupForms() {
 
-    var firstDayConfig = new BaseForm('apply first day',"");
+    var firstDayConfig = new BaseForm('Apply first day attendance time to all date',"");
     firstDayConfig.value = 'false';
     firstDayConfig.setInputTypeSelect([
       {key: "Yes",value:"true"},
       {key: "No",value:"false"},
     ]);
+    firstDayConfig.infoBottom = "*Fill in time (24 hours format, hh:mm)<br/>" +
+      "*Put 00:00 for rest time if not applicable<br/>" +
+      "*Put all slot 00:00 to skip the date (Holiday/Off/Rest Day)<br/>";
 
 
 
@@ -234,11 +238,11 @@ export class WorkoutsideApplyPage {
 
 
 
-
-    firstDayConfig.changeListener.subscribe((data)=>{
-      this.setDataDetailSection(null,dateFrom,dateTo,firstDayConfig);
-
-    });
+    //
+    // firstDayConfig.changeListener.subscribe((data)=>{
+    //   this.setDataDetailSection(null,dateFrom,dateTo,firstDayConfig);
+    //
+    // });
 
 
     this.baseForms.push(name,createdDate, dateFrom,dateTo,eventType,workLocation,reason ,firstDayConfig);
@@ -265,9 +269,11 @@ export class WorkoutsideApplyPage {
         currentBaseForm.isReadOnly = (this.isCanSubmit && !this.pageParam.isApproval) ? currentBaseForm.isReadOnly : true;
       })
     })
-    this.approvalBaseForms.forEach((approvalBaseForm: BaseForm) => {
-      approvalBaseForm.isReadOnly = (!this.isCanApprove);
-    })
+    if(this.approvalBaseForms && this.approvalBaseForms.baseForms){
+      this.approvalBaseForms.baseForms.forEach((currentBaseForm:BaseForm)=>{
+        currentBaseForm.isReadOnly = (!this.isCanApprove);
+      })
+    }
   }
 
   formSubmitApproval(form: NgForm) {
@@ -312,6 +318,33 @@ export class WorkoutsideApplyPage {
   }
 
   formSubmit(form: NgForm) {
+
+    var check:{isValid:boolean,message:string}[] = [];
+    this.sectionDataDetail.forEach(data=>{
+      var timeIn = data.baseForms[0];
+      var restIn = data.baseForms[2];
+      var restOut = data.baseForms[1];
+      var timeOut = data.baseForms[3];
+      var day = data.name;
+      check.push(this.isValidResOutRestIn(day,restOut,restIn));
+      check.push(this.isValidRestOutTimeIn(day,restOut,timeIn));
+      check.push(this.isValidSkipRestin(day, timeIn,timeOut,restOut,restIn));
+      check.push(this.isValidTimeOutRestIn(day,timeOut,restIn));
+      check.push(this.isValidTimeoutToTimeIn(day, timeOut,timeIn));
+    })
+
+    var isValid = true;
+    var message = "";
+    check.forEach((data)=>{
+      if(!data.isValid){
+        isValid = false;
+        message += `<p>${data.message}</p>`
+      }
+    });
+    if(!isValid){
+      this.helperProvider.showAlert(message);
+      return;
+    }
 
     var test: object = {};
     if (form.valid) {
@@ -516,7 +549,7 @@ export class WorkoutsideApplyPage {
 
   }
 
-  private setDataDetailSection(dataDetail:WorkoutsideDataDetailInterface[],dateFrom:BaseForm,dateTo:BaseForm,firstDayConfig){
+  private setDataDetailSection(dataDetail:WorkoutsideDataDetailInterface[],dateFrom:BaseForm,dateTo:BaseForm,firstDayConfig:BaseForm){
 
 
 
@@ -532,10 +565,10 @@ export class WorkoutsideApplyPage {
 
         dataDetail.push({
           work_date: advancedDate,
-          time_in: "07:00",
-          rest_out: "12:00",
-          rest_in: "13:00",
-          time_out: "18:00",
+          time_in: "00:00",
+          rest_out: "00:00",
+          rest_in: "00:00",
+          time_out: "00:00",
         })
       }
     }
@@ -566,7 +599,9 @@ export class WorkoutsideApplyPage {
 
       var timeOut = new BaseForm("time Out",`time_out${index}`);
       timeOut.setInputTypeTime();
-      timeOut.value = currentDataDetail.time_out
+      timeOut.value = currentDataDetail.time_out;
+      timeOut.changeListener.subscribe((data)=>{
+      });
 
       var workDate = new BaseForm("",`work_date${index}`);
       workDate.isHidden = true;
@@ -581,6 +616,38 @@ export class WorkoutsideApplyPage {
       };
       this.sectionDataDetail.push(section);
 
+
+      firstDayConfig.changeListener.subscribe((data)=>{
+
+        if(index>0 && firstDayConfig.value === "true"){
+          var firstTimein = this.sectionDataDetail[0].baseForms[0]
+          firstTimein.changeListener.subscribe((data)=>{
+          });
+
+          var firstRestOut = this.sectionDataDetail[0].baseForms[1]
+          firstRestOut.changeListener.subscribe((data)=>{
+            restOut.value = data.value
+          });
+
+          var firstRestIn= this.sectionDataDetail[0].baseForms[2]
+          firstRestIn.changeListener.subscribe((data)=>{
+            restIn.value = data.value
+          });
+
+          var firstTimeOut = this.sectionDataDetail[0].baseForms[3]
+          firstTimeOut.changeListener.subscribe((data)=>{
+            timeOut.value = data.value
+          });
+        }else{
+
+          timeIn.value = "00:00";
+          restIn.value = "00:00";
+          restOut.value = "00:00";
+          timeOut.value = "00:00";
+        }
+
+
+      })
 
 
       //# other than  0 listen to 0
@@ -646,6 +713,74 @@ export class WorkoutsideApplyPage {
 
 
   }
+
+
+
+
+
+  // a. if time in 23:00 > time out 18:00 pls prompt "Time Out cannot less than Time In!"
+  // b. if rest out < time in pls prompt "Rest Out cannot less than Time In!"
+  // c. if rest out < rest in pls prompt "Rest In cannot less than Rest Out!"
+  // d. if time out < rest in pls prompt "Time Out cannot less than Rest In!"
+  // e. if (time in OR time out is 00:00) AND (rest out OR rest in not 00:00), prompt "Rest-In must be 00:00 if you want to skip this date!"
+
+
+
+  private isValidTimeoutToTimeIn(date, timeIn, timeOut):{isValid:boolean,message:string}{
+    var timeInDate = new Date("2018-01-01T"+timeOut.value);
+    var timeOutDate = new Date("2018-01-01T"+timeIn.value);
+
+    var isValid = timeOutDate.getTime() >= timeInDate.getTime();
+    var message = isValid ? "" :  `Time Out cannot less than Time In! (${date}) `;
+
+    return {isValid:isValid,message:message};
+  }
+
+  private isValidSkipRestin(date, timeIn:BaseForm, timeOut:BaseForm, restOut:BaseForm, restIn:BaseForm):{isValid:boolean,message:string}{
+    var timeInDate = new Date("2018-01-01T"+timeIn.value);
+    var timeOutDate = new Date("2018-01-01T"+timeOut.value);
+    var restOutDate = new Date("2018-01-01T"+restOut.value);
+    var restInDate = new Date("2018-01-01T"+restIn.value);
+
+    var isValid = ( (timeIn.value != "00:00" && timeOut.value != "00.00") || (restOut.value == "00:00" && restIn.value == "00:00"));
+    var message = isValid ? "" :  `Rest-In must be 00:00 if you want to skip this date! (${date}) `;
+
+    return {isValid:isValid,message:message};
+  }
+
+
+
+  private isValidTimeOutRestIn(date, a:BaseForm, b:BaseForm):{isValid:boolean,message:string}{
+    var aDate = new Date("2018-01-01T"+a.value);
+    var bDate = new Date("2018-01-01T"+b.value);
+
+    var isValid = aDate.getTime() >= bDate.getTime();
+    var message = isValid ? "" :  `Time Out cannot less than Rest In! (${date}) `;
+
+    return {isValid:isValid,message:message};
+  }
+
+  private isValidResOutRestIn(date, a:BaseForm, b:BaseForm):{isValid:boolean,message:string}{
+    var aDate = new Date("2018-01-01T"+a.value);
+    var bDate = new Date("2018-01-01T"+b.value);
+
+    var isValid = aDate.getTime() >= bDate.getTime();
+    var message = isValid ? "" :  `Rest In cannot less than Rest Out! (${date}) `;
+
+    return {isValid:isValid,message:message};
+  }
+
+
+  private isValidRestOutTimeIn(date, a:BaseForm, b:BaseForm):{isValid:boolean,message:string}{
+    var aDate = new Date("2018-01-01T"+a.value);
+    var bDate = new Date("2018-01-01T"+b.value);
+
+    var isValid = aDate.getTime() >= bDate.getTime();
+    var message = isValid ? "" :  `Rest Out cannot less than Time In! (${date}) `;
+
+    return {isValid:isValid,message:message};
+  }
+
 
 
 }

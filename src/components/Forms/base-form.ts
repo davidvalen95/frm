@@ -203,7 +203,7 @@ export class BaseForm {
     return this;
   }
 
-  public setInputTypeSelect(options: KeyValue[]) {
+  public setInputTypeSelect(options: KeyValue[], isFirstDefault:boolean = false) {
     if (!this.isSelectProcessing) {
       this.selectOptions      = [];
       this.isSelectProcessing = true;
@@ -214,6 +214,10 @@ export class BaseForm {
       var text: string = "sdoifjiojdf";
 
       this.isSelectProcessing = false;
+      if(isFirstDefault && this.value == ""){
+        this.value = this.selectOptions[0].value;
+        console.log("firstDefault", this.value);
+      }
 
 
     }
@@ -439,7 +443,10 @@ export class BaseForm {
   }
 
   public setValue(value: string) {
-    this.value = value;
+    if(value && value != ""){
+      this.value = value;
+
+    }
     return this;
   }
 
