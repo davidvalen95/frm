@@ -59,7 +59,7 @@ export class WorkoutsideHomePage {
     console.log("visitationApplicationBadge", this.rootParam.visitationApplicationParam);
 
     this.pageParam = this.rootParam.workoutsideHomeParam;
-    this.title = this.pageParam.isApproval ? "Workoutside Approval" : "Workoutside Application";
+    this.title = this.pageParam.isApproval ? "Work Outside Approval" : "Work Outside Application";
 
     this.getFilter();
     this.getList();

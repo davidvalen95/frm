@@ -363,13 +363,13 @@ export class ContainerInApplyPage {
       portName.toggleHidden(false, true)
 
 
-      if (data.value.toLowerCase() == "import" && this.pageParam.isContainerIn) {
+      if (data.value.toLowerCase() == "import" ) {
         referenceNo.toggleHidden(true);
         portName.toggleHidden(true);
 
       }
 
-      if (data.value.toLowerCase() == 'export' && this.pageParam.isContainerIn) {
+      if (data.value.toLowerCase() == 'export') {
         containerSealNo.toggleHidden(true);
         containerNo.toggleHidden(true);
       }
@@ -378,8 +378,8 @@ export class ContainerInApplyPage {
       if(data.value.toLowerCase() == "import"){
         containerNo.isReadOnly = !this.pageParam.isContainerIn;
         containerSealNo.isReadOnly = !this.pageParam.isContainerIn;
-        inspectorSealNo.isReadOnly = !this.pageParam.isContainerIn;
 
+        inspectorSealNo.isReadOnly = !this.pageParam.isContainerIn;
         isWithoutContainerSealNo.toggleHidden(!this.pageParam.isContainerIn);
         inspectorSealNo.toggleHidden(!this.pageParam.isContainerIn);
         dxnSealno.toggleHidden(!this.pageParam.isContainerIn);
