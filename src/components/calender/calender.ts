@@ -58,6 +58,8 @@ export class CalenderComponent {
 
   @Input('targetMonth') targetMonth:number = 1;
   @Input('targetYear') targetYear:number = new Date().getFullYear();
+  @Input('nextButton') nextButton:()=>void;
+  @Input('previousButton') previousButton:()=>void;
 
   constructor(private calendar: Calendar, public helperProvider:HelperProvider) {
 

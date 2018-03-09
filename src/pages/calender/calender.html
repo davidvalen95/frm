@@ -86,7 +86,7 @@
 
     </ion-list>
 
-    <calender [targetYear]="filter.cmbYear" *ngIf="this.calenderEvents" [targetMonth]="(filter.cmbMonth -1 )" [calenderEvents]="this.calenderEvents"></calender>
+    <calender [nextButton]="this.nextButton" [previousButton]="this.previousButton"   [targetYear]="filter.cmbYear" *ngIf="this.calenderEvents" [targetMonth]="(filter.cmbMonth -1 )" [calenderEvents]="this.calenderEvents"></calender>
 
     <!--<ion-infinite-scroll [enabled]="this.isInfiniteEnable" (ionInfinite)="doInfinite($event)">-->
     <!--<ion-infinite-scroll-content>Loading</ion-infinite-scroll-content>-->

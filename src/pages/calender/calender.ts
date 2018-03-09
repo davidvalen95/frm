@@ -15,6 +15,7 @@ import {UserProvider} from "../../providers/user/user";
 import {RootParamsProvider} from "../../providers/root-params/root-params";
 import {WorkoutsideListInterface} from "../application/workoutside/WorkoutsideApiInterface";
 import {CalenderEventInterface} from "../../components/calender/calender";
+import {BaseForm} from "../../components/Forms/base-form";
 
 /**
  * Generated class for the CalenderPage page.
@@ -52,6 +53,16 @@ export class CalenderPage {
   @ViewChild("navbar") navbar: Navbar;
   @ViewChild(Content) public content: Content;
 
+
+  public nextButton = ()=>{
+    this.getArrowCalender(1);
+
+  }
+
+  public previousButton = ()=>{
+    this.getArrowCalender(-1);
+
+  }
   constructor(public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
     console.log("visitationApplicationBadge", this.rootParam.visitationApplicationParam);
 
@@ -265,6 +276,30 @@ export class CalenderPage {
 
   }
 
+
+
+
+  public getArrowCalender(advanceMonth:number = 0){
+
+    var mmm = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+
+
+    var filterDate = new Date();
+    filterDate.setMonth(+this.filter.cmbMonth -1);
+    filterDate.setFullYear(+this.filter.cmbYear);
+    filterDate.setDate(15);
+
+    console.log('getArrowCalenderBefore', filterDate,this.filter.cmbMonth);
+    filterDate = BaseForm.getAdvanceDate(advanceMonth * 30, filterDate);
+    console.log('getArrowCalenderAfter', filterDate);
+
+    this.filter.cmbMonth = ""+(filterDate.getMonth() + 1);
+    this.filter.cmbYear = ""+filterDate.getFullYear();
+
+    this.getList();
+
+  }
 }
 
 
