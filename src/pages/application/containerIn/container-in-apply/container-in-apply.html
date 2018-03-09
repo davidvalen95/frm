@@ -109,14 +109,14 @@
 <div  class="user-action">
 
   <div class="action-container" *ngIf="!this.pageParam.isApproval">
-    <button ion-button=""  type="button" (click)="leavePage()" color="warning">Cancel</button>
+    <button ion-button=""  type="button" (click)="leavePage()" color="warning">Back</button>
     <button  *ngIf="isCanSubmit"  ion-button=""  type="button" (click)="formSubmit(parentForm)" color="primary">{{pageParam.isEditing ? "Update" : "Submit"}}</button>
     <button  *ngIf="isCanDelete"  ion-button="" type="button" (click)="formDelete(parentForm)" color="danger">Delete</button>
   </div>
 
 
   <div class="action-container"  *ngIf="this.pageParam.isApproval">
-    <button  ion-button=""  type="button" (click)="leavePage()" color="warning">Cancel</button>
+    <button  ion-button=""  type="button" (click)="leavePage()" color="warning">Back</button>
     <button   *ngIf="isCanApprove" ion-button=""  type="button" (click)="formSubmitApproval(parentForm)" color="primary">Submit</button>
   </div>
 
