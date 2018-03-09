@@ -385,12 +385,12 @@ export class ContainerInApplyPage {
         containerNo.isReadOnly = !this.pageParam.isContainerIn;
         containerSealNo.isReadOnly = !this.pageParam.isContainerIn;
 
-        inspectorSealNo.isReadOnly = !this.pageParam.isContainerIn;
-        isWithoutContainerSealNo.toggleHidden(!this.pageParam.isContainerIn);
-        inspectorSealNo.toggleHidden(!this.pageParam.isContainerIn);
-        dxnSealno.toggleHidden(!this.pageParam.isContainerIn);
-        referenceNo.toggleHidden(!this.pageParam.isContainerIn);
-        portName.toggleHidden(!this.pageParam.isContainerIn);
+        inspectorSealNo.isReadOnly = true;
+        isWithoutContainerSealNo.toggleHidden(true);
+        inspectorSealNo.toggleHidden(true);
+        dxnSealno.toggleHidden(true);
+        referenceNo.toggleHidden(true);
+        portName.toggleHidden(true);
       }
 
 

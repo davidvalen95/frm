@@ -312,17 +312,21 @@ export class HostFormComponent {
     //#showing info
 
 
-    hostForm.activateButtonRightDanger("X").subscribe((data: BaseForm) => {
-      this.helperProvider.showConfirmAlert("remove this host", () => {
-        hostForm.value      = "";
-        hostForm.isDisabled = true;
-        hostForm.isHidden   = true;
-        this.convertIdFormat();
 
-        var index = this.sectionBaseForm.baseForms.indexOf(hostForm);
-        this.sectionBaseForm.baseForms.splice(index, 1);
+    if(this.isCanSubmit){
+      hostForm.activateButtonRightDanger("X").subscribe((data: BaseForm) => {
+        this.helperProvider.showConfirmAlert("remove this host", () => {
+          hostForm.value      = "";
+          hostForm.isDisabled = true;
+          hostForm.isHidden   = true;
+          this.convertIdFormat();
+
+          var index = this.sectionBaseForm.baseForms.indexOf(hostForm);
+          this.sectionBaseForm.baseForms.splice(index, 1);
+        })
       })
-    })
+    }
+
     hostForm.buttonRightSuccess.clickListener.subscribe((data: BaseForm) => {
 
       //#showing info
