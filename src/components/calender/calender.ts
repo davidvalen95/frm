@@ -22,7 +22,7 @@ export class CalenderComponent {
   daysInThisMonth: any;
   daysInLastMonth: any;
   daysInNextMonth: any;
-  monthNames: string[] = ["January","February","March","April","Mei","June","July","August","September","October","November","December"];
+  monthNames: string[] = ["January","February","March","April","May","June","July","August","September","October","November","December"];
   currentMonth: any;
   currentYear: any;
   currentDate: any;

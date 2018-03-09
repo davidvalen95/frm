@@ -419,7 +419,7 @@ export class IncompleteRecordApplyPage {
       json["sts"]       = this.pageParam.isEditing ? "update" : "save";
       json["userid"]    = this.userProvider.userSession.empId;
       json["mobile"]    = true;
-      json["detail_id"] = -1;
+      json["detail_id"] = this.applyRule.data ? this.applyRule.data.detail_id : -1;
       json              = this.helperProvider.convertIsoToServerDate(json, ["work_date_from", "work_date_to"]);
 
 
