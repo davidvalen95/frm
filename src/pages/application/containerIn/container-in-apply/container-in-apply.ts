@@ -46,6 +46,7 @@ export class ContainerInApplyPage {
   };
   public baseForms: BaseForm[]                                   = [];
   public sectionFloatings: SectionFloatingInputInterface[]       = []
+  public sectionRemarkFloating: SectionFloatingInputInterface[]       = []
   public approvalBaseForms: SectionFloatingInputInterface;
   public apiReplaySubject: { [key: string]: ReplaySubject<any> } = {};
   public attachmentValueContainer: object                        = {};
@@ -510,7 +511,7 @@ export class ContainerInApplyPage {
     })
 
 
-    this.sectionFloatings.push({
+    this.sectionRemarkFloating.push({
       name: "Additional Information",
       baseForms: [remark, purpose, purposeSpecify, destination, destinationSpecify, attachment1, attachment2, attachment3, attachment4],
       isOpen: false,

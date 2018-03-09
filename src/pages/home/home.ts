@@ -117,11 +117,11 @@ export class HomePage {
       badge: "otherApproval",
       isHidden: !this.userProvider.userPrevilege.isCanApprove,
       onClick:()=>{
-        this.badge.increase(1).then((data)=>{
-          console.log('badgeIncrease',data)
-        }).catch((rej)=>{
-          console.log('badgeRejected',rej)
-        });
+        // this.badge.increase(1).then((data)=>{
+        //   console.log('badgeIncrease',data)
+        // }).catch((rej)=>{
+        //   console.log('badgeRejected',rej)
+        // });
         // console.log(this.badge.)
       }
     };

@@ -77,6 +77,9 @@
         ></host-form>
 
 
+        <section-floating-input *ngFor="let sectionFloating of sectionRemarkFloating" [parentForm]="parentForm" [container]="sectionFloating"></section-floating-input>
+
+
         <section-floating-input [parentForm]="parentForm" [container]="this.approvalBaseForms"></section-floating-input>
 
 
