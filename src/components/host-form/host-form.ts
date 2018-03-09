@@ -55,7 +55,7 @@ export class HostFormComponent {
 
 
   public setupForm() {
-    var hostType: BaseForm = new BaseForm(`${this.formSetting.sectionTitle} type`, "host_type");
+    var hostType: BaseForm = new BaseForm(`${this.formSetting.sectionTitle} type`, "host_type"+this.formSetting.otherHostContainerName);
     hostType.value         = "-"
     hostType.isHidden      = !this.formSetting.isNeedMe;
 
@@ -65,9 +65,10 @@ export class HostFormComponent {
     }, {key: "Other as the host", value: 'f'}])
 
 
-    var hostIdSearch: BaseForm    = new BaseForm("Employee ID / Name", "empid/name");
+    var hostIdSearch: BaseForm    = new BaseForm("Employee ID / Name", `empname/empid${this.formSetting.otherHostContainerName}`);
     //# http://hrms.dxn2u.com:8888/hrm_test2/s/EmployeeList?autocomplete=true&loc_id=FnF&keyword=my&val=my
     hostIdSearch.rules.isRequired = false;
+    // hostIdSearch.isHidden = !this.formSetting.isNeedMe;
     var httpParams: HttpParams    = new HttpParams().set('autocomplete', 'true').set('loc_id', 'FnF');
     hostIdSearch.setInputTypeSearchBar("s/EmployeeList", httpParams, ["keyword", "val"], ((serverResponse: any) => {
       var selectOptions: KeyValue[] = [];
@@ -80,7 +81,7 @@ export class HostFormComponent {
 
 
     setTimeout(() => {
-      if (this.isEditing) {
+      if (this.isEditing && this.formSetting.isNeedMe) {
         if (hostType.value == 't') {
           hostId.value = this.hostData.hostId || "";
         } else {
@@ -112,6 +113,7 @@ export class HostFormComponent {
       console.log("hostTypeListener", model);
       hostName.isHidden = hostDepartment.isHidden = hostSection.isHidden = true;
       hostIdSearch.isHidden = true;
+      hostId.isHidden = !this.formSetting.isNeedMe;
 
       hostId.value = "";
       if (model.value === 't') {
@@ -122,7 +124,7 @@ export class HostFormComponent {
 
       } else if (model.value === 'f') {
         //# search']
-        hostIdSearch.isHidden = false;
+        hostIdSearch.isHidden = !this.formSetting.isNeedMe;
 
         hostIdSearch.value = "";
         // ext.isHidden       = false;
@@ -176,11 +178,12 @@ export class HostFormComponent {
       }
 
 
+
     }, 600)
 
     hostIdSearch.changeListener.subscribe((model: BaseForm) => {
 
-      // console.log('broadcastionChangeFromHostIdSearch', model);
+      console.log('broadcastionChangeFromHostIdSearch', model);
 
 
       if (model.value == "") {
@@ -207,6 +210,7 @@ export class HostFormComponent {
     var ext: BaseForm = new BaseForm("Ext", 'host_ext');
     ext.value         = this.hostData.hostExt || "";
     ext.rules         = {};
+    ext.isHidden = !this.formSetting.isNeedMe;
 
 
     var extraHost

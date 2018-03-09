@@ -681,7 +681,7 @@ export class IncompleteRecordApplyPage {
     var aDate = new Date("2018-01-01T"+a.value);
     var bDate = new Date("2018-01-01T"+b.value);
 
-    var isValid = aDate.getTime() >= bDate.getTime();
+    var isValid = aDate.getTime() <= bDate.getTime();
     var message = isValid ? "" :  `Rest In cannot less than Rest Out! (${date}) `;
 
     return {isValid:isValid,message:message};
@@ -697,6 +697,8 @@ export class IncompleteRecordApplyPage {
 
     return {isValid:isValid,message:message};
   }
+
+
 
 
 }

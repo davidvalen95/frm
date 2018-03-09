@@ -540,7 +540,7 @@ export interface VisitationDataRecordsInterface {
 
 export interface VisitationDataDetailInterface {
   acknowledge_remark?: string;
-  acknowledged?: boolean;
+  acknowledged?: string;
   add_other_host?: boolean;
   attachment1?: string;
   attachment2?: string;

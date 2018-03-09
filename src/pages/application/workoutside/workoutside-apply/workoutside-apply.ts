@@ -329,6 +329,7 @@ export class WorkoutsideApplyPage {
       var day = data.name;
       check.push(this.isValidResOutRestIn(day,restOut,restIn));
       check.push(this.isValidRestOutTimeIn(day,restOut,timeIn));
+      check.push(this.isValidRestInRestOut(day,restIn,restOut));
       check.push(this.isValidSkipRestin(day, timeIn,timeOut,restOut,restIn));
       check.push(this.isValidTimeOutRestIn(day,timeOut,restIn));
       check.push(this.isValidTimeoutToTimeIn(day, timeOut,timeIn));
@@ -765,7 +766,7 @@ export class WorkoutsideApplyPage {
     var aDate = new Date("2018-01-01T"+a.value);
     var bDate = new Date("2018-01-01T"+b.value);
 
-    var isValid = aDate.getTime() >= bDate.getTime();
+    var isValid = aDate.getTime() <= bDate.getTime();
     var message = isValid ? "" :  `Rest In cannot less than Rest Out! (${date}) `;
 
     return {isValid:isValid,message:message};
@@ -783,6 +784,16 @@ export class WorkoutsideApplyPage {
   }
 
 
+
+  private isValidRestInRestOut(date, a:BaseForm, b:BaseForm):{isValid:boolean,message:string}{
+    var aDate = new Date("2018-01-01T"+a.value);
+    var bDate = new Date("2018-01-01T"+b.value);
+
+    var isValid = aDate.getTime() >= bDate.getTime();
+    var message = isValid ? "" :  `Rest Out cannot less than Time In! (${date}) `;
+
+    return {isValid:isValid,message:message};
+  }
 
 }
 

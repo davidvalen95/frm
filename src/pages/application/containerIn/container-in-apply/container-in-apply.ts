@@ -102,8 +102,13 @@ export class ContainerInApplyPage {
   }
 
   setupButtonLogic() {
-    this.isCanDelete  = this.pageParam.isEditing && this.applyRule.approved == 0 && this.pageParam.isContainerIn;
-    this.isCanSubmit  = this.pageParam.isApply || ( this.pageParam.isEditing && this.applyRule.approved == 0);
+
+    var members = this.applyRule.data.members.split(";");
+    var isTeamMemberView = members.indexOf(this.userProvider.userSession.empId) > -1;
+    console.log('setupButtonLogic', members, isTeamMemberView, this.userProvider.userSession.empId);
+
+    this.isCanDelete  = this.pageParam.isEditing && this.applyRule.approved == 0 && this.pageParam.isContainerIn && !isTeamMemberView;
+    this.isCanSubmit  = this.pageParam.isApply || ( this.pageParam.isEditing && this.applyRule.approved == 0) && !isTeamMemberView;
     this.isCanApprove = this.pageParam.isApproval && this.applyRule.allowEdit;
   }
 
@@ -666,6 +671,7 @@ export class ContainerInApplyPage {
     json["id"]               = this.pageParam.list.id;
     json["userid"]           = this.userProvider.userSession.empId;
     json["empid"]            = this.userProvider.userSession.empId;
+    json["emp_id"]            = this.userProvider.userSession.empId;
     json["mobile"]           = true;
     this.helperProvider.showConfirmAlert("Delete this leave application?", () => {
       this.apiExecuteSubmitApplication(json);

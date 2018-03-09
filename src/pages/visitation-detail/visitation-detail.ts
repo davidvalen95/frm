@@ -163,7 +163,7 @@ export class VisitationDetailPage {
       //   detailStatus
       // ;
       this.isCanApprove     = (status == null || status.toLowerCase() == 'pa' || status.toLowerCase() == 'pe') && this.isApprover;
-      this.isCanAcknowledge = !detail.acknowledged &&
+      this.isCanAcknowledge = detail.acknowledged == 'f' &&
         isMeTheHost &&
         visitationStatus;
       //# pa pending approval, pe sybmited, im the host or creator, and not approve ack
@@ -204,7 +204,7 @@ export class VisitationDetailPage {
       this.additionalForm.baseForms.push(remark, notifyEmail);
 
 
-      console.log('isCanAcknowledge', this.isCanAcknowledge, !detail.acknowledged, (detail.host_id == this.userProvider.userSession.empId || isIamOtherHost), visitationStatus)
+      console.log('isCanAcknowledge', this.isCanAcknowledge, detail.acknowledged, (detail.host_id == this.userProvider.userSession.empId || isIamOtherHost), visitationStatus)
       console.log('isCanEdit', this.isCanEdit, detail.status, detail.emp_id, this.userProvider.userSession.empId)
       this.visitationDetailObject = detail;
 
