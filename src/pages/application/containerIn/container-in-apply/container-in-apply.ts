@@ -375,15 +375,17 @@ export class ContainerInApplyPage {
 
       }
 
-      if (data.value.toLowerCase() == 'export') {
+      if (data.value.toLowerCase() == 'export' && this.pageParam.isContainerIn) {
         containerSealNo.toggleHidden(true);
         containerNo.toggleHidden(true);
       }
 
 
       if(data.value.toLowerCase() == "import"){
-        containerNo.isReadOnly = !this.pageParam.isContainerIn;
-        containerSealNo.isReadOnly = !this.pageParam.isContainerIn;
+
+
+
+
 
         inspectorSealNo.isReadOnly = true;
         isWithoutContainerSealNo.toggleHidden(true);
@@ -394,6 +396,17 @@ export class ContainerInApplyPage {
       }
 
 
+
+      if(!this.pageParam.isContainerIn){
+        if(data.value.toLowerCase() == 'import'){
+
+          setTimeout(()=>{
+            containerNo.isReadOnly = !this.pageParam.isContainerIn;
+            containerSealNo.isReadOnly = !this.pageParam.isContainerIn;
+          },1500);
+
+        }
+      }
 
 
 
@@ -529,7 +542,10 @@ export class ContainerInApplyPage {
     if (!this.pageParam.isContainerIn && !this.pageParam.isApproval) {
       console.log('setNotEditable', this.pageParam.isContainerIn, this.pageParam.isApproval)
 
-      var editableInContainerOut = ["visitation_date", "until_date", "visitation_time", "visitor_no", "container_sealno", "sealno_reason", "isWithoutContainerSealNo", "inspector_sealno", "dxn_sealno", "destination_id", "destination_specify", "purpose_id", "purpose_specify"];
+      var editableInContainerOut = ["container_sealno","visitor_no","visitation_date", "until_date", "visitation_time", "sealno_reason", "isWithoutContainerSealNo", "inspector_sealno", "dxn_sealno", "destination_id", "destination_specify", "purpose_id", "purpose_specify"];
+
+
+
 
       if (editableInContainerOut.indexOf(currentBaseForm.name) > -1) {
         currentBaseForm.isReadOnly = false;
