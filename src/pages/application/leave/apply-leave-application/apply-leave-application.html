@@ -45,9 +45,7 @@
       <!--</div>-->
 
       <form  #parentForm="ngForm" >
-        <ion-list>
-          <floating-input  *ngFor="let currentBaseForm of this.baseForms" [parentForm]="parentForm" [baseForm]="currentBaseForm"></floating-input>
-        </ion-list>
+
 
         <!--<ion-list class="form-approval"  *ngIf="pageParam.isApproval">-->
           <!--<ion-item no-padding="">-->
@@ -57,6 +55,7 @@
         <!--</ion-list>-->
 
 
+        <section-floating-input *ngFor="let baseForm of this.baseForms" [parentForm]="parentForm"  [container]="baseForm"> </section-floating-input>
         <section-floating-input [parentForm]="parentForm"  [container]="this.approvalBaseForms"> </section-floating-input>
 
 

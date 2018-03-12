@@ -60,6 +60,9 @@ import {ChangeMyPasswordPage} from "../pages/myProfile/change-my-password/change
 import {ProfileInformationPage} from "../pages/myProfile/profile-information/profile-information";
 import {SettingHomePage} from "../pages/setting/setting-home/setting-home";
 import {LocalStorageProvider} from '../providers/local-storage/local-storage';
+
+
+import { DatePickerModule } from 'ionic2-date-picker';
 //
 // Pro.init('f4ce1597', {
 //   appVersion: '1.9.09'
@@ -150,6 +153,7 @@ import {LocalStorageProvider} from '../providers/local-storage/local-storage';
     FormsModule,
     HttpClientModule,
     PipesModule,
+    DatePickerModule,
 
 
   ],

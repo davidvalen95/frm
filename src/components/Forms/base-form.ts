@@ -170,7 +170,7 @@ export class BaseForm {
 
     var dateSetting: DateSetting = {};
     dateSetting.displayFormat    = "HH:mm";
-    this.inputType               = InputType.date;
+    this.inputType               = InputType.datetime;
     dateSetting.min              = '00:00';
     dateSetting.max              = "23:59";
     dateSetting.hourValues       = "";
@@ -391,6 +391,7 @@ export class BaseForm {
 
     switch (this.inputType) {
       case InputType.date:
+      case InputType.datetime:
         return this.getReadOnlyForDate();
       case InputType.email:
       case InputType.number:
@@ -491,7 +492,7 @@ export interface InputStyle {
 }
 
 export enum InputType {
-  text, select, password, email, date, number, textarea, file
+  text, select, password, email, date, number, textarea, file,datetime
 }
 
 export enum LabelType {

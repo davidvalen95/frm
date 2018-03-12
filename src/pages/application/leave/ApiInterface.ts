@@ -125,6 +125,9 @@ export interface LeaveApplicationTopInterface {
   data: DetailData;
   created_date:string;
 
+
+  totalLeavePeriod:string;
+
   //# if edit
   total_day:number;
   history?: LeaveHistoryInterface[];
@@ -139,6 +142,9 @@ export interface LeaveApplicationTopInterface {
   sl_taken?:string;//medical leave taken
   ul_taken?:string;//unpaid leave taken
   al_taken?:string; // annual leave taken
+
+  leaveDates?:LeaveDateInterface[];
+
 
 
 }
@@ -159,6 +165,7 @@ export interface DetailData extends ApproverBaseInterface{
   emp_id: string;
   hospital_name: string;
   remark: string;
+  leavePeriod;
 
 
 
@@ -202,6 +209,20 @@ export interface DayRuleInterface{
   time_out_morning:string;
   total_available_rl :number;
   total_day: number;
+
+
+  leaveDates?:LeaveDateInterface[];
+}
+
+export interface LeaveDateInterface{
+  time_in_afternoon:string;
+  time_out_afternoon:string;
+  leaveDate:string;
+  time_in_morning: string;
+  time_out_morning: string;
+  leaveDateStr: string;
+  leave_period;
+
 }
 
 export interface LeaveHistoryInterface extends HistoryBaseInterface{

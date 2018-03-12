@@ -660,7 +660,7 @@ export class IncompleteRecordApplyPage {
     var restInDate = new Date("2018-01-01T"+restIn.value);
 
     var isValid = ( (timeIn.value != "00:00" && timeOut.value != "00.00") || (restOut.value == "00:00" && restIn.value == "00:00"));
-    var message = isValid ? "" :  `Rest-In must be 00:00 if you want to skip this date! (${date}) `;
+    var message = isValid ? "" :  `Rest-In must be 00:00 if you want to skip this date! `;
 
     return {isValid:isValid,message:message};
   }
@@ -672,7 +672,7 @@ export class IncompleteRecordApplyPage {
     var bDate = new Date("2018-01-01T"+b.value);
 
     var isValid = aDate.getTime() >= bDate.getTime();
-    var message = isValid ? "" :  `Time Out cannot less than Rest In! (${date}) `;
+    var message = isValid ? "" :  `Time Out cannot less than Rest In!  `;
 
     return {isValid:isValid,message:message};
   }
@@ -682,7 +682,7 @@ export class IncompleteRecordApplyPage {
     var bDate = new Date("2018-01-01T"+b.value);
 
     var isValid = aDate.getTime() <= bDate.getTime();
-    var message = isValid ? "" :  `Rest In cannot less than Rest Out! (${date}) `;
+    var message = isValid ? "" :  `Rest In cannot less than Rest Out! `;
 
     return {isValid:isValid,message:message};
   }
@@ -693,7 +693,7 @@ export class IncompleteRecordApplyPage {
     var bDate = new Date("2018-01-01T"+b.value);
 
     var isValid = aDate.getTime() >= bDate.getTime();
-    var message = isValid ? "" :  `Rest Out cannot less than Time In! (${date}) `;
+    var message = isValid ? "" :  `Rest Out cannot less than Time In! `;
 
     return {isValid:isValid,message:message};
   }

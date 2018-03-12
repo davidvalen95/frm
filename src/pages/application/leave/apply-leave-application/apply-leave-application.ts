@@ -16,7 +16,7 @@ import 'rxjs/add/operator/map';
 import {share} from "rxjs/operator/share";
 import {ReplaySubject} from "rxjs/ReplaySubject";
 import {
-  AttachmentRuleInterface, DayRuleInterface, LeaveApplicationFilter, LeaveApplicationTopInterface,
+  AttachmentRuleInterface, DayRuleInterface, LeaveApplicationFilter, LeaveApplicationTopInterface, LeaveDateInterface,
   LeaveHistoryInterface,
   LeaveListInterface
 } from "../ApiInterface";
@@ -42,7 +42,7 @@ export class ApplyLeaveApplicationPage {
   public title:string = "";
   public segmentValue: string                                    = "form";
   public pageParam: ApplyLeaveApplicationParam                   = {isEditing: false, isApproval: false, isApply: true};
-  public baseForms: BaseForm[]                                   = [];
+  public baseForms: SectionFloatingInputInterface[]                                   = [];
   public approvalBaseForms: SectionFloatingInputInterface                           ;
   public apiReplaySubject: { [key: string]: ReplaySubject<any> } = {};
   public attachmentValueContainer: object                        = {};
@@ -53,6 +53,7 @@ export class ApplyLeaveApplicationPage {
   public isCanDelete: boolean      = false;
   public isCanSubmit: boolean      = false;
   public formButton
+  public isFinishedFormInit:boolean = false;
 
   public approvalHistoriesContainer: MatureKeyValueContainer[] = [];
 
@@ -217,6 +218,13 @@ export class ApplyLeaveApplicationPage {
   setupForms() {
 
 
+    var halfdaySection:SectionFloatingInputInterface = {
+      name:"Halfday",
+      isHidden: true,
+      baseForms: [],
+      description: "",
+      isOpen: true
+    };
     var name: BaseForm = new BaseForm("Employee", "employee");
     name.value         = this.pageParam.isEditing ? this.applyRule.data.emp_id : `${this.userProvider.userSession.empId} ${this.userProvider.userSession.name}`;
     name.isReadOnly    = true;
@@ -327,7 +335,12 @@ export class ApplyLeaveApplicationPage {
 
       });
 
-      this.apiExecuteGetDayRule(dateFrom, dateTo, availableReplacement, totalApply, leaveType.value);
+      this.apiExecuteGetDayRule(dateFrom, dateTo, availableReplacement, totalApply, leaveType.value,(data)=>{
+        this.setHalfDayForm(data, halfdaySection);
+
+      });
+
+
 
     });
 
@@ -337,7 +350,12 @@ export class ApplyLeaveApplicationPage {
       if (new Date(dateTo.value) < new Date(dateFrom.value)) {
         dateTo.value = dateFrom.value;
       } else {
-        this.apiExecuteGetDayRule(dateFrom, dateTo, availableReplacement, totalApply, leaveType.value);
+        this.apiExecuteGetDayRule(dateFrom, dateTo, availableReplacement, totalApply, leaveType.value, (data)=>{
+          this.setHalfDayForm(data, halfdaySection);
+
+
+
+        });
 
         // totalApply.value = this.helperProvider.getDifferentDay(dateFrom.value, dateTo.value) + 1;
 
@@ -350,13 +368,78 @@ export class ApplyLeaveApplicationPage {
     dateTo.changeListener.subscribe((data: BaseForm) => {
 
       // totalApply.value = this.helperProvider.getDifferentDay(dateFrom.value, dateTo.value) + 1;
-      this.apiExecuteGetDayRule(dateFrom, dateTo, availableReplacement, totalApply, leaveType.value);
+      this.apiExecuteGetDayRule(dateFrom, dateTo, availableReplacement, totalApply, leaveType.value, (data)=>{
+        this.setHalfDayForm(data, halfdaySection);
+
+      });
 
     });
-    this.baseForms.push(name, dateFrom, dateTo, leaveType, totalApply, availableReplacement, hospital, notifiedTo, attachment1, attachment2, attachment3, attachment4, remark);
+
+
+
+    var isHalfDay = new BaseForm("Apply for Half Day Leave","applyHalfDay");
+    isHalfDay.setInputTypeSelect([{
+      key:"No",value:"no"
+    },{
+      key:"Yes",value:"yes"
+    }],true);
+    isHalfDay.changeListener.subscribe((data)=>{
+      halfdaySection.isHidden = data.value != "yes";
+    });
+
+    // var loader = this.helperProvider.presentLoadingV2("Retrieving half day");
+
+    this.setHalfDayForm(this.applyRule.leaveDates, halfdaySection);
+    setTimeout(()=>{
+      //# buat getDayRule waktu mau masuk getHalfDay
+      this.isFinishedFormInit = true;
+    },1500);
+
+
+
+    this.baseForms.push({
+      name:"General Information",
+      isHidden: false,
+      baseForms: [name, dateFrom, dateTo, leaveType, totalApply, availableReplacement, isHalfDay, hospital, notifiedTo, attachment1, attachment2, attachment3, attachment4, remark],
+      description: "",
+      isOpen: true
+    });
+
+    this.baseForms.push(halfdaySection);
+
+
+
 
     // this.baseForms.
-    this.setNotEditable(this.baseForms);
+    this.setNotEditable(this.baseForms[0].baseForms);
+    this.setNotEditable(this.baseForms[1].baseForms);
+
+
+  }
+
+
+  private setHalfDayForm(leaveDates:LeaveDateInterface[], halfdaySection: SectionFloatingInputInterface){
+    var bankLeaveDate:BaseForm[] = [];
+
+    leaveDates.forEach((data:LeaveDateInterface,index)=>{
+      var leaveDate = new BaseForm(data.leaveDateStr, `rdLeavePeriod${index}`)
+      leaveDate.setInputTypeSelect([{
+        key:"Full Day",
+        value:"full"
+      },{
+        key:`(Half day AM) ${data.time_in_morning} - ${data.time_out_morning}`,
+        value:`morning`
+      },{
+        key:`(Half day PM) ${data.time_out_morning} - ${data.time_out_afternoon}`,
+        value:"afternoon"
+      }])
+      leaveDate.placeholder = "Set time for this day"
+      leaveDate.value = data.leave_period;
+      bankLeaveDate.push(leaveDate);
+
+
+    });
+    halfdaySection.baseForms = bankLeaveDate;
   }
 
   private setNotEditable(baseForms: BaseForm[]) {
@@ -404,6 +487,8 @@ export class ApplyLeaveApplicationPage {
       json["mobile"]     = true;
       json["id"]         = this.pageParam.isEditing ? this.pageParam.list.id : -1;
       json               = this.helperProvider.convertIsoToServerDate(json, ["birth_date", "birth_date_tmp", "created_date", "half_date", "halfday_date", "halfday_date_tmp", "leave_date_from", "leave_date_from_tmp", "leave_date_to_tmp", "leave_date_to",]);
+
+      json['totalLeavePeriod'] = this.applyRule.totalLeavePeriod;
 
       var url = `${ApiProvider.HRM_URL}s/LeaveApplication_op`;
 
@@ -584,9 +669,13 @@ export class ApplyLeaveApplicationPage {
   }
 
 
-  private apiExecuteGetDayRule(formFrom: BaseForm, formTo: BaseForm, availableReplacement: BaseForm, totalDay: BaseForm, leaveType): void {
+  private apiExecuteGetDayRule(formFrom: BaseForm, formTo: BaseForm, availableReplacement: BaseForm, totalDay: BaseForm, leaveType, onFinished:(leaveDates:LeaveDateInterface[])=>void): void {
     var url = `${ApiProvider.HRM_URL}s/LeaveApplicationAjax`;
 
+    if(this.isFinishedFormInit){
+      this.apiExecuteGetHalfday(formFrom,formTo,availableReplacement,totalDay,leaveType,onFinished);
+
+    }
 
     var param = {
       reqtype: "total_day",
@@ -611,6 +700,39 @@ export class ApplyLeaveApplicationPage {
       totalDay.value             = data.total_day;
     }).finally(() => {
       // loader.dismiss();
+    });
+  }
+
+
+  private apiExecuteGetHalfday(formFrom: BaseForm, formTo: BaseForm, availableReplacement: BaseForm, totalDay: BaseForm, leaveType,onFinished:(leaveDates:LeaveDateInterface[])=>void): void {
+    var url = `${ApiProvider.HRM_URL}s/LeaveApplicationAjax`;
+
+
+    var param = {
+      reqtype: "leave_period",
+      emp_id: this.userProvider.userSession.empId,
+      ct_id: this.userProvider.userSession.ct_id,
+      leave_type: `${leaveType}`,
+      leave_date_from: formFrom.getServerDateFormat(),
+      leave_date_to: formTo.getServerDateFormat(),
+
+    }
+
+    // var loader = this.helperProvider.presentLoadingV2("Retrieving day");
+
+    this.httpClient.get<DayRuleInterface>(url, {
+      params: param,
+      withCredentials: true
+    }).toPromise().then((data: DayRuleInterface) => {
+      if(onFinished){
+        onFinished(data.leaveDates);
+      }
+    }).catch(()=>{
+      this.helperProvider.presentToast("Cannot load half day configuration");
+    }).finally(() => {
+      // loader.dismiss();
+
+
     });
   }
 

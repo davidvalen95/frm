@@ -136,7 +136,7 @@ export class ApplyExchangeApplicationPage {
         var exchange_date_from = new BaseForm("Exchange Date On", "exchange_date_from");
         exchange_date_from.setInputTypeDate({});
         exchange_date_from.value = (this.pageParam.dateFrom || BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.exchange_date_from))).toISOString();
-        exchange_date_from.isReadOnly = this.pageParam.isFromAbsenceRecord;
+        // exchange_date_from.isReadOnly = this.pageParam.isFromAbsenceRecord;
         exchange_date_from.infoBottom =  "*Original Alternate Off Day";
 
 

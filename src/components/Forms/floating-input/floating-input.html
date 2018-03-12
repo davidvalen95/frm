@@ -47,7 +47,7 @@
 
 
   <ion-input
-    [hidden]="this.inputType=='select' || this.inputType=='date' || baseForm.isReadOnly || this.inputType == 'textarea' || this.inputType=='file'"
+    [hidden]="this.inputType=='select'  || this.inputType=='datetime' || this.inputType=='date' || baseForm.isReadOnly || this.inputType == 'textarea' || this.inputType=='file'"
     [disabled] = "baseForm.isDisabled"
     [(ngModel)]="this.baseForm.value"
     #ionInputModel = "ngModel"
@@ -92,7 +92,9 @@
   <ion-datetime
     [disabled] = "baseForm.isDisabled "
     #ionDateModel   = "ngModel"
-    [hidden]        = "this.inputType != 'date' || baseForm.isReadOnly"
+    #datetimePicker
+
+    [hidden]        = "(this.inputType!='date' && this.inputType !='datetime') || baseForm.isReadOnly"
     [(ngModel)]       = "baseForm.value"
     [name]          = "baseForm.name"
     [placeholder]   = "baseForm.placeholder || ''"
@@ -107,6 +109,7 @@
     (ionChange)   = "broadcast('iondatetime')"
     [hourValues] = baseForm.hourValues
     (click) = "onFieldClicked(ionDateModel)"
+
   ></ion-datetime>
 
 
@@ -189,3 +192,4 @@
   <!--[pattern]     = "currentBaseForm.rules.pattern"-->
 <!--/>-->
 
+<!--<button (click)="showCalendar()">Show Calendar</button>-->

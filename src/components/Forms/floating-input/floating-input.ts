@@ -4,9 +4,10 @@ import {
 } from '@angular/core';
 import {BaseForm, InputType, LabelType} from "../base-form";
 import {NgForm, NgModel, ValidationErrors} from "@angular/forms";
-import {Label, NavController} from "ionic-angular";
+import {DateTime, Label, ModalController, NavController} from "ionic-angular";
 import {SearchBarParam, SearchBarPage} from "../../../pages/search-bar/search-bar";
 import {isDefined} from "ionic-angular/util/util";
+import {DatePickerProvider} from "ionic2-date-picker";
 
 /**
  * Generated class for the FloatingInputComponent component.
@@ -40,7 +41,7 @@ export class FloatingInputComponent {
   public inputType;
   public labelType;
   public allowedBroadcast;
-  constructor(public navController:NavController) {
+  constructor(public navController:NavController, public datePickerProvider:DatePickerProvider,public modalCtrl: ModalController,) {
     this.baseForm = null;
   }
   ngOnInit(){
@@ -78,6 +79,7 @@ export class FloatingInputComponent {
           this.allowedBroadcast = "ionselect";
           break;
         case InputType.date:
+        case InputType.datetime:
           this.finalModel = this.ionDateModel;
           this.allowedBroadcast = "iondatetime";
           break;
@@ -106,6 +108,7 @@ export class FloatingInputComponent {
   }
 
   onFieldClicked(model){
+    console.log('onFieldClicked');
     if(this.baseForm.isSearchBar){
       var param:SearchBarParam = {
         baseForm: this.baseForm
@@ -115,6 +118,10 @@ export class FloatingInputComponent {
 
     }
 
+
+    if(this.baseForm.inputType == InputType.date){
+      // this.showCalendar();
+    }
     this.baseForm.inputClickListener.next(model);
   }
 
@@ -125,6 +132,29 @@ export class FloatingInputComponent {
     if(origin == this.allowedBroadcast){
       this.baseForm.broadcastIonChange(origin);
     }
+
+  }
+
+
+  showCalendar() {
+    const dateSelected =
+            this.datePickerProvider.showCalendar(this.modalCtrl,{});
+
+    // this.datePickerProvider.
+
+
+
+    dateSelected.subscribe(data =>{
+      console.log("first date picker: date selected is", data);
+      var correctDate = BaseForm.getAdvanceDate(1, data);
+
+
+      this.baseForm.value = correctDate.toISOString();
+      // this.baseForm.value = "test";
+      console.log("Correct date", correctDate,this.baseForm);
+
+
+    })
 
   }
 
