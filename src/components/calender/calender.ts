@@ -26,11 +26,10 @@ export class CalenderComponent {
   currentMonth: any;
   currentYear: any;
   currentDate: any;
-
   eventList: any = [];
   selectedEvent: any;
   isSelected: any;
-  color:string[]= ["#00008b", "#008b8b","#a9a9a9","#006400","#bdb76b","#8b008b","#556b2f","#ff8c00","#9932cc","#8b0000","#e9967a"]
+  color:string[]= ["#00008b", "#008b8b","#a9a9a9","#006400","#bdb76b","#FFBBDA","#556b2f","#ff8c00","#9932cc","#8b0000","#e9967a"]
   // darkblue: "#00008b",
   // darkcyan: "#008b8b",
   // darkgrey: "#a9a9a9",
