@@ -389,7 +389,7 @@ export class ApplyLeaveApplicationPage {
 
     // var loader = this.helperProvider.presentLoadingV2("Retrieving half day");
 
-    this.setHalfDayForm(this.applyRule.leaveDates, halfdaySection);
+    isHalfDay.value = this.setHalfDayForm(this.applyRule.leaveDates, halfdaySection) ? "yes" : "no";
     setTimeout(()=>{
       //# buat getDayRule waktu mau masuk getHalfDay
       this.isFinishedFormInit = true;
@@ -418,10 +418,23 @@ export class ApplyLeaveApplicationPage {
   }
 
 
-  private setHalfDayForm(leaveDates:LeaveDateInterface[], halfdaySection: SectionFloatingInputInterface){
+  /**
+   * return boolean isHalfDay
+   * @param {LeaveDateInterface[]} leaveDates
+   * @param {SectionFloatingInputInterface} halfdaySection
+   * @returns {boolean}
+   */
+  private setHalfDayForm(leaveDates:LeaveDateInterface[], halfdaySection: SectionFloatingInputInterface):boolean{
     var bankLeaveDate:BaseForm[] = [];
 
+    var isHalfDay = false;
+
     leaveDates.forEach((data:LeaveDateInterface,index)=>{
+
+      if(data.leave_period !='full'){
+        isHalfDay = true;
+      }
+
       var leaveDate = new BaseForm(data.leaveDateStr, `rdLeavePeriod${index}`)
       leaveDate.setInputTypeSelect([{
         key:"Full Day",
@@ -438,8 +451,16 @@ export class ApplyLeaveApplicationPage {
       bankLeaveDate.push(leaveDate);
 
 
+      var date = new BaseForm("",`leaveDate${index}`);
+      date.isHidden = true;
+      date.value = data.leaveDate;
+      bankLeaveDate.push(date);
+
     });
     halfdaySection.baseForms = bankLeaveDate;
+
+    return isHalfDay;
+
   }
 
   private setNotEditable(baseForms: BaseForm[]) {
