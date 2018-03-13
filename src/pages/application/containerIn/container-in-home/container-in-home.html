@@ -252,17 +252,17 @@
                   <span item-right="">{{record.visitation_time | ifEmptyThenDash }}</span>
                 </ion-item>
 
-                <ion-item>
-                  Purpose
-                  <span item-right="">{{record.purpose | ifEmptyThenDash }}</span>
-                </ion-item>
+                <!--<ion-item>-->
+                  <!--Purpose-->
+                  <!--<span item-right="">{{record.purpose | ifEmptyThenDash }}</span>-->
+                <!--</ion-item>-->
 
-                <ion-item *ngIf="!pageParam.isApproval">
-                  No. Reference
+                <ion-item *ngIf="!pageParam.isApproval && record.visitor_id !=''">
+                  No. reference
                   <span item-right="">{{ record.visitor_id | ifEmptyThenDash }}</span>
                 </ion-item>
 
-                <ion-item *ngIf="!pageParam.isApproval">
+                <ion-item *ngIf="!pageParam.isApproval && record.port_name !=''">
                   Port name
                   <span item-right="">{{ record.port_name | ifEmptyThenDash }}</span>
                 </ion-item>

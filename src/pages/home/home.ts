@@ -65,12 +65,22 @@ export class HomePage {
       image: "assets/imgs/home/application.png",
       title: "Application",
       badge: "application",
+      onClick:()=>{
+        this.menuController.open();
+        this.userProvider.closeAllMenu();
+        this.userProvider.menuObject.myApplication.isOpen = true;
+      }
     };
 
     var attendanceRecord:CircleMenuInterface = {
       image: "assets/imgs/home/attendance-record.png",
       title: "Attendance Record",
       badge: "attendanceRecord",
+      onClick:()=>{
+        this.menuController.open();
+        this.userProvider.closeAllMenu();
+        this.userProvider.menuObject.myAttendace.isOpen = true;
+      }
 
     };
 
@@ -117,12 +127,9 @@ export class HomePage {
       badge: "otherApproval",
       isHidden: !this.userProvider.userPrevilege.isCanApprove,
       onClick:()=>{
-        // this.badge.increase(1).then((data)=>{
-        //   console.log('badgeIncrease',data)
-        // }).catch((rej)=>{
-        //   console.log('badgeRejected',rej)
-        // });
-        // console.log(this.badge.)
+        this.menuController.open();
+        this.userProvider.closeAllMenu();
+        this.userProvider.menuObject.myApproval.isOpen = true;
       }
     };
 

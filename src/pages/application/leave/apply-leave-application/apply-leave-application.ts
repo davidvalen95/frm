@@ -436,7 +436,7 @@ export class ApplyLeaveApplicationPage {
       }
 
       var leaveDate = new BaseForm(data.leaveDateStr, `rdLeavePeriod${index}`)
-      leaveDate.setInputTypeSelect([{
+      leaveDate.setInputTypeRadio([{
         key:"Full Day",
         value:"full"
       },{

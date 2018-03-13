@@ -37,6 +37,7 @@ export class FloatingInputComponent {
   @ViewChild('ionDateModel')  public ionDateModel:NgModel;
   @ViewChild('ionTextareaModel')  public ionTextareaModel:NgModel;
   @ViewChild('fileModel')  public fileModel:NgModel;
+  @ViewChild('ionRadioModel')  public ionRadioModel:NgModel;
   public finalModel:NgModel;
   public inputType;
   public labelType;
@@ -89,6 +90,11 @@ export class FloatingInputComponent {
           break;
         case InputType.file:
           this.finalModel = this.fileModel;
+          break;
+        case InputType.radio:
+          this.finalModel = this.ionRadioModel;
+          this.allowedBroadcast = "ionradio";
+
           break;
       }
       this.parentForm.addControl(this.finalModel);

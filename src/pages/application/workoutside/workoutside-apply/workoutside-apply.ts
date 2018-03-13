@@ -329,7 +329,6 @@ export class WorkoutsideApplyPage {
       var day = data.name;
       check.push(this.isValidResOutRestIn(day,restOut,restIn));
       check.push(this.isValidRestOutTimeIn(day,restOut,timeIn));
-      check.push(this.isValidRestInRestOut(day,restIn,restOut));
       check.push(this.isValidSkipRestin(day, timeIn,timeOut,restOut,restIn));
       check.push(this.isValidTimeOutRestIn(day,timeOut,restIn));
       check.push(this.isValidTimeoutToTimeIn(day, timeOut,timeIn));
@@ -733,7 +732,7 @@ export class WorkoutsideApplyPage {
     var timeOutDate = new Date("2018-01-01T"+timeIn.value);
 
     var isValid = timeOutDate.getTime() >= timeInDate.getTime();
-    var message = isValid ? "" :  `Time Out cannot less than Time In! (${date}) `;
+    var message = isValid ? "" :  `Time Out cannot less than Time In!  <b style="color:red">(${date})</b> `;
 
     return {isValid:isValid,message:message};
   }
@@ -745,7 +744,7 @@ export class WorkoutsideApplyPage {
     var restInDate = new Date("2018-01-01T"+restIn.value);
 
     var isValid = ( (timeIn.value != "00:00" && timeOut.value != "00.00") || (restOut.value == "00:00" && restIn.value == "00:00"));
-    var message = isValid ? "" :  `Rest-In must be 00:00 if you want to skip this date! (${date}) `;
+    var message = isValid ? "" :  `Rest-In must be 00:00 if you want to skip this date!  <b style="color:red">(${date})</b> `;
 
     return {isValid:isValid,message:message};
   }
@@ -757,7 +756,7 @@ export class WorkoutsideApplyPage {
     var bDate = new Date("2018-01-01T"+b.value);
 
     var isValid = aDate.getTime() >= bDate.getTime();
-    var message = isValid ? "" :  `Time Out cannot less than Rest In! (${date}) `;
+    var message = isValid ? "" :  `Time Out cannot less than Rest In! <b style="color:red">(${date})</b> `;
 
     return {isValid:isValid,message:message};
   }
@@ -767,7 +766,7 @@ export class WorkoutsideApplyPage {
     var bDate = new Date("2018-01-01T"+b.value);
 
     var isValid = aDate.getTime() <= bDate.getTime();
-    var message = isValid ? "" :  `Rest In cannot less than Rest Out! (${date}) `;
+    var message = isValid ? "" :  `Rest In cannot less than Rest Out!  <b style="color:red">(${date})</b> `;
 
     return {isValid:isValid,message:message};
   }
@@ -778,22 +777,12 @@ export class WorkoutsideApplyPage {
     var bDate = new Date("2018-01-01T"+b.value);
 
     var isValid = aDate.getTime() >= bDate.getTime();
-    var message = isValid ? "" :  `Rest Out cannot less than Time In! (${date}) `;
+    var message = isValid ? "" :  `Rest Out cannot less than Time In!  <b style="color:red">(${date})</b> `;
 
     return {isValid:isValid,message:message};
   }
 
 
-
-  private isValidRestInRestOut(date, a:BaseForm, b:BaseForm):{isValid:boolean,message:string}{
-    var aDate = new Date("2018-01-01T"+a.value);
-    var bDate = new Date("2018-01-01T"+b.value);
-
-    var isValid = aDate.getTime() >= bDate.getTime();
-    var message = isValid ? "" :  `Rest In cannot less than Rest Out! (${date}) `;
-
-    return {isValid:isValid,message:message};
-  }
 
 }
 

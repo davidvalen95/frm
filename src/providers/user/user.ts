@@ -53,6 +53,17 @@ export class UserProvider {
     isCanApprove:false,
   }
 
+  public menuObject: {
+    home?:MenuInterface,
+    announcement?:MenuInterface,
+    myCalender?:MenuInterface,
+    myApplication?:MenuInterface,
+    myAttendace?:MenuInterface,
+    myApproval?:MenuInterface,
+    myProfile?:MenuInterface,
+    setting?:MenuInterface,
+  } = {};
+
   constructor(public badge: Badge, public helperProvider: HelperProvider, public httpClient: HttpClient, public api: ApiProvider, public rootParam: RootParamsProvider, public localStorageProvider: LocalStorageProvider) {
     this.userSession.isFnF      = false;
     this.userSession.isFnFReady = false;
@@ -168,15 +179,16 @@ export class UserProvider {
 
   hardCodeMenu() {
 
-    this.homeMenu.push({
+    this.menuObject.home = {
       name: "Home",
       id: "home",
       menu: [],
       isOpen: false,
       image: "assets/imgs/menu/home.png"
-    });
+    };
+    this.homeMenu.push(this.menuObject.home);
 
-    this.homeMenu.push({
+    this.menuObject.announcement = {
       name: "Announcement",
       id: "announcement",
       image: "assets/imgs/menu/announcement.png",
@@ -188,18 +200,22 @@ export class UserProvider {
         count: 0,
       },
 
-    })
-    this.homeMenu.push({
+    }
+    this.homeMenu.push(this.menuObject.announcement)
+
+    this.menuObject.myCalender = {
       name: "My Calendar",
       id: "myCalender",
       image: "assets/imgs/menu/calendar.png",
       menu: [],
       // apiId: "random",
       isOpen: false
-    });
+    };
+    this.homeMenu.push(this.menuObject.myCalender);
 
 
-    this.homeMenu.push({
+
+    this.menuObject.myApplication = {
       name: "My Application",
       id: "application",
       image: "assets/imgs/menu/application.png",
@@ -290,10 +306,12 @@ export class UserProvider {
           }
         }],
       isOpen: false
-    })
+    };
+
+    this.homeMenu.push(this.menuObject.myApplication);
 
 
-    this.homeMenu.push({
+    this.menuObject.myAttendace = {
       name: "My Attendance",
       id: "",
       image: "assets/imgs/menu/attendance.png",
@@ -324,10 +342,11 @@ export class UserProvider {
         }
       }],
       isOpen: false
-    })
+    };
+    this.homeMenu.push(this.menuObject.myAttendace)
 
 
-    this.homeMenu.push({
+    this.menuObject.myApproval  = {
       name: "My Approval",
       id: "approval",
       apiId: "approval",
@@ -425,9 +444,10 @@ export class UserProvider {
         // }
       ],
       isOpen: false
-    })
+    }
+    this.homeMenu.push(this.menuObject.myApproval)
 
-    this.homeMenu.push({
+    this.menuObject.myProfile = {
       name: "My Profile",
       id: "",
       image: "assets/imgs/menu/profile.png",
@@ -445,7 +465,8 @@ export class UserProvider {
         },
       ],
       isOpen: false
-    });
+    }
+    this.homeMenu.push(this.menuObject.myProfile);
 
     //
     // this.homeMenu.push({
@@ -456,13 +477,12 @@ export class UserProvider {
     //   isOpen: false
     // });
 
-    this.homeMenu.push({
-      name: "Setting",
+    this.menuObject.setting = {name: "Setting",
       id: "setting",
       image: "assets/imgs/menu/setting.png",
       menu: [],
-      isOpen: false
-    });
+      isOpen: false}
+    this.homeMenu.push(this.menuObject.setting);
 
 
   }
@@ -755,6 +775,13 @@ export class UserProvider {
       user_id: this.userSession.empId,
       container: "" + isContainer,
     }
+  }
+
+
+  public closeAllMenu(){
+    this.homeMenu.forEach(menu=>{
+      menu.isOpen = false;
+    })
   }
 
 

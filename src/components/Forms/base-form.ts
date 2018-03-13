@@ -228,6 +228,31 @@ export class BaseForm {
 
   }
 
+  public setInputTypeRadio(options: KeyValue[], isFirstDefault:boolean = false) {
+    if (!this.isSelectProcessing) {
+      this.selectOptions      = [];
+      this.isSelectProcessing = true;
+      this.placeholder        = `Select ${this.label}`;
+      this.inputType          = InputType.radio;
+      this.selectOptions      = options;
+
+      this.isSelectProcessing = false;
+      console.log("firstDefaultBefore",this.name,isFirstDefault,isFirstDefault && (!this.value || this.value == "" ),  this.value);
+
+      if(isFirstDefault && (!this.value || this.value == "" )){
+        this.value = this.selectOptions[0].value;
+        console.log("firstDefault", this.value);
+      }
+
+
+    }
+
+    return this;
+
+  }
+
+
+
   public setInputTypeSelectTrueFalse() {
     if (!this.isSelectProcessing) {
       this.selectOptions      = [];
@@ -253,6 +278,26 @@ export class BaseForm {
     this.placeholder = `Select ${this.label}`;
 
     this.inputType = InputType.select;
+
+    // parsing as key value
+    observable.subscribe((data: T) => {
+      this.selectOptions = processData(data)
+      if(isFirstDefault && this.value == ""){
+        this.value = this.selectOptions[0].value;
+        console.log("firstDefault", this.value);
+      }
+      console.log('selectOptions', this.selectOptions)
+    })
+
+    return this;
+
+  }
+
+
+  public setInputTypeRadioChain<T>(observable: Observable<T>, processData: (data: T) => KeyValue[], isFirstDefault:boolean = false) {
+    this.placeholder = `Select ${this.label}`;
+
+    this.inputType = InputType.radio;
 
     // parsing as key value
     observable.subscribe((data: T) => {
@@ -492,7 +537,7 @@ export interface InputStyle {
 }
 
 export enum InputType {
-  text, select, password, email, date, number, textarea, file,datetime
+  text, select, password, email, date, number, textarea, file,datetime, radio
 }
 
 export enum LabelType {

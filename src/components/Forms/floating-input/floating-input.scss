@@ -148,4 +148,14 @@ floating-input {
   .item-inner{
     border: none !important;
   }
+
+
+
+  .item-radio{
+    //min-height: 2rem !important;
+    ion-label{
+      font-weight: normal;
+    }
+
+  }
 }
