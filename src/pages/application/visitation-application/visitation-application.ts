@@ -7,6 +7,7 @@ import {
 import {BaseForm, InputType, LabelType, KeyValue} from "../../../components/Forms/base-form";
 import {NgForm, NgModel} from "@angular/forms";
 import {
+  ApiGetConfigInterface,
   ApiProvider, BadgeApiInterface, CompanyInformation, EmployeeInformationInterface, VisitationDataApiInterface,
   VisitationDataDetailInterface,
   VisitationDataRecordsInterface,
@@ -61,6 +62,7 @@ export class VisitationApplicationPage {
   public broadcast:Subscription = null;
   // public Setting = Setting;
   public badge:BadgeApiInterface ;
+  public filterRule: VisitationFilterApi = {};
 
   public atachment:string[] = [];
   @ViewChild('infiniteScroll') public infiniteScroll: InfiniteScroll;
@@ -163,12 +165,48 @@ export class VisitationApplicationPage {
 
     })
 
+    this.getFilter();
+
+
 
 
 
 
   }
 
+
+  public getFilter() {
+
+    // http://hrms.dxn2u.com:8888/hrm_test2/s/OvertimeApplication_top?mobile=true&cmd=filter&user_id=MY080127&callback=Ext.data.JsonP
+
+
+    this.filter.cmbStatus = "";
+    var url = `${ ApiProvider.HRM_URL }${this.pageParam.isApprover ? "s/VisitationApplication_top" : "s/VisitationApplication_top"}`;
+
+
+    if(this.pageParam.isApprover){
+      this.filter.cmbStatus = "PA";
+      this.filter.cmbSearch = "a.emp_id"
+    }
+
+    var params = {
+      mobile: "true",
+      cmd: "filter",
+      container: false,
+      user_id: this.userProvider.userSession.empId,
+      approval: this.pageParam.isApprover,
+    }
+
+    var config:ApiGetConfigInterface = {
+      url: url,
+      params: params
+    }
+    this.apiProvider.get<VisitationFilterApi>(config,(data:VisitationFilterApi)=>{
+      this.filterRule = data;
+    })
+
+
+  }
 
   alert(message: string, title?: string) {
     this.alertController.create(

@@ -692,6 +692,7 @@ export class UserProvider {
       keyWord: "",
       // cmbYear: (new Date()).getFullYear(),
       cmbMonth: 0,
+      cmbYear: "",
       cmbStatus: status,
       cmbType: '',
       cmbDepartment: "",

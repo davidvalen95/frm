@@ -26,6 +26,7 @@ import {
 } from "../ApiInterface";
 import {HomeBaseInterface} from "../../../../app/app.component";
 import {KeyValue} from "../../../../components/Forms/base-form";
+import {IncompleteRecordFilterInterface} from "../../../myAttendance/incompleteRecord/IncompleteRecordApiInterface";
 
 /**
  * Generated class for the HomeLeaveApplicationPage page.
@@ -58,6 +59,9 @@ export class HomeLeaveApplicationPage {
 
   public summary:KeyValue[] = [];
 
+  public filterRule = {};
+
+
   public eventBroadcaster
   @ViewChild('infiniteScroll') public infiniteScroll: InfiniteScroll;
 
@@ -73,7 +77,6 @@ export class HomeLeaveApplicationPage {
 
     //# for filter too
     this.apiExecuteGetSummary();
-
 
     this.getList();
 
@@ -313,7 +316,7 @@ export class HomeLeaveApplicationPage {
 
   public apiExecuteGetSummary() {
 
-    var url = `${ ApiProvider.HRM_URL }s/LeaveApplication_top?mobile=true`;
+    var url = `${this.pageParam.isApproval ? ApiProvider.HRM_URL+"s/LeaveApplicationApproval_top?mobile=true" :  ApiProvider.HRM_URL+"s/LeaveApplication_top?mobile=true" }`;
 
     var params: HttpParams = new HttpParams().set("mobile", "true")
       .append("cmd", "filter")
@@ -337,9 +340,9 @@ export class HomeLeaveApplicationPage {
       }
 
       this.leaveApplicationTop = data;
-      this.getSummary(data);
+      this.setSummaryList(data);
 
-
+      this.filterRule = data;
 
 
 
@@ -356,7 +359,12 @@ export class HomeLeaveApplicationPage {
   }
 
 
-  public getSummary(applicationTop:LeaveApplicationFilter){
+  public setSummaryList(applicationTop:LeaveApplicationFilter){
+
+    if(!applicationTop.info){
+      return;
+    }
+
 
     this.summary.push({key:`Annual Leave Available as of ${this.helperProvider.getCurrentDate(false)}`,value:`${applicationTop.info.available}`});
     this.summary.push({key:`Annual Leave Available as of ${applicationTop.info.nextDate}`,value:`${applicationTop.info.availableNext}`});
@@ -367,24 +375,31 @@ export class HomeLeaveApplicationPage {
     this.summary.push({key:`Annual Leave Adjustment as of ${this.helperProvider.getCurrentDate(false)}`,value:`${applicationTop.info.adjustment}`});
     this.summary.push({key:`Total Leave (as at end of the year)`,value:`${applicationTop.info.total_leave}`});
 
+
+
     // if(applicationTop.info.taken_al > 0){
     if(true){
         this.summary.push({key:`Annual Leave Taken`,value:`${applicationTop.info.taken_al}`});
     }
+    // if(applicationTop.info.taken_el > 0){
+    if(true){
+      this.summary.push({key:`Emergency Leave Taken`,value:`${applicationTop.info.taken_el}`});
+    }
+    this.summary.push({key:`Leave Balance (as at end of the year)`,value:`${applicationTop.info.balance}`});
+
+
+
+
     // if(applicationTop.info.taken_rl > 0){
     if(true){
       this.summary.push({key:`Replacement Leave Taken`,value:`${applicationTop.info.taken_rl}`});
     }
 
-    // if(applicationTop.info.taken_el > 0){
-    if(true){
-      this.summary.push({key:`Emergency Leave Taken`,value:`${applicationTop.info.taken_el}`});
-    }
+
     this.summary.push({key:`Unpaid Leave Taken`,value:`${applicationTop.info.taken_ul}`});
     this.summary.push({key:`Special Paid Leave Taken`,value:`${applicationTop.info.taken_sl}`});
     this.summary.push({key:`Mecial Paid Leave Taken`,value:`${applicationTop.info.taken_ol}`});
 
-    this.summary.push({key:`Leave Balance (as at end of the year)`,value:`${applicationTop.info.balance}`});
 
 
 

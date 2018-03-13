@@ -232,6 +232,12 @@ export class HomeOvertimeApplicationPage {
     var url = `${ ApiProvider.HRM_URL }${this.pageParam.isApproval ? "s/OvertimeApplicationApproval_top" : "s/OvertimeApplication_top"}`;
 
 
+    if(this.pageParam.isApproval){
+      this.filter.cmbStatus = "PA";
+      this.filter.cmbSearch = "a.emp_id"
+    }
+
+
     var params = {
       mobile: "true",
       cmd: "filter",

@@ -253,8 +253,14 @@ export class WorkoutsideApplyPage {
 
       if(!this.pageParam.isFromAbsenceRecord){
         this.setDataDetailSection(this.applyRule.detail,dateFrom,dateTo,firstDayConfig);
-        this.isDoneFetch = true;
+
+
+
       }
+
+      setTimeout(()=>{
+        this.isDoneFetch = true;
+      },500)
 
     },500)
   }
@@ -572,6 +578,8 @@ export class WorkoutsideApplyPage {
           time_out: "00:00",
         })
       }
+    }else{
+      console.log('setDataDetailSection not null',dataDetail);
     }
 
 
@@ -617,12 +625,20 @@ export class WorkoutsideApplyPage {
       };
       this.sectionDataDetail.push(section);
 
+      if(dataDetail){
+        // console.log
+        console.log('setDataDetailSection sectionDetail',section);
+
+      }
+
 
       firstDayConfig.changeListener.subscribe((data)=>{
+        console.log('setDataDetailSection firstDayConfig', data);
 
         if(index>0 && firstDayConfig.value === "true"){
           var firstTimein = this.sectionDataDetail[0].baseForms[0]
           firstTimein.changeListener.subscribe((data)=>{
+            timeIn.value = data.value;
           });
 
           var firstRestOut = this.sectionDataDetail[0].baseForms[1]
@@ -641,10 +657,14 @@ export class WorkoutsideApplyPage {
           });
         }else{
 
-          timeIn.value = "00:00";
-          restIn.value = "00:00";
-          restOut.value = "00:00";
-          timeOut.value = "00:00";
+
+          if(this.isDoneFetch){
+            timeIn.value = "00:00";
+            restIn.value = "00:00";
+            restOut.value = "00:00";
+            timeOut.value = "00:00";
+          }
+
         }
 
 

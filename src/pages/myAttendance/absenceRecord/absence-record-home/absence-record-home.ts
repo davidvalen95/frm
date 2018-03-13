@@ -198,7 +198,7 @@ export class AbsenceRecordHomePage {
 
         break;
       case "workoutside":
-        title = "Apply Workoutside - Absence Record";
+        title = "Apply Work Outside - Absence Record";
         page = WorkoutsideApplyPage
         break;
     }

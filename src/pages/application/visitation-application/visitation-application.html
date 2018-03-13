@@ -224,29 +224,28 @@
       <span *ngIf="filter.isOpen" class="animation-expand-bottom">
 
           <ion-item>
-            <ion-label>Year</ion-label>
-            <ion-select (ionChange)="filterChanged()" [(ngModel)]="filter.cmbYear" interface="popover">
-              <ion-option value="" selected="">--All--</ion-option>
-              <ion-option *ngFor="let i of ['2017','2018']" [value]="i">{{i}}</ion-option>
-            </ion-select>
-          </ion-item>
-          <ion-item>
-            <ion-label>Month</ion-label>
-            <ion-select (ionChange)="filterChanged()" [(ngModel)]="filter.cmbMonth" interface="popover">
-              <ion-option value="" selected="">--All--</ion-option>
-
-              <ion-option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]" [value]="i" >{{i}}</ion-option>
+            <ion-label >Year</ion-label>
+            <ion-select  [(ngModel)]="filter.cmbYear" interface="popover">
+              <ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.filterRule,'cmbYear')" [selected]="true" [value]="object.value" >{{object.text}}</ion-option>
             </ion-select>
           </ion-item>
 
 
+        <ion-item>
+          <ion-label>Month</ion-label>
+          <ion-select [(ngModel)]="filter.cmbMonth" interface="popover">
+
+            <ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.filterRule,'month')" [value]="object.value" >{{object.text}}</ion-option>
+          </ion-select>
+        </ion-item>
+
+
+
 
           <ion-item>
-            <ion-label>Acknowledge</ion-label>
-            <ion-select (ionChange)="filterChanged()" [(ngModel)]="filter.acknowledged" interface="popover">
-              <ion-option value="" selected="">--All--</ion-option>
-
-              <ion-option *ngFor="let object of [{name:'Pending Acknowledged',value:'f'},{name:'Acknowledged',value:'t'}]" [value]="object.value" >{{object.name}}</ion-option>
+            <ion-label >Acknowledge</ion-label>
+            <ion-select  [(ngModel)]="filter.acknowledged" interface="popover">
+              <ion-option *ngFor="let object of this.helperProvider.getCmbRule(this.filterRule,'acknowledged')" [selected]="true" [value]="object.value" >{{object.text}}</ion-option>
             </ion-select>
           </ion-item>
 

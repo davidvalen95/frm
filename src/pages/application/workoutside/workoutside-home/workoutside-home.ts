@@ -201,6 +201,11 @@ export class WorkoutsideHomePage {
 
     var url = `${ ApiProvider.HRM_URL }${this.pageParam.isApproval ? "s/WorkoutsideApplicationApproval_top" : "s/WorkoutsideApplication_top"}`;
 
+    if(this.pageParam.isApproval){
+      this.filter.cmbStatus = "PA";
+      this.filter.cmbSearch = "a.emp_id"
+    }
+
 
     var params = {
       mobile: "true",
