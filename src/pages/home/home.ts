@@ -8,13 +8,17 @@ import {MyHelper} from "../../app/MyHelper";
 import {HttpClient} from "@angular/common/http";
 import {ApiProvider} from "../../providers/api/api";
 import {HelperProvider} from "../../providers/helper/helper";
-import {AnnouncementListInterface} from "../announcement/AnnouncementApi";
+import {AnnouncementListDataInterface, AnnouncementListInterface} from "../announcement/AnnouncementApi";
 import {AnnouncementHomePage} from "../announcement/announcement-home/announcement-home";
 import {CalenderPage} from "../calender/calender";
 import {RootParamsProvider} from "../../providers/root-params/root-params";
 import {HomeOvertimeApplicationPage} from "../application/overtime/home-overtime-application/home-overtime-application";
 import {HomeLeaveApplicationPage} from "../application/leave/home-leave-application/home-leave-application";
 import {Badge} from "@ionic-native/badge";
+import {
+  AnnouncementApplyPage,
+  AnnouncementApplyParamInterface
+} from "../announcement/announcement-apply/announcement-apply";
 
 @Component({
   selector: 'page-home',
@@ -179,6 +183,20 @@ export class HomePage {
 
   public rootPageAnnouncement(){
     this.navCtrl.setRoot(AnnouncementHomePage);
+  }
+
+  public pushAnnouncementDetailPage(announcementData:AnnouncementListDataInterface){
+
+    var param: AnnouncementApplyParamInterface = {
+      isEditing:true,isApply:false,
+      isApproval: false,
+      list: announcementData,
+      title: "Recent Announcement",
+      onDidLeave: ()=>{
+        // this.getList();
+      }
+    }
+    this.navCtrl.push(AnnouncementApplyPage, param)
   }
 
 

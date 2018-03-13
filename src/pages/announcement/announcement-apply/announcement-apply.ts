@@ -18,9 +18,11 @@ import {AnnouncementListDataInterface} from "../AnnouncementApi";
 export class AnnouncementApplyPage {
 
   public pageParam: AnnouncementApplyParamInterface
+  public title;
   constructor(public navCtrl: NavController, public navParams: NavParams) {
     this.pageParam = this.navParams.data;
 
+    this.title = this.pageParam.title;
   }
 
   ionViewDidLoad() {

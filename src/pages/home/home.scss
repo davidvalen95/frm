@@ -48,9 +48,12 @@ page-home {
 
 
     .content{
-      height: 40px;
       overflow: hidden;
       text-overflow: ellipsis;
+      //display: -webkit-box;
+      //-webkit-line-clamp: 2;
+      //-webkit-box-orient: vertical;
+      max-height: 40px;
     }
 
 
@@ -97,12 +100,12 @@ page-home {
     display: inline-block;
     .badge{
       position: absolute;
-      width: 20px;
-      height: 20px;
+      width: 2rem;
+      height: 2rem;
       border-radius: 50%;
-      padding-top: 2px;
-      right: -14px;
-      top: -14px;
+      padding-top: 0.2rem;
+      right: -2.2rem;
+      top: -4px;
       background: #EF4D37;
       //background:  black;
       text-align: center;

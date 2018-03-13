@@ -24,9 +24,8 @@
     </h3>
   </div>
 
-  <div class="section " (click)="    this.navCtrl.setRoot(announcementHomePage)
-">
-    <div text-center="">
+  <div class="section ">
+    <div text-center="" (click)="    this.navCtrl.setRoot(announcementHomePage)">
       <p   no-padding="" style="margin-bottom: 12px" class="announcementTitle">
         Recent Announcement
         <span class="badge" *ngIf="this.announcement && +this.announcement.total > 0">{{+announcement.total}}</span>
@@ -34,7 +33,7 @@
     </div>
 
 
-    <div class="announcement" >
+    <div class="announcement" (click)="this.pushAnnouncementDetailPage(this.announcement.data[0])" >
       <span *ngIf="this.announcement && this.announcement.data && this.announcement.data[0]">
         <p class="header">
         <span class="title">{{announcement.data[0].subject}}</span>
@@ -45,7 +44,7 @@
           Posted on: {{announcement.data[0].postdate}}
         </p>
 
-        <p class="content" [innerHtml]="announcement.data[0].sortcont | keepAsHtml">
+        <p  class="content" [innerHtml]=" announcement.data[0].content.length > 105 ? announcement.data[0].content.slice(0,105) + ' ....' : announcement.data[0].content | keepAsHtml">
         </p>
       </span>
 
