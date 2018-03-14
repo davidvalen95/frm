@@ -54,7 +54,7 @@ export class HomeExchangeApplicationPage {
   public listData: ExchangeApplicationActiveInterface;
 
   public filterRule: VisitationFilterApi = {};
-  public currentAlert:Alert;
+  public currentAlert:AlertStatusInterface;
 
 
   @ViewChild('infiniteScroll') public infiniteScroll: InfiniteScroll;
@@ -259,7 +259,7 @@ export class HomeExchangeApplicationPage {
 
       this.platform.registerBackButtonAction(() => {
         try{
-          this.currentAlert.dismiss().then(()=>{}).catch(()=>{        this.leavePage();});          return;
+          if(this.currentAlert.isPresent){this.currentAlert.alert.dismiss(); return;}
         }catch(exception){
           console.log(exception);
         }

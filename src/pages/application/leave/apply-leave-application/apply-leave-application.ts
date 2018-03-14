@@ -65,7 +65,7 @@ export class ApplyLeaveApplicationPage {
     isOpen: true,
     keyValue: [],
   }
-  public currentAlert:Alert;
+  public currentAlert:AlertStatusInterface;
 
 
   @ViewChild(Navbar) navbar: Navbar;
@@ -609,7 +609,7 @@ export class ApplyLeaveApplicationPage {
 
       this.platform.registerBackButtonAction(() => {
         try{
-          this.currentAlert.dismiss().then(()=>{}).catch(()=>{        this.leavePage();});          return;
+          if(this.currentAlert.isPresent){this.currentAlert.alert.dismiss(); return;}
         }catch(exception){
           console.log(exception);
         }

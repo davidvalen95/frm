@@ -22,7 +22,7 @@ import {BroadcastType, RootParamsProvider} from "../../../providers/root-params/
 import {FileJsonFormat, MyHelper} from "../../../app/MyHelper";
 import {Subscription} from "rxjs/Subscription";
 import {InAppBrowser, InAppBrowserObject} from "@ionic-native/in-app-browser";
-import {HelperProvider} from "../../../providers/helper/helper";
+import {AlertStatusInterface, HelperProvider} from "../../../providers/helper/helper";
 // import { InAppBrowser } from 'ionic-native';
 /**
  * Generated class for the VisitationApplicationPage page.
@@ -2099,7 +2099,7 @@ export class VisitationApplicationPage {
 
       this.platform.registerBackButtonAction(() => {
         try{
-          this.currentAlert.dismiss().then(()=>{}).catch(()=>{        this.leavePage();});          return;
+          if(this.currentAlert.isPresent){this.currentAlert.alert.dismiss(); return;}
         }catch(exception){
           console.log(exception);
         }

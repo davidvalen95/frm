@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {Alert, IonicPage, NavController, NavParams, Platform} from 'ionic-angular';
 import {ApplyBaseInterface} from "../../../app/app.component";
 import {AnnouncementListDataInterface} from "../AnnouncementApi";
-import {HelperProvider} from "../../../providers/helper/helper";
+import {AlertStatusInterface, HelperProvider} from "../../../providers/helper/helper";
 
 /**
  * Generated class for the AnnouncementApplyPage page.
@@ -20,7 +20,7 @@ export class AnnouncementApplyPage {
 
   public pageParam: AnnouncementApplyParamInterface
   public title;
-  public currentAlert:Alert;
+  public currentAlert:AlertStatusInterface;
   constructor(public platform:Platform, public helperProvider:HelperProvider, public navCtrl: NavController, public navParams: NavParams) {
     this.setHardwareBackButton();
     this.pageParam = this.navParams.data;
@@ -49,7 +49,7 @@ export class AnnouncementApplyPage {
 
       this.platform.registerBackButtonAction(() => {
         try{
-          this.currentAlert.dismiss().then(()=>{}).catch(()=>{        this.leavePage();});          return;
+          if(this.currentAlert.isPresent){this.currentAlert.alert.dismiss(); return;}
         }catch(exception){
           console.log(exception);
         }

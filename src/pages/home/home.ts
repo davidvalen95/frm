@@ -216,7 +216,7 @@ export class HomePage {
 
       this.platform.registerBackButtonAction(() => {
         try{
-          this.currentAlert.dismiss().then(()=>{}).catch(()=>{        this.leavePage();});          return;
+          if(this.currentAlert.isPresent){this.currentAlert.alert.dismiss(); return;}
         }catch(exception){
           console.log(exception);
         }

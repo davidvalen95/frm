@@ -50,7 +50,7 @@ export class CalenderPage {
   public filterRule: VisitationFilterApi          = {};
   public calenderEvents: CalenderEventInterface[];
   public eventBroadcaster
-  public currentAlert:Alert;
+  public currentAlert:AlertStatusInterface;
   @ViewChild('infiniteScroll') public infiniteScroll: InfiniteScroll;
 
   @ViewChild("navbar") navbar: Navbar;
@@ -238,7 +238,7 @@ export class CalenderPage {
 
       this.platform.registerBackButtonAction(() => {
         try{
-          this.currentAlert.dismiss().then(()=>{}).catch(()=>{        this.leavePage();});          return;
+          if(this.currentAlert.isPresent){this.currentAlert.alert.dismiss(); return;}
         }catch(exception){
           console.log(exception);
         }

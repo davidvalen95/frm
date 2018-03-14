@@ -7,7 +7,7 @@ import {
 import {AnnouncementListDataInterface, AnnouncementListInterface} from "../AnnouncementApi";
 import {ApiGetConfigInterface, ApiProvider, BadgeApiInterface, VisitationFilterApi} from "../../../providers/api/api";
 import {HttpClient} from "@angular/common/http";
-import {HelperProvider} from "../../../providers/helper/helper";
+import {AlertStatusInterface, HelperProvider} from "../../../providers/helper/helper";
 import {UserProvider} from "../../../providers/user/user";
 import {RootParamsProvider} from "../../../providers/root-params/root-params";
 import {HomeBaseInterface} from "../../../app/app.component";
@@ -49,7 +49,7 @@ export class AnnouncementHomePage {
 
   public filterRule: VisitationFilterApi = {};
   public eventBroadcaster
-  public currentAlert:Alert;
+  public currentAlert:AlertStatusInterface;
   @ViewChild('infiniteScroll') public infiniteScroll: InfiniteScroll;
 
   @ViewChild("navbar") navbar: Navbar;
@@ -213,7 +213,7 @@ export class AnnouncementHomePage {
 
       this.platform.registerBackButtonAction(() => {
         try{
-          this.currentAlert.dismiss().then(()=>{}).catch(()=>{        this.leavePage();});          return;
+          if(this.currentAlert.isPresent){this.currentAlert.alert.dismiss(); return;}
         }catch(exception){
           console.log(exception);
         }

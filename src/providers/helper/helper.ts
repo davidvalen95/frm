@@ -95,14 +95,18 @@ export class HelperProvider {
         }
       ]
     })
+    var status:AlertStatusInterface = {
+      alert: alert,
+      isPresent: true,
+    }
     alert.onDidDismiss(()=>{
-      alert = null;
+      status.isPresent = false;
     });
     alert.present();
-    return alert;
+    return status;
   }
 
-  public showConfirmRawAlert(message: string, handler:()=>void){
+  public showConfirmRawAlert(message: string, handler:()=>void):AlertStatusInterface{
     var alert:Alert = this.alertController.create({
       title:"Confirmation",
       message: `${message}`,
@@ -115,10 +119,15 @@ export class HelperProvider {
       ]
     })
     alert.present();
+    var status:AlertStatusInterface = {
+      alert: alert,
+      isPresent: true,
+    }
     alert.onDidDismiss(()=>{
-      alert = null;
+      status.isPresent = false;
     });
-    return alert;
+    alert.present();
+    return status;
   }
 
   /**
@@ -127,18 +136,23 @@ export class HelperProvider {
    * @param {string} title
    * @returns {Alert}
    */
-  public showAlert(message:string, title:string = "Info"){
+  public showAlert(message:string, title:string = "Info"):AlertStatusInterface{
+
     var alert:Alert = this.alertController.create({
       title: title,
       message:message,
       buttons: [{text:"Ok",role:"cancel"}],
     });
 
+    var status:AlertStatusInterface = {
+      alert: alert,
+      isPresent: true,
+    }
     alert.onDidDismiss(()=>{
-      alert = null;
+      status.isPresent = false;
     });
     alert.present();
-    return alert;
+    return status;
   }
 
 
@@ -402,4 +416,9 @@ export class HelperProvider {
 
 }
 
+
+export interface AlertStatusInterface{
+  alert: Alert,
+  isPresent:boolean,
+}
 

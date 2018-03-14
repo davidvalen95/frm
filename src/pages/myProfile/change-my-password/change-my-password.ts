@@ -2,7 +2,7 @@ import {Component, ViewChild} from '@angular/core';
 import {Alert, IonicPage, Navbar, NavController, NavParams, Platform, ToastController} from 'ionic-angular';
 import {NgForm} from "@angular/forms";
 import {ApiProvider, SuccessMessageInterface} from "../../../providers/api/api";
-import {HelperProvider} from "../../../providers/helper/helper";
+import {AlertStatusInterface, HelperProvider} from "../../../providers/helper/helper";
 import {UserProvider} from "../../../providers/user/user";
 import {RootParamsProvider} from "../../../providers/root-params/root-params";
 import {BaseForm, InputType} from "../../../components/Forms/base-form";
@@ -25,7 +25,7 @@ export class ChangeMyPasswordPage {
 
   @ViewChild(Navbar) navbar;
   public baseForms: BaseForm[] = [];
-  public currentAlert:Alert;
+  public currentAlert:AlertStatusInterface;
 
   constructor(public platform:Platform, public navCtrl: NavController, public navParams: NavParams, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
 
@@ -88,7 +88,7 @@ export class ChangeMyPasswordPage {
 
       this.platform.registerBackButtonAction(() => {
         try{
-          this.currentAlert.dismiss().then(()=>{}).catch(()=>{        this.leavePage();});          return;
+          if(this.currentAlert.isPresent){this.currentAlert.alert.dismiss(); return;}
         }catch(exception){
           console.log(exception);
         }

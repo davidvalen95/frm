@@ -55,7 +55,7 @@ export class ApplyOvertimeApplicationPage {
   public isCanSubmit: boolean      = false;
 
   public approvalHistoriesContainer:MatureKeyValueContainer[] = []
-  public currentAlert:Alert;
+  public currentAlert:AlertStatusInterface;
 
   @ViewChild(Navbar) navbar: Navbar;
 
@@ -341,7 +341,7 @@ export class ApplyOvertimeApplicationPage {
 
       this.platform.registerBackButtonAction(() => {
         try{
-          this.currentAlert.dismiss().then(()=>{}).catch(()=>{        this.leavePage();});          return;
+          if(this.currentAlert.isPresent){this.currentAlert.alert.dismiss(); return;}
         }catch(exception){
           console.log(exception);
         }

@@ -58,7 +58,7 @@ export class IncompleteRecordApplyPage {
   public isDoneFetch: boolean                               = false;
 
   public timeForms: BaseForm[] = [];
-  public currentAlert:Alert;
+  public currentAlert:AlertStatusInterface;
 
   @ViewChild(Navbar) navbar: Navbar;
   @ViewChild("parentForm") parentForm: NgForm;
@@ -483,7 +483,7 @@ export class IncompleteRecordApplyPage {
 
       this.platform.registerBackButtonAction(() => {
         try{
-          this.currentAlert.dismiss().then(()=>{}).catch(()=>{        this.leavePage();});          return;
+          if(this.currentAlert.isPresent){this.currentAlert.alert.dismiss(); return;}
         }catch(exception){
           console.log(exception);
         }

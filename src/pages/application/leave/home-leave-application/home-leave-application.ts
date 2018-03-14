@@ -64,7 +64,7 @@ export class HomeLeaveApplicationPage {
 
 
   public eventBroadcaster
-  public currentAlert:Alert;
+  public currentAlert:AlertStatusInterface;
   @ViewChild('infiniteScroll') public infiniteScroll: InfiniteScroll;
 
   @ViewChild("navbar") navbar: Navbar;
@@ -280,7 +280,7 @@ export class HomeLeaveApplicationPage {
 
       this.platform.registerBackButtonAction(() => {
         try{
-          this.currentAlert.dismiss().then(()=>{}).catch(()=>{        this.leavePage();});          return;
+          if(this.currentAlert.isPresent){this.currentAlert.alert.dismiss(); return;}
         }catch(exception){
           console.log(exception);
         }

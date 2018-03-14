@@ -4,7 +4,7 @@ import {RootParamsProvider} from "../../../providers/root-params/root-params";
 import {UserProvider} from "../../../providers/user/user";
 import {LoginPage} from "../../login/login";
 import {AppVersion} from "@ionic-native/app-version";
-import {HelperProvider} from "../../../providers/helper/helper";
+import {AlertStatusInterface, HelperProvider} from "../../../providers/helper/helper";
 import {LocalStorageProvider} from "../../../providers/local-storage/local-storage";
 import {NgModel} from "@angular/forms";
 import {HomePage} from "../../home/home";
@@ -26,7 +26,7 @@ export class SettingHomePage {
   public title:string;
   public versionNumber:string = "";
   public isAutoLogin:boolean;
-  public currentAlert:Alert;
+  public currentAlert:AlertStatusInterface;
   constructor(public platform:Platform, private cdr: ChangeDetectorRef, public localStorageProvider:LocalStorageProvider, public helperProvider:HelperProvider, public appVersion: AppVersion, public navCtrl: NavController, public navParams: NavParams, public rootParam:RootParamsProvider, public userProvider:UserProvider) {
 
     this.setHardwareBackButton();
@@ -78,7 +78,7 @@ export class SettingHomePage {
 
       this.platform.registerBackButtonAction(() => {
         try{
-          this.currentAlert.dismiss().then(()=>{}).catch(()=>{        this.leavePage();});          return;
+          if(this.currentAlert.isPresent){this.currentAlert.alert.dismiss(); return;}
         }catch(exception){
           console.log(exception);
         }

@@ -26,7 +26,7 @@ export class LoginPage {
 
   public version :KeyValue[] = [];
 
-  public currentAlert:Alert;
+  public currentAlert:AlertStatusInterface;
 
   constructor(public helperProvider:HelperProvider, public platform:Platform, public navCtrl: NavController, public userProvider: UserProvider,public appVersion:AppVersion, public localStorageProvider:LocalStorageProvider) {
 
@@ -108,7 +108,7 @@ export class LoginPage {
 
       this.platform.registerBackButtonAction(() => {
         try{
-          this.currentAlert.dismiss().then(()=>{}).catch(()=>{        this.leavePage();});          return;
+          if(this.currentAlert.isPresent){this.currentAlert.alert.dismiss(); return;}
         }catch(exception){
           console.log(exception);
         }

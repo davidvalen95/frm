@@ -3,7 +3,7 @@ import {Alert, AlertController, IonicPage, NavController, NavParams, ToastContro
 import {ApplyLeaveApplicationParam} from "../../application/leave/apply-leave-application/apply-leave-application";
 import {BaseForm, InputType} from "../../../components/Forms/base-form";
 import {ApiProvider} from "../../../providers/api/api";
-import {HelperProvider} from "../../../providers/helper/helper";
+import {AlertStatusInterface, HelperProvider} from "../../../providers/helper/helper";
 import {RootParamsProvider} from "../../../providers/root-params/root-params";
 import {UserProvider} from "../../../providers/user/user";
 import {NgForm} from "@angular/forms";

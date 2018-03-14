@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {Alert, IonicPage, NavController, NavParams, Platform, ToastController} from 'ionic-angular';
 import {ApiProvider} from "../../../providers/api/api";
-import {HelperProvider} from "../../../providers/helper/helper";
+import {AlertStatusInterface, HelperProvider} from "../../../providers/helper/helper";
 import {UserProvider} from "../../../providers/user/user";
 import {RootParamsProvider} from "../../../providers/root-params/root-params";
 import {HomePage} from "../../home/home";
@@ -64,7 +64,7 @@ export class ProfileInformationPage {
 
       this.platform.registerBackButtonAction(() => {
         try{
-          this.currentAlert.dismiss().then(()=>{}).catch(()=>{        this.leavePage();});          return;
+          if(this.currentAlert.isPresent){this.currentAlert.alert.dismiss(); return;}
         }catch(exception){
           console.log(exception);
         }
