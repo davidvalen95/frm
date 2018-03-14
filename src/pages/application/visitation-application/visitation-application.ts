@@ -212,7 +212,7 @@ export class VisitationApplicationPage {
 
   }
 
-  alert(message: string, title?: string) {
+  alert(message: string, title?: string):AlertStatusInterface {
     var alert = this.alertController.create(
       {
         title: title || "",
@@ -220,8 +220,15 @@ export class VisitationApplicationPage {
         buttons: ['Ok']
       }
     );
+    var status:AlertStatusInterface = {
+      alert: alert,
+      isPresent: true,
+    }
+    alert.onDidDismiss(()=>{
+      status.isPresent = false;
+    });
     alert.present();
-    return alert;
+    return status;
   }
 
   completionFormSubmit(form: NgForm,pageForm:PageForm = null) {
@@ -1928,7 +1935,16 @@ export class VisitationApplicationPage {
 
           }]
       });
-      this.currentAlert = alert;
+
+      var status:AlertStatusInterface = {
+        alert: alert,
+        isPresent: true,
+      }
+      alert.onDidDismiss(()=>{
+        status.isPresent = false;
+      });
+
+      this.currentAlert = status;
       console.log("extraHostClick",data.value);
       //# get the deatil
       this.apiProvider.getEmployeeInformation(data.value, true).then((serverResponse: EmployeeInformationInterface) => {
@@ -1992,8 +2008,16 @@ export class VisitationApplicationPage {
         }
       ]
     })
-    this.currentAlert = alert;
+    var status:AlertStatusInterface = {
+      alert: alert,
+      isPresent: true,
+    }
+    alert.onDidDismiss(()=>{
+      status.isPresent = false;
+    });
     alert.present();
+    this.currentAlert = status;
+
     return alert;
   }
 

@@ -3,7 +3,7 @@ import {BaseForm, KeyValue} from "../Forms/base-form";
 import {HttpParams} from "@angular/common/http";
 import {UserProvider} from "../../providers/user/user";
 import {ApiProvider, EmployeeInformationInterface} from "../../providers/api/api";
-import {HelperProvider} from "../../providers/helper/helper";
+import {AlertStatusInterface, HelperProvider} from "../../providers/helper/helper";
 import {Alert, AlertController} from "ionic-angular";
 import {NgForm} from "@angular/forms";
 import {SectionFloatingInputInterface} from "../Forms/section-floating-input/section-floating-input";

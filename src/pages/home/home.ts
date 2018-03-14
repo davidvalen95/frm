@@ -7,7 +7,7 @@ import {LoginPage} from "../login/login";
 import {MyHelper} from "../../app/MyHelper";
 import {HttpClient} from "@angular/common/http";
 import {ApiProvider} from "../../providers/api/api";
-import {HelperProvider} from "../../providers/helper/helper";
+import {AlertStatusInterface, HelperProvider} from "../../providers/helper/helper";
 import {AnnouncementListDataInterface, AnnouncementListInterface} from "../announcement/AnnouncementApi";
 import {AnnouncementHomePage} from "../announcement/announcement-home/announcement-home";
 import {CalenderPage} from "../calender/calender";

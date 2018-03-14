@@ -6,7 +6,7 @@ import {BaseForm, InputType, KeyValue} from "../../components/Forms/base-form";
 import {HomePage} from "../home/home";
 import {AppVersion} from "@ionic-native/app-version";
 import {LocalStorageProvider} from "../../providers/local-storage/local-storage";
-import {HelperProvider} from "../../providers/helper/helper";
+import {AlertStatusInterface, HelperProvider} from "../../providers/helper/helper";
 
 /**
  * Generated class for the LoginPage page.

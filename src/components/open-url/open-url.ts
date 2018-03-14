@@ -1,7 +1,7 @@
 import {Component, Injectable, Input} from '@angular/core';
 import {Loading} from "ionic-angular";
 import {InAppBrowser, InAppBrowserObject} from "@ionic-native/in-app-browser";
-import {HelperProvider} from "../../providers/helper/helper";
+import {AlertStatusInterface, HelperProvider} from "../../providers/helper/helper";
 
 /**
  * Generated class for the OpenUrlComponent component.

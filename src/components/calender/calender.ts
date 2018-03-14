@@ -1,6 +1,6 @@
 import {Component, Injectable, Input} from '@angular/core';
 import {Calendar} from "@ionic-native/calendar";
-import {HelperProvider} from "../../providers/helper/helper";
+import {AlertStatusInterface, HelperProvider} from "../../providers/helper/helper";
 
 /**
  * Generated class for the CalenderComponent component.

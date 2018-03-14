@@ -14,7 +14,7 @@ import {
   VisitationApplicationParam
 } from "../application/visitation-application/visitation-application";
 import {NgForm} from "@angular/forms";
-import {HelperProvider} from "../../providers/helper/helper";
+import {AlertStatusInterface, HelperProvider} from "../../providers/helper/helper";
 
 /**
  * Generated class for the VisitationDetailPage page.
