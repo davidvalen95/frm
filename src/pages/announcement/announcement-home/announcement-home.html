@@ -121,7 +121,7 @@
 
                 <ion-item *ngIf="!pageParam.isApproval">
                   <!--<span  [style.color]="this.getStatusColor(record.status)" item-end="">{{record.status | ifEmptyThenDash}} </span>-->
-                  <span [innerHtml]="record.sortcont | keepAsHtml"></span>
+                  <span style="white-space: normal;" [innerHtml]="record.sortcont | keepAsHtml"></span>
                 </ion-item>
 
 

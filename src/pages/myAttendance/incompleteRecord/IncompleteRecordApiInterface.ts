@@ -93,9 +93,13 @@ export interface IncompleteRecordAttendanceInterface extends InOutFlowInterface{
 
 interface InOutFlowInterface{
   rest_in:string;
+  rest_in_incomplete:boolean;
   rest_out:string;
+  rest_out_incomplete:boolean;
   time_in:string;
+  time_in_incomplete:boolean;
   time_out:string;
+  time_out_incomplete:boolean;
 }
 
 

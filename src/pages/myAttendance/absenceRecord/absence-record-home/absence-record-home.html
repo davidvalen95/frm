@@ -147,7 +147,7 @@
                 <ion-icon name="arrow-up" *ngIf="!record.isOpen"></ion-icon>
                 </span>
 
-                <p [innerHtml]="pageParam.isApproval ? record.data9 : record.status | keepAsHtml " ></p>
+                <p status-color="" [innerHtml]="pageParam.isApproval ? record.data9 : record.status | keepAsHtml " ></p>
               </ion-item>
               <!--<p><small>{{record.status}}</small></p>-->
             </ion-card-header>
@@ -181,21 +181,21 @@
                 <!--</button>-->
                 <!--</ion-col>-->
                 <ion-col col-4="" (click)="newApply('leave',record)" text-center="">
-                  <button ion-button block color="primary" icon-center>
+                  <button class="selectButton" ion-button block color="primary" icon-center>
                     <!--<ion-icon name='list-box'></ion-icon>-->
                     Leave
                   </button>
                 </ion-col>
                 <ion-col  col-4="" (click)="newApply('workoutside',record)" text-center="">
-                  <button ion-button block color="primary" icon-center>
+                  <button class="selectButton" ion-button block color="primary" icon-center>
                     <!--<ion-icon name='list-box'></ion-icon>-->
-                    Workoutside
+                    Work Outside
                   </button>
                 </ion-col>
                 <ion-col col-4="" (click)="newApply('exchange',record)" text-center="">
-                  <button ion-button block color="primary" icon-center>
+                  <button class="selectButton" ion-button block color="primary" icon-center>
                     <!--<ion-icon name='list-box'></ion-icon>-->
-                    Exchange Alt.
+                    Exchange Alt. Off
                   </button>
                 </ion-col>
                 <!--<ion-col text-right>-->

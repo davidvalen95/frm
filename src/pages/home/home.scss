@@ -26,6 +26,9 @@ page-home {
   }
 
 
+  .middleBadge{
+    height: 100%;width: 1px; vertical-align: middle;display:inline-block;
+  }
   .announcement{
 
     p{
@@ -83,7 +86,6 @@ page-home {
         background: #c14747;
         //background: black;
         font-size: 1.4rem !important;
-        padding-top: 0.8rem;
 
       }
 
@@ -100,15 +102,15 @@ page-home {
     display: inline-block;
     .badge{
       position: absolute;
-      width: 2rem;
-      height: 2rem;
+      width: 2.4rem;
+      height: 2.4rem;
       border-radius: 50%;
-      padding-top: 0.2rem;
-      right: -2.2rem;
+      right: -2.8rem;
       top: -4px;
       background: #EF4D37;
       //background:  black;
       text-align: center;
+      font-size: 1.4rem;
     }
 
   }

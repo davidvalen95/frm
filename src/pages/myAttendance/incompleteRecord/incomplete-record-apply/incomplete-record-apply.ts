@@ -206,34 +206,45 @@ export class IncompleteRecordApplyPage {
 
     var timeCapture: BaseForm[] = [];
     this.applyRule.captured.forEach((string, index) => {
-      var capture        = new BaseForm(`Time Captured ${index + 1}`, "");
+      var capture        = new BaseForm(`Time ${index + 1}`, "");
       capture.value      = string;
       capture.isReadOnly = true;
       timeCapture.push(capture);
     })
 
 
+    console.log('applyrule.attendance' , this.applyRule.attendance.rest_out_incomplete);
+
     var timeIn        = new BaseForm("Time in", "time_in");
-    timeIn.value      = this.applyRule.data.time_in;
-    timeIn.isReadOnly = timeIn.value != "";
+    timeIn.value = this.applyRule.attendance.time_in;
+    timeIn.isReadOnly = !this.applyRule.attendance.time_in_incomplete  || this.pageParam.isApproval;
     timeIn.setInputTypeTime();
+    timeIn.infoBottom = this.applyRule.attendance.time_in_incomplete  ? `<span style='color: red;'>${timeIn.label} is incomplete</span>` : ""
+
 
 
     var restOut   = new BaseForm("Rest Out", "rest_out");
-    restOut.value = this.applyRule.data.rest_out;
-    // restOut.isReadOnly = restOut.value != "";
+    restOut.value = this.applyRule.attendance.rest_out;
+    restOut.isReadOnly = !this.applyRule.attendance.rest_out_incomplete  || this.pageParam.isApproval;
     restOut.setInputTypeTime();
+    restOut.infoBottom = this.applyRule.attendance.rest_out_incomplete  ? `<span style='color: red;'>${restOut.label} is incomplete</span>` : ""
+
+    console.log('applyrule.attendance' , restOut.infoBottom );
 
 
     var restIn   = new BaseForm("Rest In", "rest_in");
-    restIn.value = this.applyRule.data.rest_in;
-    // restIn.isReadOnly = restIn.value != "";
+    restIn.value = this.applyRule.attendance.rest_in;
+    restIn.isReadOnly = !this.applyRule.attendance.rest_in_incomplete  || this.pageParam.isApproval;
     restIn.setInputTypeTime();
+    restIn.infoBottom = this.applyRule.attendance.rest_in_incomplete  ? `<span style='color: red;'>${restIn.label} is incomplete</span>` : ""
+
 
     var timeOut   = new BaseForm("time out", "time_out");
-    timeOut.value = this.applyRule.data.time_out;
-    // timeOut.isReadOnly = timeOut.value != "";
+    timeOut.value = this.applyRule.attendance.time_out;
+    timeOut.isReadOnly = !this.applyRule.attendance.time_out_incomplete  || this.pageParam.isApproval;
     timeOut.setInputTypeTime();
+    timeOut.infoBottom = this.applyRule.attendance.time_out_incomplete  ? `<span style='color: red;'>${timeOut.label} is incomplete</span>` : ""
+
 
     this.timeForms.push(timeIn,restOut,restIn,timeOut);
 
@@ -273,7 +284,7 @@ export class IncompleteRecordApplyPage {
     })
 
     this.baseForms.push({
-      name: "Data Captured",
+      name: "Time Captured",
       baseForms: timeCapture,
       isOpen:true,
       description:"",
@@ -447,7 +458,7 @@ export class IncompleteRecordApplyPage {
     json["id"]     = this.pageParam.list.id;
     json["userid"] = this.userProvider.userSession.empId;
     json["mobile"] = true;
-    this.helperProvider.showConfirmAlert("Delete this leave application?", () => {
+    this.helperProvider.showConfirmAlert("delete this application", () => {
       this.apiExecuteSubmitApplication(json);
     });
   }

@@ -147,13 +147,13 @@
                          <ion-card >
                         <ion-card-header  (click)="record.isOpen = !record.isOpen">
                             <ion-item no-padding="">
-                                <h2>{{pageParam.isApproval ? record.data5 : record.status | ifEmptyThenDash}}</h2>
+                                <h2 status-color="">{{pageParam.isApproval ? record.data5 : record.status | ifEmptyThenDash}}</h2>
                                 <span item-right="">
                                     <ion-icon name="arrow-down" *ngIf="record.isOpen"></ion-icon>
                                     <ion-icon name="arrow-up" *ngIf="!record.isOpen"></ion-icon>
                                 </span>
 
-                                <p [innerHtml]="pageParam.isApproval ? '' : record.status | keepAsHtml " ></p>
+                                <p status-color="" [innerHtml]="pageParam.isApproval ? '' : record.status | keepAsHtml " ></p>
                             </ion-item>
                         </ion-card-header>
 

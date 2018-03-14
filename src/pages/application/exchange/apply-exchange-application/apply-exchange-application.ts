@@ -72,6 +72,7 @@ export class ApplyExchangeApplicationPage {
             }
         }).catch((rejected) => {
             this.helperProvider.presentToast("Error");
+            console.log(rejected);
         }).finally(() => {
             loader.dismiss();
         });
@@ -138,17 +139,19 @@ export class ApplyExchangeApplicationPage {
         exchange_date_from.value = (this.pageParam.dateFrom || BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.exchange_date_from))).toISOString();
         // exchange_date_from.isReadOnly = this.pageParam.isFromAbsenceRecord;
         exchange_date_from.infoBottom =  "*Original Alternate Off Day";
+        exchange_date_from.isReadOnly = !this.applyRule.changeDate;
 
 
 
         var exchange_date_to = new BaseForm("Exchange Date With", "exchange_date_to");
         exchange_date_to.setInputTypeDate({});
         exchange_date_to.value = (this.pageParam.dateFrom || BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.exchange_date_to))).toISOString();
-        exchange_date_to.isReadOnly = this.pageParam.isFromAbsenceRecord;
+        exchange_date_to.isReadOnly =  !this.applyRule.changeDate;
 
         exchange_date_from.changeListener.subscribe((data)=>{
           // exchange_date_to.value = data.value;
-          exchange_date_to.dateSetting.min = BaseForm.getAdvanceDate(-1 * +this.applyRule.exchange_date_day, new Date(exchange_date_from.value)).toISOString();exchange_date_from.value
+          exchange_date_to.value = data.value;
+          exchange_date_to.dateSetting.min = BaseForm.getAdvanceDate(-1 * +this.applyRule.exchange_date_day, new Date(exchange_date_from.value)).toISOString();
           exchange_date_to.dateSetting.max = BaseForm.getAdvanceDate(+this.applyRule.exchange_date_day, new Date(exchange_date_from.value)).toISOString();
 
           console.log('exchangeDateTo',exchange_date_to.dateSetting, this.applyRule, new Date(exchange_date_from.value), exchange_date_from.value);

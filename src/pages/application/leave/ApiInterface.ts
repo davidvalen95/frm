@@ -125,6 +125,8 @@ export interface LeaveApplicationTopInterface {
   data: DetailData;
   created_date:string;
 
+  changeDate:boolean; //true false
+
 
   totalLeavePeriod:string;
 

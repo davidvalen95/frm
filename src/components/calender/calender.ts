@@ -57,8 +57,8 @@ export class CalenderComponent {
 
   @Input('targetMonth') targetMonth:number = 1;
   @Input('targetYear') targetYear:number = new Date().getFullYear();
-  @Input('nextButton') nextButton:()=>void;
-  @Input('previousButton') previousButton:()=>void;
+  @Input('nextButton') nextButton:(onFinish:()=>void)=>void;
+  @Input('previousButton') previousButton:(onFinish:()=>void)=>void;
 
   constructor(private calendar: Calendar, public helperProvider:HelperProvider) {
 
@@ -79,6 +79,7 @@ export class CalenderComponent {
     this.currentYear     = this.targetYear;
     if (this.targetMonth === new Date().getMonth()) {
       this.currentDate = new Date().getDate();
+      this.selectDate(this.currentDate);
     } else {
       this.currentDate = 999;
     }
@@ -110,13 +111,24 @@ export class CalenderComponent {
   }
 
   goToLastMonth() {
-    this.date = new Date(this.targetYear, this.targetMonth, 0);
-    this.getDaysOfMonth();
+
+    this.previousButton(()=>{
+      this.selectDate(this.date.getDate());
+
+    });
+    // this.date = new Date(this.targetYear, this.targetMonth, 0);
+
+    // this.getDaysOfMonth();
+
   }
 
   goToNextMonth() {
-    this.date = new Date(this.targetYear, this.targetMonth+2, 0);
-    this.getDaysOfMonth();
+
+    this.nextButton(()=>{
+      this.selectDate(this.date.getDate());
+
+    });
+
   }
 
 
@@ -189,6 +201,7 @@ export class CalenderComponent {
 
 
 
+    return "";
   }
 
   deleteEvent(evt){

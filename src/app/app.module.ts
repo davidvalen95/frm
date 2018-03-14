@@ -63,6 +63,8 @@ import {LocalStorageProvider} from '../providers/local-storage/local-storage';
 
 
 import { DatePickerModule } from 'ionic2-date-picker';
+import {StatusColorDirective} from "../directives/status-color/status-color";
+import {DirectivesModule} from "../directives/directives.module";
 //
 // Pro.init('f4ce1597', {
 //   appVersion: '1.9.09'
@@ -93,7 +95,8 @@ import { DatePickerModule } from 'ionic2-date-picker';
 //tes
 @NgModule({
   declarations: [
-    ArrowOpenDirective,
+    // ArrowOpenDirective,
+    // StatusColorDirective,
     FormErrorMessageComponent,
     FloatingInputComponent,
     DetailKeyValueComponent,
@@ -154,6 +157,7 @@ import { DatePickerModule } from 'ionic2-date-picker';
     HttpClientModule,
     PipesModule,
     DatePickerModule,
+    DirectivesModule,
 
 
   ],

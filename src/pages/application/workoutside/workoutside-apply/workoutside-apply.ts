@@ -54,6 +54,7 @@ export class WorkoutsideApplyPage {
 
   public sectionDataDetail: SectionFloatingInputInterface[] = [];
   public isDoneFetch:boolean = false;
+  public firstDayConfig:string ='false';
 
 
 
@@ -160,7 +161,7 @@ export class WorkoutsideApplyPage {
 
   setupForms() {
 
-    var firstDayConfig = new BaseForm('Apply first day attendance time to all date',"");
+    var firstDayConfig = new BaseForm('Apply first day time slot to all date',"");
     firstDayConfig.value = 'false';
     firstDayConfig.setInputTypeSelect([
       {key: "Yes",value:"true"},
@@ -170,7 +171,9 @@ export class WorkoutsideApplyPage {
       "*Put 00:00 for rest time if not applicable<br/>" +
       "*Put all slot 00:00 to skip the date (Holiday/Off/Rest Day)<br/>";
 
-
+    firstDayConfig.changeListener.subscribe((data)=>{
+      this.firstDayConfig = data.value;
+    })
 
     var name: BaseForm = new BaseForm("Employee", "employee");
     name.value         = this.pageParam.isEditing ? this.applyRule.data.emp_id : `${this.userProvider.userSession.empId} ${this.userProvider.userSession.name}`;
@@ -184,7 +187,7 @@ export class WorkoutsideApplyPage {
     var dateFrom = new BaseForm("date from", "work_date_from");
     dateFrom.setInputTypeDate({});
     dateFrom.value = (this.pageParam.dateFrom || BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.work_date_from))).toISOString();
-    dateFrom.isReadOnly = this.pageParam.isFromAbsenceRecord;
+    dateFrom.isReadOnly = this.pageParam.isFromAbsenceRecord || this.applyRule.changeDate == 'false';
     dateFrom.changeListener.subscribe((data)=>{
       if (new Date(dateTo.value) < new Date(dateFrom.value)) {
         dateTo.value = dateFrom.value;
@@ -200,7 +203,7 @@ export class WorkoutsideApplyPage {
     var dateTo = new BaseForm("date to", "work_date_to");
     dateTo.setInputTypeDate({});
     dateTo.value = (this.pageParam.dateFrom || BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.work_date_to))).toISOString();
-    dateTo.isReadOnly = this.pageParam.isFromAbsenceRecord;
+    dateTo.isReadOnly = this.pageParam.isFromAbsenceRecord || this.applyRule.changeDate == 'false';
 
     dateTo.changeListener.subscribe((data: BaseForm) => {
       this.setDataDetailSection(null,dateFrom,dateTo,firstDayConfig);
@@ -327,6 +330,7 @@ export class WorkoutsideApplyPage {
   formSubmit(form: NgForm) {
 
     var check:{isValid:boolean,message:string}[] = [];
+    var isAllZero = true;
     this.sectionDataDetail.forEach(data=>{
       var timeIn = data.baseForms[0];
       var restIn = data.baseForms[2];
@@ -338,6 +342,9 @@ export class WorkoutsideApplyPage {
       check.push(this.isValidSkipRestin(day, timeIn,timeOut,restOut,restIn));
       check.push(this.isValidTimeOutRestIn(day,timeOut,restIn));
       check.push(this.isValidTimeoutToTimeIn(day, timeOut,timeIn));
+      if(!this.isZeroZero(timeIn,restIn,restOut,timeOut)){
+        isAllZero = false;
+      }
     })
 
     var isValid = true;
@@ -348,7 +355,10 @@ export class WorkoutsideApplyPage {
         message += `<p>${data.message}</p>`
       }
     });
-    if(!isValid){
+    if(!isValid || isAllZero){
+      if(isAllZero){
+        message = "Please fill in the Work Outside Time at least one of Work Outside date";
+      }
       this.helperProvider.showAlert(message);
       return;
     }
@@ -393,7 +403,7 @@ export class WorkoutsideApplyPage {
     json["id"]     = this.pageParam.list.id;
     json["userid"] = this.userProvider.userSession.empId;
     json["mobile"] = true;
-    this.helperProvider.showConfirmAlert("Delete this leave application?", () => {
+    this.helperProvider.showConfirmAlert("delete this application", () => {
       this.apiExecuteSubmitApplication(json);
     });
   }
@@ -591,26 +601,48 @@ export class WorkoutsideApplyPage {
     dataDetail.forEach((currentDataDetail:WorkoutsideDataDetailInterface,index)=>{
 
 
-
+      var timeInOldValue = "00:00";
+      var restOutOldValue = "00:00";
+      var restInOldValue = "00:00";
+      var timeOutOldValue = "00:00";
 
       var timeIn = new BaseForm("Time In",`time_in${index}`);
       timeIn.value = currentDataDetail.time_in;
       timeIn.setInputTypeTime();
+      timeIn.isReadOnly = this.applyRule.changeDate == 'false';
+      timeIn.changeListener.subscribe(data=>{
+        if(this.firstDayConfig =='false')
+        timeInOldValue = data.value;
+      });
       var restOut = new BaseForm("rest Out",`rest_out${index}`);
       restOut.setInputTypeTime();
       restOut.setIsRequired(false);
       restOut.value = currentDataDetail.rest_out;
+      restOut.isReadOnly = this.applyRule.changeDate == 'false';
+      restOut.changeListener.subscribe(data=>{
+        if(this.firstDayConfig =='false')
+          restOutOldValue = data.value;
+      });
 
       var restIn = new BaseForm("rest In",`rest_in${index}`);
       restIn.setInputTypeTime();
       restIn.setIsRequired(false);
       restIn.value = currentDataDetail.rest_in;
+      restIn.isReadOnly = this.applyRule.changeDate == 'false';
+      restIn.changeListener.subscribe(data=>{
+        if(this.firstDayConfig =='false')
+          restInOldValue = data.value;
+      });
 
       var timeOut = new BaseForm("time Out",`time_out${index}`);
       timeOut.setInputTypeTime();
       timeOut.value = currentDataDetail.time_out;
-      timeOut.changeListener.subscribe((data)=>{
+      timeOut.isReadOnly = this.applyRule.changeDate == 'false';
+      timeOut.changeListener.subscribe(data=>{
+        if(this.firstDayConfig =='false')
+          timeOutOldValue = data.value;
       });
+
 
       var workDate = new BaseForm("",`work_date${index}`);
       workDate.isHidden = true;
@@ -638,31 +670,36 @@ export class WorkoutsideApplyPage {
         if(index>0 && firstDayConfig.value === "true"){
           var firstTimein = this.sectionDataDetail[0].baseForms[0]
           firstTimein.changeListener.subscribe((data)=>{
-            timeIn.value = data.value;
+            if(firstDayConfig.value === "true")
+
+              timeIn.value = data.value;
           });
 
           var firstRestOut = this.sectionDataDetail[0].baseForms[1]
           firstRestOut.changeListener.subscribe((data)=>{
-            restOut.value = data.value
+            if(firstDayConfig.value === "true")
+              restOut.value = data.value
           });
 
           var firstRestIn= this.sectionDataDetail[0].baseForms[2]
           firstRestIn.changeListener.subscribe((data)=>{
-            restIn.value = data.value
+            if(firstDayConfig.value === "true")
+              restIn.value = data.value
           });
 
           var firstTimeOut = this.sectionDataDetail[0].baseForms[3]
           firstTimeOut.changeListener.subscribe((data)=>{
-            timeOut.value = data.value
+            if(firstDayConfig.value === "true")
+              timeOut.value = data.value
           });
         }else{
 
 
           if(this.isDoneFetch){
-            timeIn.value = "00:00";
-            restIn.value = "00:00";
-            restOut.value = "00:00";
-            timeOut.value = "00:00";
+            timeIn.value = timeInOldValue;
+            restIn.value = restInOldValue;
+            restOut.value = restOutOldValue;
+            timeOut.value = timeOutOldValue;
           }
 
         }
@@ -675,23 +712,40 @@ export class WorkoutsideApplyPage {
       if(index>0 && firstDayConfig.value === "true"){
         var firstTimein = this.sectionDataDetail[0].baseForms[0]
         firstTimein.changeListener.subscribe((data)=>{
+          if(firstDayConfig.value === "true")
           timeIn.value = data.value
         });
 
         var firstRestOut = this.sectionDataDetail[0].baseForms[1]
         firstRestOut.changeListener.subscribe((data)=>{
-          restOut.value = data.value
+          if(firstDayConfig.value === "true")
+
+            restOut.value = data.value
         });
 
         var firstRestIn= this.sectionDataDetail[0].baseForms[2]
         firstRestIn.changeListener.subscribe((data)=>{
-          restIn.value = data.value
+          if(firstDayConfig.value === "true")
+
+            restIn.value = data.value
         });
 
         var firstTimeOut = this.sectionDataDetail[0].baseForms[3]
         firstTimeOut.changeListener.subscribe((data)=>{
-          timeOut.value = data.value
+          if(firstDayConfig.value === "true")
+
+            timeOut.value = data.value
         });
+      }else{
+
+
+        if(this.isDoneFetch){
+          timeIn.value = timeInOldValue;
+          restIn.value = restInOldValue;
+          restOut.value = restOutOldValue;
+          timeOut.value = timeOutOldValue;
+        }
+
       }
 
 
@@ -746,6 +800,17 @@ export class WorkoutsideApplyPage {
   // e. if (time in OR time out is 00:00) AND (rest out OR rest in not 00:00), prompt "Rest-In must be 00:00 if you want to skip this date!"
 
 
+  private isZeroZero(...timeForm:BaseForm[]){
+
+    var isZeroZero:boolean = true;
+    timeForm.forEach(baseForm=>{
+      if(baseForm.value != "00:00"){
+        isZeroZero = false;
+      }
+    })
+
+    return isZeroZero;
+  }
 
   private isValidTimeoutToTimeIn(date, timeIn, timeOut):{isValid:boolean,message:string}{
     var timeInDate = new Date("2018-01-01T"+timeOut.value);

@@ -26,10 +26,10 @@
 
   <div class="section ">
     <div text-center="" (click)="    this.navCtrl.setRoot(announcementHomePage)">
-      <p   no-padding="" style="margin-bottom: 12px" class="announcementTitle">
+      <h4   no-padding="" style="margin-bottom: 12px" class="announcementTitle">
         Recent Announcement
-        <span class="badge" *ngIf="this.announcement && +this.announcement.total > 0">{{+announcement.total}}</span>
-      </p>
+        <span class="badge" *ngIf="this.announcement && +this.announcement.total > 0"><div class="middleBadge"></div>{{+announcement.total}}</span>
+      </h4>
     </div>
 
 
@@ -60,7 +60,7 @@
         <div class="imageContainer" >
           <img [src]="circleMenu.image"  width="100%"/>
           <div *ngIf="userProvider.homeNotification[circleMenu.badge] > 0" class="badge">
-            {{userProvider.homeNotification[circleMenu.badge]}}
+            <div class="middleBadge"></div>{{userProvider.homeNotification[circleMenu.badge]}}
           </div>
         </div>
         <p class="key" style="margin: :0;" text-center="">

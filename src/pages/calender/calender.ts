@@ -54,13 +54,13 @@ export class CalenderPage {
   @ViewChild(Content) public content: Content;
 
 
-  public nextButton = ()=>{
-    this.getArrowCalender(1);
+  public nextButton = (onFinish:()=>void)=>{
+    this.getArrowCalender(1,onFinish);
 
   }
 
-  public previousButton = ()=>{
-    this.getArrowCalender(-1);
+  public previousButton = (onFinish:()=>void)=>{
+    this.getArrowCalender(-1,onFinish);
 
   }
   constructor(public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
@@ -69,7 +69,7 @@ export class CalenderPage {
     this.pageParam = this.rootParam.homeOvertimeApplicationParam;
     this.title     = "Calendar"
     this.getFilter();
-    this.getList();
+    this.getList(()=>{});
 
 
   }
@@ -137,7 +137,7 @@ export class CalenderPage {
 
   }
 
-  public getList() {
+  public getList(onFinish:()=>void) {
 
     // st2/s/DXNCalendarAjax?reqtype=calendar&month=2&year=2018&seltype=0&user_id=MY040001
 
@@ -211,6 +211,12 @@ export class CalenderPage {
       }
 
       this.calenderEvents = calenderEvents;
+      if(onFinish){
+        setTimeout(()=>{
+          onFinish();
+
+        },500)
+      }
     });
   }
 
@@ -279,7 +285,7 @@ export class CalenderPage {
 
 
 
-  public getArrowCalender(advanceMonth:number = 0){
+  public getArrowCalender(advanceMonth:number = 0,onFinish:()=>void){
 
     var mmm = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -297,7 +303,7 @@ export class CalenderPage {
     this.filter.cmbMonth = ""+(filterDate.getMonth() + 1);
     this.filter.cmbYear = ""+filterDate.getFullYear();
 
-    this.getList();
+    this.getList(onFinish);
 
   }
 }

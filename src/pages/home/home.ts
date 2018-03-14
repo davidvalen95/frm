@@ -1,5 +1,5 @@
 import {Component, ViewChild} from '@angular/core';
-import {MenuController, Navbar, NavController} from 'ionic-angular';
+import {Alert, MenuController, Navbar, NavController, Platform} from 'ionic-angular';
 import {NgForm} from "@angular/forms";
 import {BaseForm, InputType} from "../../components/Forms/base-form";
 import {UserProvider} from "../../providers/user/user";
@@ -28,10 +28,11 @@ export class HomePage {
 
 
 
+  public currentAlert: Alert;
   public circleMenus:CircleMenuInterface[] = [];
   public announcement: AnnouncementListInterface;
   public announcementHomePage = AnnouncementHomePage;
-  constructor(public badge: Badge,public rootParamProvider:RootParamsProvider, public menuController:MenuController, public navCtrl: NavController, public userProvider:UserProvider, public httpClient:HttpClient, public helperProvider:HelperProvider) {
+  constructor(public platform: Platform, public badge: Badge,public rootParamProvider:RootParamsProvider, public menuController:MenuController, public navCtrl: NavController, public userProvider:UserProvider, public httpClient:HttpClient, public helperProvider:HelperProvider) {
     this.setupCircleMenu()
 
     this.apiExecuteGetAnnouncement();
@@ -199,6 +200,45 @@ export class HomePage {
     this.navCtrl.push(AnnouncementApplyPage, param)
   }
 
+
+  public setHardwareBackButton(){
+    this.platform.ready().then(() => {
+      // Okay, so the platform is ready and our plugins are available.
+      // Here you can do any higher level native things you might need
+
+      this.platform.registerBackButtonAction(() => {
+
+
+
+        try{
+          //# try catch to prevent not dismissable / null
+          this.currentAlert.dismiss();
+        }catch(exception){
+          console.log(exception);
+        }
+
+
+        this.currentAlert = this.helperProvider.showConfirmAlert("exit DxnHrms",()=>{
+          this.platform.exitApp();
+
+        });
+
+
+
+
+        // if(this.navCtrl.canGoBack()){
+        //   // this.navCtrl.pop();
+        // }else{
+        //   if(this.alert){
+        //     this.alert.dismiss();
+        //     this.alert =null;
+        //   }else{
+        //     this.showAlert();
+        //   }
+        // }
+      });
+    });
+  }
 
 }
 

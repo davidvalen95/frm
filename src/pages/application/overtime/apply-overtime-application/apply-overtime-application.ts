@@ -6,7 +6,7 @@ import {
 } from "../../../../providers/api/api";
 import {BaseForm, InputType, KeyValue} from "../../../../components/Forms/base-form";
 import {ReplaySubject} from "rxjs/ReplaySubject";
-import {AttachmentRuleInterface, DayRuleInterface} from "../../leave/ApiInterface";
+import {AttachmentRuleInterface, DayRuleInterface, LeaveHistoryInterface} from "../../leave/ApiInterface";
 import {HttpClient} from "@angular/common/http";
 import {HelperProvider} from "../../../../providers/helper/helper";
 import {UserProvider} from "../../../../providers/user/user";
@@ -315,7 +315,7 @@ export class ApplyOvertimeApplicationPage {
     json["id"]          = this.pageParam.list.id;
     json["userid"]      = this.userProvider.userSession.empId;
     json["mobile"]      = true;
-    this.helperProvider.showConfirmAlert("Delete this leave application?", () => {
+    this.helperProvider.showConfirmAlert("delete this application", () => {
       this.apiExecuteSubmitApplication(json);
     });
   }
@@ -333,22 +333,35 @@ export class ApplyOvertimeApplicationPage {
 
 
   public getHistory(){
-    if(this.applyRule.history){
 
-      this.applyRule.history.forEach((data:OvertimeHistoryInterface,index)=>{
-        var keyValues:KeyValue[] = [];
-        for(var key in data){
+    console.log('getHistory-1');
+    if (this.applyRule.history) {
+      console.log('getHistory-2');
+
+      this.applyRule.history.forEach((data: OvertimeHistoryInterface, index) => {
+        var keyValues: KeyValue[] = [];
+        for (var key in data) {
+
           var value = data[key];
-          keyValues.push({
-            key: key,
-            value: value,
-          });
+
+          if(key == 'emp_name'){
+            value = `${data['emp_id']} - ${value}`;
+          }
+
+          if(key != 'emp_id' && key !='status'){
+            keyValues.push({
+              key: key,
+              value: value,
+            });
+          }
+
         }
+        console.log('getHistory-3', this.approvalHistoriesContainer);
 
 
         this.approvalHistoriesContainer.push({
           isOpen: true,
-          name: `${index+1} ${data.status}`,
+          name: `${index + 1} ${data.status}`,
           keyValue: keyValues
         })
       })

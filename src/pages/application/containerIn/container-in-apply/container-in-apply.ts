@@ -690,7 +690,7 @@ export class ContainerInApplyPage {
     json["empid"]            = this.userProvider.userSession.empId;
     json["emp_id"]            = this.userProvider.userSession.empId;
     json["mobile"]           = true;
-    this.helperProvider.showConfirmAlert("Delete this leave application?", () => {
+    this.helperProvider.showConfirmAlert("delete this application", () => {
       this.apiExecuteSubmitApplication(json);
     });
   }

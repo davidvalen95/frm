@@ -241,6 +241,9 @@ export class ContainerInHomePage {
     this.filter.cmbStatus = "";
     var url = `${ ApiProvider.HRM_URL }${this.pageParam.isApproval ? "s/VisitationApplication_top" : "s/VisitationApplication_top"}`;
 
+    if(this.pageParam.isApproval){
+      this.filter.cmbStatus = "PA";
+    }
 
     var params = {
       mobile: "true",

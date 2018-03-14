@@ -4,16 +4,19 @@ import {isString} from "ionic-angular/util/util";
 import { IfEmptyThenDashPipe } from './if-empty-then-dash/if-empty-then-dash';
 import { DebugPipe } from './debug/debug';
 import { KeepAsHtmlPipe } from './keep-as-html/keep-as-html';
+import { StatusColorPipe } from './status-color/status-color';
 @NgModule({
 	declarations: [UcWordPipe,
     IfEmptyThenDashPipe,
     DebugPipe,
-    KeepAsHtmlPipe],
+    KeepAsHtmlPipe,
+    StatusColorPipe],
 	imports: [],
 	exports: [UcWordPipe,
     IfEmptyThenDashPipe,
     DebugPipe,
-    KeepAsHtmlPipe]
+    KeepAsHtmlPipe,
+    StatusColorPipe]
 })
 export class PipesModule {
 

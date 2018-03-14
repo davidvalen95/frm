@@ -234,13 +234,14 @@ export class ApplyLeaveApplicationPage {
     dateFrom.setInputTypeDate({});
     dateFrom.value            = (this.pageParam.dateFrom || BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.leave_date_from))).toISOString();
     dateFrom.rules.isRequired = false
-    dateFrom.isReadOnly = this.pageParam.isFromAbsenceRecord;
+    dateFrom.isReadOnly = this.pageParam.isFromAbsenceRecord || !this.applyRule.changeDate ;
+
 
 
     var dateTo   = new BaseForm("Date To", "leave_date_to");
     dateTo.value = (this.pageParam.dateFrom || BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.leave_date_to))).toISOString();
     dateTo.setInputTypeDate({});
-    dateTo.isReadOnly = this.pageParam.isFromAbsenceRecord;
+    dateTo.isReadOnly = this.pageParam.isFromAbsenceRecord || !this.applyRule.changeDate;
 
 
 
@@ -538,7 +539,7 @@ export class ApplyLeaveApplicationPage {
     json["mobile"]      = true;
     json["leave_type"]  = this.applyRule.info.total_leave;
     json["chk_halfday"] = this.applyRule.enableHalfday;
-    this.helperProvider.showConfirmAlert("Delete this leave application?", () => {
+    this.helperProvider.showConfirmAlert("delete this application", () => {
       this.apiExecuteSubmitApplication(json);
     });
   }

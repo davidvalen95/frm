@@ -330,7 +330,7 @@
 
                 <ion-item>
                   Status
-                  <span  [style.color]="this.getStatusColor(record.status)" item-end="">{{record.status | ifEmptyThenDash}} </span>
+                  <span status-color=""  [style.color]="this.getStatusColor(record.status)" item-end="">{{record.status | ifEmptyThenDash}} </span>
                 </ion-item>
 
                 <!--<ion-item *ngIf="record.visitor_name; let result">-->
