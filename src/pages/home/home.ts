@@ -33,6 +33,8 @@ export class HomePage {
   public announcement: AnnouncementListInterface;
   public announcementHomePage = AnnouncementHomePage;
   constructor(public platform: Platform, public badge: Badge,public rootParamProvider:RootParamsProvider, public menuController:MenuController, public navCtrl: NavController, public userProvider:UserProvider, public httpClient:HttpClient, public helperProvider:HelperProvider) {
+    this.setHardwareBackButton();
+
     this.setupCircleMenu()
 
     this.apiExecuteGetAnnouncement();

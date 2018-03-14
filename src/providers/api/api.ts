@@ -18,12 +18,12 @@ import {HelperProvider} from "../helper/helper";
 export class ApiProvider {
 
   // // # TEST URL
-  // public static BASE_URL: string      = "http://hrms.dxn2u.com:8888";
-  // public static HRM_URL: string       = "http://hrms.dxn2u.com:8888/hrm_test2/";
-  // public static PHP_URL: string       = "http://hrms.dxn2u.com/hrmsphptest/";
-  // public static IS_API_LIVE: boolean  = false;
-  // public static PHP_IONIC_URL: string = "http://hrms.dxn2u.com/hrmsionicphp/test/";
-
+  public static BASE_URL: string      = "http://hrms.dxn2u.com:8888";
+  public static HRM_URL: string       = "http://hrms.dxn2u.com:8888/hrm_test2/";
+  public static PHP_URL: string       = "http://hrms.dxn2u.com/hrmsphptest/";
+  public static IS_API_LIVE: boolean  = false;
+  public static PHP_IONIC_URL: string = "http://hrms.dxn2u.com/hrmsionicphp/test/";
+  //
 
   //# LOCAL URL
   // public static BASE_URL: string = "http://localhost:8080";
@@ -41,11 +41,11 @@ export class ApiProvider {
 
 
   //# LOCAL IP URL
-    public static BASE_URL: string = "http://10.26.5.74:8080";
-    public static HRM_URL: string = "http://10.26.5.74:8080/hrm2/";
-    public static IS_API_LIVE: boolean = false;
-    public static PHP_IONIC_URL: string = "http://hrms.dxn2u.com/hrmsionicphp/test/";
-    public static PHP_URL: string = "http://hrms.dxn2u.com/hrmsphptest/";
+  //   public static BASE_URL: string = "http://10.26.5.74:8080";
+  //   public static HRM_URL: string = "http://10.26.5.74:8080/hrm2/";
+  //   public static IS_API_LIVE: boolean = false;
+  //   public static PHP_IONIC_URL: string = "http://hrms.dxn2u.com/hrmsionicphp/test/";
+  //   public static PHP_URL: string = "http://hrms.dxn2u.com/hrmsphptest/";
   //
 
   public baseUrl: string = ApiProvider.BASE_URL;
