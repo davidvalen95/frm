@@ -95,6 +95,9 @@ export class HelperProvider {
         }
       ]
     })
+    alert.onDidDismiss(()=>{
+      alert = null;
+    });
     alert.present();
     return alert;
   }
@@ -112,6 +115,9 @@ export class HelperProvider {
       ]
     })
     alert.present();
+    alert.onDidDismiss(()=>{
+      alert = null;
+    });
     return alert;
   }
 
@@ -128,6 +134,9 @@ export class HelperProvider {
       buttons: [{text:"Ok",role:"cancel"}],
     });
 
+    alert.onDidDismiss(()=>{
+      alert = null;
+    });
     alert.present();
     return alert;
   }
