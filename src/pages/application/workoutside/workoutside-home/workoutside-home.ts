@@ -1,6 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
 import {
-  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Refresher,
+  Alert,
+  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Platform, Refresher,
   ToastController
 } from 'ionic-angular';
 import {HomeBaseInterface} from "../../../../app/app.component";
@@ -19,6 +20,7 @@ import {
 } from "../WorkoutsideApiInterface";
 import {WorkoutsideApplyPage, WorkoutsideApplyParam} from "../workoutside-apply/workoutside-apply";
 import {Observable} from "rxjs/Observable";
+import {HomePage} from "../../../home/home";
 
 /**
  * Generated class for the WorkoutsideHomePage page.
@@ -50,13 +52,15 @@ export class WorkoutsideHomePage {
 
   public filterRule: VisitationFilterApi = {};
   public eventBroadcaster
+  public currentAlert:Alert;
   @ViewChild('infiniteScroll') public infiniteScroll: InfiniteScroll;
 
   @ViewChild("navbar") navbar: Navbar;
   @ViewChild(Content) public content: Content;
 
-  constructor(public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+  constructor(public platform:Platform, public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
     console.log("visitationApplicationBadge", this.rootParam.visitationApplicationParam);
+    this.setHardwareBackButton();
 
     this.pageParam = this.rootParam.workoutsideHomeParam;
     this.title = this.pageParam.isApproval ? "Work Outside Approval" : "Work Outside Application";
@@ -203,7 +207,7 @@ export class WorkoutsideHomePage {
 
     if(this.pageParam.isApproval){
       this.filter.cmbStatus = "PA";
-      this.filter.cmbSearch = "a.emp_id"
+      this.filter.cmbSearch = "c.name";
     }
 
 
@@ -222,6 +226,26 @@ export class WorkoutsideHomePage {
     })
 
 
+  }
+
+  public leavePage() {
+    this.navCtrl.setRoot(HomePage);
+  }
+
+
+  public setHardwareBackButton(){
+    this.platform.ready().then(() => {
+
+      this.platform.registerBackButtonAction(() => {
+        try{
+          this.currentAlert.dismiss();          return;
+        }catch(exception){
+          console.log(exception);
+        }
+        this.leavePage();
+
+      });
+    });
   }
 
 }

@@ -1,5 +1,8 @@
 import {Component, ViewChild} from '@angular/core';
-import {AlertController, IonicPage, Navbar, NavController, NavParams, ToastController} from 'ionic-angular';
+import {
+  Alert, AlertController, IonicPage, Navbar, NavController, NavParams, Platform,
+  ToastController
+} from 'ionic-angular';
 import {ApplyBaseInterface} from "../../../../app/app.component";
 import {
   WorkoutsideDataDetailInterface,
@@ -55,12 +58,14 @@ export class WorkoutsideApplyPage {
   public sectionDataDetail: SectionFloatingInputInterface[] = [];
   public isDoneFetch:boolean = false;
   public firstDayConfig:string ='false';
-
+  public currentAlert:Alert;
 
 
   @ViewChild(Navbar) navbar: Navbar;
   @ViewChild("parentForm") parentForm:NgForm;
-  constructor(public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+  constructor(public platform:Platform, public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+    this.setHardwareBackButton();
+
     this.pageParam = navParams.data;
     this.title = this.pageParam.title || "" ;
 
@@ -314,14 +319,14 @@ export class WorkoutsideApplyPage {
 
 
       var url = `${ApiProvider.HRM_URL}s/WorkoutsideApplicationApproval_op`;
-      this.helperProvider.showConfirmAlert("Commit Approval", () => {
+      this.currentAlert = this.helperProvider.showConfirmAlert("Commit Approval", () => {
         this.apiProvider.submitGet<SuccessMessageInterface>(url, param, (data: SuccessMessageInterface) => {
           this.navCtrl.pop();
           this.helperProvider.presentToast(data.message || "");
         })
       })
     } else {
-      this.helperProvider.showAlert("Please check field(s) mark in red", "");
+      this.currentAlert = this.helperProvider.showAlert("Please check field(s) mark in red", "");
     }
 
 
@@ -359,7 +364,7 @@ export class WorkoutsideApplyPage {
       if(isAllZero){
         message = "Please fill in the Work Outside Time at least one of Work Outside date";
       }
-      this.helperProvider.showAlert(message);
+      this.currentAlert = this.helperProvider.showAlert(message);
       return;
     }
 
@@ -385,12 +390,12 @@ export class WorkoutsideApplyPage {
 
 
       // this.httpClient.post(url, )
-      this.helperProvider.showConfirmAlert("Submit Application?", () => {
+      this.currentAlert = this.helperProvider.showConfirmAlert("Submit Application?", () => {
 
         this.apiExecuteSubmitApplication(json);
       });
     } else {
-      this.helperProvider.showAlert("Please check field(s) mark in red", "");
+      this.currentAlert = this.helperProvider.showAlert("Please check field(s) mark in red", "");
     }
 
   }
@@ -403,7 +408,7 @@ export class WorkoutsideApplyPage {
     json["id"]     = this.pageParam.list.id;
     json["userid"] = this.userProvider.userSession.empId;
     json["mobile"] = true;
-    this.helperProvider.showConfirmAlert("delete this application", () => {
+    this.currentAlert = this.helperProvider.showConfirmAlert("delete this application", () => {
       this.apiExecuteSubmitApplication(json);
     });
   }
@@ -411,12 +416,27 @@ export class WorkoutsideApplyPage {
 
   public leavePage() {
 
-    this.helperProvider.showConfirmAlert("leave this page", () => {
+    this.currentAlert = this.currentAlert = this.helperProvider.showConfirmAlert("leave this page", () => {
       this.navCtrl.pop({}, () => {
 
       });
-
     })
+  }
+
+
+  public setHardwareBackButton(){
+    this.platform.ready().then(() => {
+
+      this.platform.registerBackButtonAction(() => {
+        try{
+          this.currentAlert.dismiss();          return;
+        }catch(exception){
+          console.log(exception);
+        }
+        this.leavePage();
+
+      });
+    });
   }
 
 
@@ -518,7 +538,7 @@ export class WorkoutsideApplyPage {
 
         }, 500)
       } else {
-        this.helperProvider.showAlert(message);
+        this.currentAlert = this.helperProvider.showAlert(message);
       }
 
     });

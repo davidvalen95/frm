@@ -1,5 +1,8 @@
 import {Component, ViewChild} from '@angular/core';
-import {AlertController, IonicPage, Navbar, NavController, NavParams, ToastController} from 'ionic-angular';
+import {
+  Alert, AlertController, IonicPage, Navbar, NavController, NavParams, Platform,
+  ToastController
+} from 'ionic-angular';
 import {ApplyBaseInterface} from "../../../../app/app.component";
 import {
   IncompleteRecordDataDetailInterface, IncompleteRecordHistoryInterface, IncompleteRecordListDataInterface,
@@ -55,12 +58,13 @@ export class IncompleteRecordApplyPage {
   public isDoneFetch: boolean                               = false;
 
   public timeForms: BaseForm[] = [];
-
+  public currentAlert:Alert;
 
   @ViewChild(Navbar) navbar: Navbar;
   @ViewChild("parentForm") parentForm: NgForm;
 
-  constructor(public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+  constructor(public platform:Platform, public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+    this.setHardwareBackButton();
     this.pageParam = navParams.data;
     console.log('pageParam', this.pageParam)
     this.title = this.pageParam.title || "";
@@ -359,14 +363,14 @@ export class IncompleteRecordApplyPage {
 
 
       var url = `${ApiProvider.HRM_URL}s/AttendanceApproval_op`;
-      this.helperProvider.showConfirmAlert("Commit Approval", () => {
+      this.currentAlert = this.helperProvider.showConfirmAlert("Commit Approval", () => {
         this.apiProvider.submitGet<SuccessMessageInterface>(url, param, (data: SuccessMessageInterface) => {
           this.navCtrl.pop();
           this.helperProvider.presentToast(data.message || "");
         })
       })
     } else {
-      this.helperProvider.showAlert("Please check field(s) mark in red", "");
+      this.currentAlert = this.helperProvider.showAlert("Please check field(s) mark in red", "");
     }
 
 
@@ -408,7 +412,7 @@ export class IncompleteRecordApplyPage {
         }
       });
       if(!isValid){
-        this.helperProvider.showAlert(message);
+        this.currentAlert = this.helperProvider.showAlert(message);
         return;
       }
 
@@ -439,12 +443,12 @@ export class IncompleteRecordApplyPage {
 
 
       // this.httpClient.post(url, )
-      this.helperProvider.showConfirmAlert("Submit Application?", () => {
+      this.currentAlert = this.helperProvider.showConfirmAlert("Submit Application?", () => {
 
         this.apiExecuteSubmitApplication(json);
       });
     } else {
-      this.helperProvider.showAlert("Please check field(s) mark in red", "");
+      this.currentAlert = this.helperProvider.showAlert("Please check field(s) mark in red", "");
     }
 
   }
@@ -458,7 +462,7 @@ export class IncompleteRecordApplyPage {
     json["id"]     = this.pageParam.list.id;
     json["userid"] = this.userProvider.userSession.empId;
     json["mobile"] = true;
-    this.helperProvider.showConfirmAlert("delete this application", () => {
+    this.currentAlert = this.helperProvider.showConfirmAlert("delete this application", () => {
       this.apiExecuteSubmitApplication(json);
     });
   }
@@ -466,12 +470,27 @@ export class IncompleteRecordApplyPage {
 
   public leavePage() {
 
-    this.helperProvider.showConfirmAlert("leave this page", () => {
+    this.currentAlert = this.currentAlert = this.helperProvider.showConfirmAlert("leave this page", () => {
       this.navCtrl.pop({}, () => {
 
       });
-
     })
+  }
+
+
+  public setHardwareBackButton(){
+    this.platform.ready().then(() => {
+
+      this.platform.registerBackButtonAction(() => {
+        try{
+          this.currentAlert.dismiss();          return;
+        }catch(exception){
+          console.log(exception);
+        }
+        this.leavePage();
+
+      });
+    });
   }
 
 
@@ -574,7 +593,7 @@ export class IncompleteRecordApplyPage {
 
         }, 500)
       } else {
-        this.helperProvider.showAlert(message);
+        this.currentAlert = this.helperProvider.showAlert(message);
       }
 
     });

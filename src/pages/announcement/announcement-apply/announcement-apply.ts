@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {Alert, IonicPage, NavController, NavParams, Platform} from 'ionic-angular';
 import {ApplyBaseInterface} from "../../../app/app.component";
 import {AnnouncementListDataInterface} from "../AnnouncementApi";
+import {HelperProvider} from "../../../providers/helper/helper";
 
 /**
  * Generated class for the AnnouncementApplyPage page.
@@ -19,7 +20,9 @@ export class AnnouncementApplyPage {
 
   public pageParam: AnnouncementApplyParamInterface
   public title;
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  public currentAlert:Alert;
+  constructor(public platform:Platform, public helperProvider:HelperProvider, public navCtrl: NavController, public navParams: NavParams) {
+    this.setHardwareBackButton();
     this.pageParam = this.navParams.data;
 
     this.title = this.pageParam.title;
@@ -27,6 +30,33 @@ export class AnnouncementApplyPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad AnnouncementApplyPage');
+  }
+
+
+
+  public leavePage() {
+
+    this.currentAlert = this.helperProvider.showConfirmAlert("leave this page", () => {
+      this.navCtrl.pop({}, () => {
+
+      });
+    })
+  }
+
+
+  public setHardwareBackButton(){
+    this.platform.ready().then(() => {
+
+      this.platform.registerBackButtonAction(() => {
+        try{
+          this.currentAlert.dismiss();          return;
+        }catch(exception){
+          console.log(exception);
+        }
+        this.leavePage();
+
+      });
+    });
   }
 
 }

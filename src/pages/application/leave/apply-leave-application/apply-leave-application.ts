@@ -1,5 +1,8 @@
 import {Component, ViewChild} from '@angular/core';
-import {Alert, AlertController, IonicPage, Navbar, NavController, NavParams, ToastController} from 'ionic-angular';
+import {
+  Alert, AlertController, IonicPage, Navbar, NavController, NavParams, Platform,
+  ToastController
+} from 'ionic-angular';
 import {BaseForm, InputType, KeyValue} from "../../../../components/Forms/base-form";
 import {NgForm} from "@angular/forms";
 import {
@@ -62,11 +65,13 @@ export class ApplyLeaveApplicationPage {
     isOpen: true,
     keyValue: [],
   }
+  public currentAlert:Alert;
 
 
   @ViewChild(Navbar) navbar: Navbar;
 
-  constructor(public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+  constructor(public platform:Platform, public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+    this.setHardwareBackButton();
     this.pageParam = navParams.data;
 
     this.title = this.pageParam.title || "Leave Application";
@@ -519,7 +524,7 @@ export class ApplyLeaveApplicationPage {
 
 
       // this.httpClient.post(url, )
-      this.helperProvider.showConfirmAlert("Submit Application?", () => {
+      this.currentAlert = this.helperProvider.showConfirmAlert("Submit Application?", () => {
 
         this.apiExecuteSubmitApplication(json);
       });
@@ -539,7 +544,7 @@ export class ApplyLeaveApplicationPage {
     json["mobile"]      = true;
     json["leave_type"]  = this.applyRule.info.total_leave;
     json["chk_halfday"] = this.applyRule.enableHalfday;
-    this.helperProvider.showConfirmAlert("delete this application", () => {
+    this.currentAlert = this.helperProvider.showConfirmAlert("delete this application", () => {
       this.apiExecuteSubmitApplication(json);
     });
   }
@@ -573,7 +578,7 @@ export class ApplyLeaveApplicationPage {
 
 
       var url = `${ApiProvider.HRM_URL}s/LeaveApplicationApproval_op`;
-      this.helperProvider.showConfirmAlert("Commit Approval",()=>{
+      this.currentAlert = this.helperProvider.showConfirmAlert("Commit Approval",()=>{
         this.apiProvider.submitGet<SuccessMessageInterface>(url,param,(data:SuccessMessageInterface)=>{
           this.navCtrl.pop();
           this.helperProvider.presentToast(data.message || "");
@@ -591,12 +596,27 @@ export class ApplyLeaveApplicationPage {
 
   public leavePage() {
 
-    this.helperProvider.showConfirmAlert("leave this page", () => {
+    this.currentAlert = this.currentAlert = this.helperProvider.showConfirmAlert("leave this page", () => {
       this.navCtrl.pop({}, () => {
 
       });
-
     })
+  }
+
+
+  public setHardwareBackButton(){
+    this.platform.ready().then(() => {
+
+      this.platform.registerBackButtonAction(() => {
+        try{
+          this.currentAlert.dismiss();          return;
+        }catch(exception){
+          console.log(exception);
+        }
+        this.leavePage();
+
+      });
+    });
   }
 
   public getHistory() {

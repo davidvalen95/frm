@@ -1,6 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
 import {
-  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Refresher,
+  Alert,
+  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Platform, Refresher,
   ToastController
 } from 'ionic-angular';
 import {
@@ -18,6 +19,7 @@ import {
   IncompleteRecordApplyInterface,
   IncompleteRecordApplyPage
 } from "../incomplete-record-apply/incomplete-record-apply";
+import {HomePage} from "../../../home/home";
 
 /**
  * Generated class for the IncompleteRecordHomePage page.
@@ -47,13 +49,15 @@ export class IncompleteRecordHomePage {
   public listData: IncompleteRecordListInterface;
 
   public filterRule: VisitationFilterApi = {};
-  public eventBroadcaster
+  public eventBroadcaster;
+  public currentAlert: Alert;
   @ViewChild('infiniteScroll') public infiniteScroll: InfiniteScroll;
 
   @ViewChild("navbar") navbar: Navbar;
   @ViewChild(Content) public content: Content;
 
-  constructor(public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+  constructor(public platform:Platform, public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+    this.setHardwareBackButton();
     console.log("visitationApplicationBadge", this.rootParam.visitationApplicationParam);
 
     this.pageParam = this.rootParam.incompleteRecordHomeParam;
@@ -220,6 +224,27 @@ export class IncompleteRecordHomePage {
     })
 
 
+  }
+
+
+  public leavePage() {
+    this.navCtrl.setRoot(HomePage);
+  }
+
+
+  public setHardwareBackButton(){
+    this.platform.ready().then(() => {
+
+      this.platform.registerBackButtonAction(() => {
+        try{
+          this.currentAlert.dismiss();          return;
+        }catch(exception){
+          console.log(exception);
+        }
+        this.leavePage();
+
+      });
+    });
   }
 
 }

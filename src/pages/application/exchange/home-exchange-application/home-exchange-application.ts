@@ -1,7 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
 import {
   Alert,
-  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Refresher, Segment,
+  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Platform, Refresher, Segment,
   Slides, ToastController,
 } from 'ionic-angular';
 import {
@@ -22,6 +22,7 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 import {ExchangeApplicationActiveInterface, ExchangeApplicationFilter, ExchangeListInterface} from "../ApiInterface";
 import {HomeBaseInterface} from "../../../../app/app.component";
+import {HomePage} from "../../../home/home";
 
 /**
  * Generated class for the HomeExchangeApplicationPage page.
@@ -53,7 +54,7 @@ export class HomeExchangeApplicationPage {
   public listData: ExchangeApplicationActiveInterface;
 
   public filterRule: VisitationFilterApi = {};
-
+  public currentAlert:Alert;
 
 
   @ViewChild('infiniteScroll') public infiniteScroll: InfiniteScroll;
@@ -61,7 +62,8 @@ export class HomeExchangeApplicationPage {
   @ViewChild("navbar") navbar: Navbar;
   @ViewChild(Content) public content: Content;
 
-  constructor(public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+  constructor(public platform:Platform, public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+    this.setHardwareBackButton();
     this.apiGetSummary();
 
 
@@ -248,13 +250,23 @@ export class HomeExchangeApplicationPage {
 
 
   public leavePage() {
+    this.navCtrl.setRoot(HomePage);
+  }
 
-    this.helperProvider.showConfirmAlert("leave this page", () => {
-      this.navCtrl.pop({}, () => {
+
+  public setHardwareBackButton(){
+    this.platform.ready().then(() => {
+
+      this.platform.registerBackButtonAction(() => {
+        try{
+          this.currentAlert.dismiss();          return;
+        }catch(exception){
+          console.log(exception);
+        }
+        this.leavePage();
 
       });
-
-    })
+    });
   }
 
   public openUrl(url: string) {
@@ -337,7 +349,7 @@ export class HomeExchangeApplicationPage {
 
     if(this.pageParam.isApproval){
       this.filter.cmbStatus = "PA";
-      this.filter.cmbSearch = "a.emp_id"
+      this.filter.cmbSearch = "c.name";
     }
 
 
@@ -377,6 +389,8 @@ export class HomeExchangeApplicationPage {
 
 
   }
+
+
 }
 
 export interface HomeExchangeApplicationParam extends HomeBaseInterface {

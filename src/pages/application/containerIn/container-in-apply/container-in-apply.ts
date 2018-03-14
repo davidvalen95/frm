@@ -1,5 +1,8 @@
 import {Component, ViewChild} from '@angular/core';
-import {AlertController, IonicPage, Navbar, NavController, NavParams, ToastController} from 'ionic-angular';
+import {
+  Alert, AlertController, IonicPage, Navbar, NavController, NavParams, Platform,
+  ToastController
+} from 'ionic-angular';
 import {BaseForm, InputType, KeyValue} from "../../../../components/Forms/base-form";
 import {ReplaySubject} from "rxjs/ReplaySubject";
 import {
@@ -62,12 +65,13 @@ export class ContainerInApplyPage {
 
   public sectionDataDetail: SectionFloatingInputInterface[] = [];
   public isDoneFetch: boolean                               = false;
-
+  public currentAlert:Alert;
 
   @ViewChild(Navbar) navbar: Navbar;
   @ViewChild("parentForm") parentForm: NgForm;
 
-  constructor(public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+  constructor(public platform:Platform, public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+    this.setHardwareBackButton();
     this.pageParam = navParams.data;
     this.title     = this.pageParam.title || "";
 
@@ -614,14 +618,14 @@ export class ContainerInApplyPage {
 
 
       var url = `${ApiProvider.HRM_URL}s/VisitationApplicationApproval_op`;
-      this.helperProvider.showConfirmAlert("Commit Approval", () => {
+      this.currentAlert = this.helperProvider.showConfirmAlert("Commit Approval", () => {
         this.apiProvider.submitGet<SuccessMessageInterface>(url, param, (data: SuccessMessageInterface) => {
           this.navCtrl.pop();
           this.helperProvider.presentToast(data.message || "");
         })
       })
     } else {
-      this.helperProvider.showAlert("Please check field(s) mark in red", "");
+      this.currentAlert = this.helperProvider.showAlert("Please check field(s) mark in red", "");
     }
 
 
@@ -664,12 +668,12 @@ export class ContainerInApplyPage {
 
 
       // this.httpClient.post(url, )
-      this.helperProvider.showConfirmAlert("Submit Application?", () => {
+      this.currentAlert =  this.helperProvider.showConfirmAlert("Submit Application?", () => {
 
         this.apiExecuteSubmitApplication(json);
       });
     } else {
-      this.helperProvider.showAlert("Please check field(s) mark in red", "");
+      this.currentAlert =  this.helperProvider.showAlert("Please check field(s) mark in red", "");
     }
 
   }
@@ -690,22 +694,37 @@ export class ContainerInApplyPage {
     json["empid"]            = this.userProvider.userSession.empId;
     json["emp_id"]            = this.userProvider.userSession.empId;
     json["mobile"]           = true;
-    this.helperProvider.showConfirmAlert("delete this application", () => {
+    this.currentAlert = this.helperProvider.showConfirmAlert("delete this application", () => {
       this.apiExecuteSubmitApplication(json);
     });
   }
 
 
+
   public leavePage() {
 
-    this.helperProvider.showConfirmAlert("leave this page", () => {
+    this.currentAlert = this.helperProvider.showConfirmAlert("leave this page", () => {
       this.navCtrl.pop({}, () => {
 
       });
-
     })
   }
 
+
+  public setHardwareBackButton(){
+    this.platform.ready().then(() => {
+
+      this.platform.registerBackButtonAction(() => {
+        try{
+          this.currentAlert.dismiss();          return;
+        }catch(exception){
+          console.log(exception);
+        }
+        this.leavePage();
+
+      });
+    });
+  }
 
   public getHistory() {
     if (this.applyRule.history) {
@@ -815,7 +834,7 @@ export class ContainerInApplyPage {
 
         }, 500)
       } else {
-        this.helperProvider.showAlert(message);
+        this.currentAlert = this.helperProvider.showAlert(message);
       }
     }
 

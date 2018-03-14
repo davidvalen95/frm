@@ -1,6 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
 import {
-  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Refresher,
+  Alert,
+  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Platform, Refresher,
   ToastController
 } from 'ionic-angular';
 import {HomeBaseInterface} from "../../../../app/app.component";
@@ -17,6 +18,7 @@ import {HelperProvider} from "../../../../providers/helper/helper";
 import {UserProvider} from "../../../../providers/user/user";
 import {RootParamsProvider} from "../../../../providers/root-params/root-params";
 import {ContainerInApplyPage, ContainerInApplyParam} from "../container-in-apply/container-in-apply";
+import {HomePage} from "../../../home/home";
 
 /**
  * Generated class for the ContainerInHomePage page.
@@ -50,12 +52,14 @@ export class ContainerInHomePage {
 
   public filterRule: VisitationFilterApi = {};
   public eventBroadcaster
+  public currentAlert:Alert;
   @ViewChild('infiniteScroll') public infiniteScroll: InfiniteScroll;
 
   @ViewChild("navbar") navbar: Navbar;
   @ViewChild(Content) public content: Content;
 
-  constructor(public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+  constructor(public platform:Platform, public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+    this.setHardwareBackButton();
     console.log("visitationApplicationBadge", this.rootParam.visitationApplicationParam);
 
     this.pageParam = this.rootParam.containerInHomeParam;
@@ -243,6 +247,7 @@ export class ContainerInHomePage {
 
     if(this.pageParam.isApproval){
       this.filter.cmbStatus = "PA";
+      this.filter.cmbSearch = "emp_name";
     }
 
     var params = {
@@ -264,7 +269,25 @@ export class ContainerInHomePage {
 
   }
 
+  public leavePage() {
+    this.navCtrl.setRoot(HomePage);
+  }
 
+
+  public setHardwareBackButton(){
+    this.platform.ready().then(() => {
+
+      this.platform.registerBackButtonAction(() => {
+        try{
+          this.currentAlert.dismiss();          return;
+        }catch(exception){
+          console.log(exception);
+        }
+        this.leavePage();
+
+      });
+    });
+  }
 }
 
 export interface ContainerInHomeParam extends  HomeBaseInterface{

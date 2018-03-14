@@ -1,11 +1,12 @@
 import {Component, ViewChild} from '@angular/core';
-import {IonicPage, Navbar, NavController, NavParams, ToastController} from 'ionic-angular';
+import {Alert, IonicPage, Navbar, NavController, NavParams, Platform, ToastController} from 'ionic-angular';
 import {NgForm} from "@angular/forms";
 import {ApiProvider, SuccessMessageInterface} from "../../../providers/api/api";
 import {HelperProvider} from "../../../providers/helper/helper";
 import {UserProvider} from "../../../providers/user/user";
 import {RootParamsProvider} from "../../../providers/root-params/root-params";
 import {BaseForm, InputType} from "../../../components/Forms/base-form";
+import {HomePage} from "../../home/home";
 
 /**
  * Generated class for the ChangeMyPasswordPage page.
@@ -24,9 +25,11 @@ export class ChangeMyPasswordPage {
 
   @ViewChild(Navbar) navbar;
   public baseForms: BaseForm[] = [];
+  public currentAlert:Alert;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+  constructor(public platform:Platform, public navCtrl: NavController, public navParams: NavParams, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
 
+    this.setHardwareBackButton();
 
     this.setupBaseForm();
   }
@@ -69,19 +72,30 @@ export class ChangeMyPasswordPage {
       this.apiSubmitForm(json);
 
     } else {
-      this.helperProvider.showAlert("Please check field(s) mark in red", "");
+      this.currentAlert = this.helperProvider.showAlert("Please check field(s) mark in red", "");
     }
   }
 
 
-  public leavePage() {
 
-    this.helperProvider.showConfirmAlert("leave this page", () => {
-      this.navCtrl.pop({}, () => {
+  public leavePage() {
+    this.navCtrl.setRoot(HomePage);
+  }
+
+
+  public setHardwareBackButton(){
+    this.platform.ready().then(() => {
+
+      this.platform.registerBackButtonAction(() => {
+        try{
+          this.currentAlert.dismiss();          return;
+        }catch(exception){
+          console.log(exception);
+        }
+        this.leavePage();
 
       });
-
-    })
+    });
   }
 
 
@@ -100,13 +114,13 @@ export class ChangeMyPasswordPage {
     params = this.helperProvider.mergeObject(params, json);
 
 
-    this.helperProvider.showConfirmAlert("Submit form?", () => {
+    this.currentAlert = this.helperProvider.showConfirmAlert("Submit form?", () => {
       this.apiProvider.submitGet<SuccessMessageInterface>(url, params, (data) => {
 
         if (data.status == 'ok') {
           this.navCtrl.pop();
         }
-        this.helperProvider.showAlert(data.message);
+        this.currentAlert = this.helperProvider.showAlert(data.message);
 
 
       })

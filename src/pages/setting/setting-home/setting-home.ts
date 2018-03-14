@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component} from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {Alert, IonicPage, NavController, NavParams, Platform} from 'ionic-angular';
 import {RootParamsProvider} from "../../../providers/root-params/root-params";
 import {UserProvider} from "../../../providers/user/user";
 import {LoginPage} from "../../login/login";
@@ -7,6 +7,7 @@ import {AppVersion} from "@ionic-native/app-version";
 import {HelperProvider} from "../../../providers/helper/helper";
 import {LocalStorageProvider} from "../../../providers/local-storage/local-storage";
 import {NgModel} from "@angular/forms";
+import {HomePage} from "../../home/home";
 
 /**
  * Generated class for the SettingHomePage page.
@@ -25,7 +26,10 @@ export class SettingHomePage {
   public title:string;
   public versionNumber:string = "";
   public isAutoLogin:boolean;
-  constructor(private cdr: ChangeDetectorRef, public localStorageProvider:LocalStorageProvider, public helperProvider:HelperProvider, public appVersion: AppVersion, public navCtrl: NavController, public navParams: NavParams, public rootParam:RootParamsProvider, public userProvider:UserProvider) {
+  public currentAlert:Alert;
+  constructor(public platform:Platform, private cdr: ChangeDetectorRef, public localStorageProvider:LocalStorageProvider, public helperProvider:HelperProvider, public appVersion: AppVersion, public navCtrl: NavController, public navParams: NavParams, public rootParam:RootParamsProvider, public userProvider:UserProvider) {
+
+    this.setHardwareBackButton();
     this.title = "Setting";
     this.isAutoLogin = !this.localStorageProvider.getIsForgotMe();
     this.appVersion.getVersionNumber().then((data)=>{
@@ -49,7 +53,7 @@ export class SettingHomePage {
 
 
   logout(){
-    this.helperProvider.showConfirmAlert("Are you sure to logout?",()=>{
+    this.currentAlert = this.helperProvider.showConfirmAlert("Are you sure to logout?",()=>{
       setTimeout(() => {
         this.navCtrl.setRoot(LoginPage);
 
@@ -60,5 +64,27 @@ export class SettingHomePage {
 
   public commitLocalStorage(){
     this.localStorageProvider.setIsForgotMe(""+(!this.isAutoLogin));
+  }
+
+
+
+  public leavePage() {
+    this.navCtrl.setRoot(HomePage);
+  }
+
+
+  public setHardwareBackButton(){
+    this.platform.ready().then(() => {
+
+      this.platform.registerBackButtonAction(() => {
+        try{
+          this.currentAlert.dismiss();          return;
+        }catch(exception){
+          console.log(exception);
+        }
+        this.leavePage();
+
+      });
+    });
   }
 }

@@ -1,6 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
 import {
-  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams,
+  Alert,
+  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Platform,
   ToastController
 } from 'ionic-angular';
 import {AnnouncementListDataInterface, AnnouncementListInterface} from "../AnnouncementApi";
@@ -12,6 +13,7 @@ import {RootParamsProvider} from "../../../providers/root-params/root-params";
 import {HomeBaseInterface} from "../../../app/app.component";
 import {AnnouncementApplyPage, AnnouncementApplyParamInterface} from "../announcement-apply/announcement-apply";
 import {BaseForm} from "../../../components/Forms/base-form";
+import {HomePage} from "../../home/home";
 
 /**
  * Generated class for the AnnouncementHomePage page.
@@ -47,14 +49,16 @@ export class AnnouncementHomePage {
 
   public filterRule: VisitationFilterApi = {};
   public eventBroadcaster
+  public currentAlert:Alert;
   @ViewChild('infiniteScroll') public infiniteScroll: InfiniteScroll;
 
   @ViewChild("navbar") navbar: Navbar;
   @ViewChild(Content) public content: Content;
 
-  constructor(public httpClient: HttpClient, public navCtrl:NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+  constructor(public platform:Platform, public httpClient: HttpClient, public navCtrl:NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
     console.log("visitationApplicationBadge", this.rootParam.visitationApplicationParam);
 
+    this.setHardwareBackButton();
     this.pageParam = this.rootParam.announcementParam;
     this.title = "Announcement";
 
@@ -195,6 +199,28 @@ export class AnnouncementHomePage {
     })
 
 
+  }
+
+
+
+  public leavePage() {
+    this.navCtrl.setRoot(HomePage);
+  }
+
+
+  public setHardwareBackButton(){
+    this.platform.ready().then(() => {
+
+      this.platform.registerBackButtonAction(() => {
+        try{
+          this.currentAlert.dismiss();          return;
+        }catch(exception){
+          console.log(exception);
+        }
+        this.leavePage();
+
+      });
+    });
   }
 }
 

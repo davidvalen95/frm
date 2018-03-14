@@ -1,11 +1,12 @@
 import {Component} from '@angular/core';
-import {IonicPage, NavController, NavParams} from 'ionic-angular';
+import {Alert, IonicPage, NavController, NavParams, Platform} from 'ionic-angular';
 import {NgForm} from "@angular/forms";
 import {UserProvider} from "../../providers/user/user";
 import {BaseForm, InputType, KeyValue} from "../../components/Forms/base-form";
 import {HomePage} from "../home/home";
 import {AppVersion} from "@ionic-native/app-version";
 import {LocalStorageProvider} from "../../providers/local-storage/local-storage";
+import {HelperProvider} from "../../providers/helper/helper";
 
 /**
  * Generated class for the LoginPage page.
@@ -24,8 +25,12 @@ export class LoginPage {
   public loginForms: BaseForm[] = [];
 
   public version :KeyValue[] = [];
-  constructor(public navCtrl: NavController, public userProvider: UserProvider,public appVersion:AppVersion, public localStorageProvider:LocalStorageProvider) {
 
+  public currentAlert:Alert;
+
+  constructor(public helperProvider:HelperProvider, public platform:Platform, public navCtrl: NavController, public userProvider: UserProvider,public appVersion:AppVersion, public localStorageProvider:LocalStorageProvider) {
+
+    this.setHardwareBackButton();
     // this.version.push({
     //   key: "App Name",
     //   value: this.appVersion.getAppName()
@@ -86,6 +91,31 @@ export class LoginPage {
     password.rules = {};
 
     this.loginForms.push(username, password);
+  }
+
+
+
+  public leavePage() {
+
+    this.currentAlert = this.helperProvider.showConfirmAlert("exit DxnHrms", () => {
+      this.platform.exitApp();
+    })
+  }
+
+
+  public setHardwareBackButton(){
+    this.platform.ready().then(() => {
+
+      this.platform.registerBackButtonAction(() => {
+        try{
+          this.currentAlert.dismiss();          return;
+        }catch(exception){
+          console.log(exception);
+        }
+        this.leavePage();
+
+      });
+    });
   }
 
 }

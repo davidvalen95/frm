@@ -1,7 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
 import {
   Alert,
-  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Refresher, Segment,
+  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Platform, Refresher, Segment,
   Slides, ToastController,
 } from 'ionic-angular';
 import {
@@ -27,6 +27,7 @@ import {
 import {HomeBaseInterface} from "../../../../app/app.component";
 import {KeyValue} from "../../../../components/Forms/base-form";
 import {IncompleteRecordFilterInterface} from "../../../myAttendance/incompleteRecord/IncompleteRecordApiInterface";
+import {HomePage} from "../../../home/home";
 
 /**
  * Generated class for the HomeLeaveApplicationPage page.
@@ -63,12 +64,14 @@ export class HomeLeaveApplicationPage {
 
 
   public eventBroadcaster
+  public currentAlert:Alert;
   @ViewChild('infiniteScroll') public infiniteScroll: InfiniteScroll;
 
   @ViewChild("navbar") navbar: Navbar;
   @ViewChild(Content) public content: Content;
 
-  constructor(public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+  constructor(public platform:Platform,public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+    this.setHardwareBackButton();
     console.log("visitationApplicationBadge", this.rootParam.visitationApplicationParam);
 
     this.pageParam = this.rootParam.homeLeaveApplicationParam;
@@ -268,15 +271,24 @@ export class HomeLeaveApplicationPage {
 
 
   public leavePage() {
-
-    this.helperProvider.showConfirmAlert("leave this page", () => {
-      this.navCtrl.pop({}, () => {
-
-      });
-
-    })
+    this.navCtrl.setRoot(HomePage);
   }
 
+
+  public setHardwareBackButton(){
+    this.platform.ready().then(() => {
+
+      this.platform.registerBackButtonAction(() => {
+        try{
+          this.currentAlert.dismiss();          return;
+        }catch(exception){
+          console.log(exception);
+        }
+        this.leavePage();
+
+      });
+    });
+  }
   public openUrl(url: string) {
     // var browser = new InAppBrowser(url,"_blank");
     // browser.
@@ -344,6 +356,7 @@ export class HomeLeaveApplicationPage {
 
       this.filterRule = data;
 
+      this.filter.cmbSearch = 'c.name';
 
 
 

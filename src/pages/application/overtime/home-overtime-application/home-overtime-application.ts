@@ -1,7 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
 import {
   Alert,
-  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Refresher, Segment,
+  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Platform, Refresher, Segment,
   Slides, ToastController,
 } from 'ionic-angular';
 import {
@@ -24,6 +24,7 @@ import {
 } from "../apply-overtime-application/apply-overtime-application";
 import {OvertimeDataInterface, OvertimeListDataInterface, OvertimeListInterface} from "../ApiInterface";
 import {HomeBaseInterface} from "../../../../app/app.component";
+import {HomePage} from "../../../home/home";
 
 /**
  * Generated class for the HomeOvertimeApplicationPage page.
@@ -56,12 +57,14 @@ export class HomeOvertimeApplicationPage {
 
   public filterRule: VisitationFilterApi = {};
   public eventBroadcaster
+  public currentAlert:Alert;
   @ViewChild('infiniteScroll') public infiniteScroll: InfiniteScroll;
 
   @ViewChild("navbar") navbar: Navbar;
   @ViewChild(Content) public content: Content;
 
-  constructor(public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+  constructor(public platform:Platform, public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+    this.setHardwareBackButton();
     console.log("visitationApplicationBadge", this.rootParam.visitationApplicationParam);
 
     this.pageParam = this.rootParam.homeOvertimeApplicationParam;
@@ -89,7 +92,25 @@ export class HomeOvertimeApplicationPage {
   }
 
 
+  public leavePage() {
+    this.navCtrl.setRoot(HomePage);
+  }
 
+
+  public setHardwareBackButton(){
+    this.platform.ready().then(() => {
+
+      this.platform.registerBackButtonAction(() => {
+        try{
+          this.currentAlert.dismiss();          return;
+        }catch(exception){
+          console.log(exception);
+        }
+        this.leavePage();
+
+      });
+    });
+  }
 
 
   ionViewDidEnter() {//didleave
@@ -234,7 +255,7 @@ export class HomeOvertimeApplicationPage {
 
     if(this.pageParam.isApproval){
       this.filter.cmbStatus = "PA";
-      this.filter.cmbSearch = "a.emp_id"
+      this.filter.cmbSearch = "c.name"
     }
 
 

@@ -203,41 +203,25 @@ export class HomePage {
   }
 
 
+  public leavePage() {
+
+    this.currentAlert = this.helperProvider.showConfirmAlert("exit DxnHrms", () => {
+      this.platform.exitApp();
+    })
+  }
+
+
   public setHardwareBackButton(){
     this.platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need
 
       this.platform.registerBackButtonAction(() => {
-
-
-
         try{
-          //# try catch to prevent not dismissable / null
-          this.currentAlert.dismiss();
+          this.currentAlert.dismiss();          return;
         }catch(exception){
           console.log(exception);
         }
+       this.leavePage();
 
-
-        this.currentAlert = this.helperProvider.showConfirmAlert("exit DxnHrms",()=>{
-          this.platform.exitApp();
-
-        });
-
-
-
-
-        // if(this.navCtrl.canGoBack()){
-        //   // this.navCtrl.pop();
-        // }else{
-        //   if(this.alert){
-        //     this.alert.dismiss();
-        //     this.alert =null;
-        //   }else{
-        //     this.showAlert();
-        //   }
-        // }
       });
     });
   }

@@ -1,6 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
 import {
-  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams,
+  Alert,
+  AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Platform,
   ToastController
 } from 'ionic-angular';
 import {
@@ -16,6 +17,7 @@ import {RootParamsProvider} from "../../providers/root-params/root-params";
 import {WorkoutsideListInterface} from "../application/workoutside/WorkoutsideApiInterface";
 import {CalenderEventInterface} from "../../components/calender/calender";
 import {BaseForm} from "../../components/Forms/base-form";
+import {HomePage} from "../home/home";
 
 /**
  * Generated class for the CalenderPage page.
@@ -48,6 +50,7 @@ export class CalenderPage {
   public filterRule: VisitationFilterApi          = {};
   public calenderEvents: CalenderEventInterface[];
   public eventBroadcaster
+  public currentAlert:Alert;
   @ViewChild('infiniteScroll') public infiniteScroll: InfiniteScroll;
 
   @ViewChild("navbar") navbar: Navbar;
@@ -63,7 +66,8 @@ export class CalenderPage {
     this.getArrowCalender(-1,onFinish);
 
   }
-  constructor(public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+  constructor(public platform:Platform, public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+    this.setHardwareBackButton();
     console.log("visitationApplicationBadge", this.rootParam.visitationApplicationParam);
 
     this.pageParam = this.rootParam.homeOvertimeApplicationParam;
@@ -217,6 +221,30 @@ export class CalenderPage {
 
         },500)
       }
+    });
+  }
+
+  public leavePage(){
+    if(this.navCtrl.canGoBack()){
+      this.navCtrl.pop();
+    }else{
+      this.navCtrl.setRoot(HomePage);
+    }
+
+  }
+
+  public setHardwareBackButton(){
+    this.platform.ready().then(() => {
+
+      this.platform.registerBackButtonAction(() => {
+        try{
+          this.currentAlert.dismiss();          return;
+        }catch(exception){
+          console.log(exception);
+        }
+        this.leavePage();
+
+      });
     });
   }
 

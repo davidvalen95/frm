@@ -1,7 +1,8 @@
 import {Component, Input, ViewChild} from '@angular/core';
 import {
   Alert,
-  AlertController, Content, InfiniteScroll, IonicPage, Loading, Navbar, NavController, NavParams, Refresher, Segment,
+  AlertController, Content, InfiniteScroll, IonicPage, Loading, Navbar, NavController, NavParams, Platform, Refresher,
+  Segment,
   Slides, ToastController, ToolbarTitle
 } from 'ionic-angular';
 import {BaseForm, InputType, LabelType, KeyValue} from "../../../components/Forms/base-form";
@@ -84,8 +85,11 @@ export class VisitationApplicationPage {
 
   public formValues: object        = {};
   public categoryCountryRules: any = {}
+  public currentAlert: Alert;
 
-  constructor(public helperProvider:HelperProvider, public inAppBrowser:InAppBrowser, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+  constructor(public platform:Platform, public helperProvider:HelperProvider, public inAppBrowser:InAppBrowser, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+
+    this.setHardwareBackButton();
     console.log("visitationApplicationBadge", this.rootParam.visitationApplicationParam);
 
 
@@ -186,7 +190,7 @@ export class VisitationApplicationPage {
 
     if(this.pageParam.isApprover){
       this.filter.cmbStatus = "PA";
-      this.filter.cmbSearch = "a.emp_id"
+      this.filter.cmbSearch = "emp_name"
     }
 
     var params = {
@@ -1815,7 +1819,7 @@ export class VisitationApplicationPage {
 
 
 
-    this.helperProvider.showConfirmAlert("submit",()=>{
+    this.currentAlert = this.helperProvider.showConfirmAlert("submit",()=>{
       var loading = this.helperProvider.presentLoadingV2("Submiting Form");
 
 
@@ -1901,7 +1905,7 @@ export class VisitationApplicationPage {
 
 
     hostForm.activateButtonRightDanger("X").subscribe((data:BaseForm)=>{
-      this.helperProvider.showConfirmAlert("remove this host",()=>{
+      this.currentAlert = this.helperProvider.showConfirmAlert("remove this host",()=>{
         hostForm.value = "";
         hostForm.isDisabled = true;
         hostForm.isHidden   = true;
@@ -2076,16 +2080,32 @@ export class VisitationApplicationPage {
 
   }
 
-  public leavePage(){
+  public leavePage() {
 
-    this.helperProvider.showConfirmAlert("leave this page",()=>{
-      this.navCtrl.pop({},()=>{
-        if(this.pageParam.isEditing || this.pageParam.isApply){
-        }
+    this.currentAlert = this.currentAlert = this.helperProvider.showConfirmAlert("leave this page", () => {
+      this.navCtrl.pop({}, () => {
+
       });
-
     })
   }
+
+
+  public setHardwareBackButton(){
+    this.platform.ready().then(() => {
+
+      this.platform.registerBackButtonAction(() => {
+        try{
+          this.currentAlert.dismiss();          return;
+        }catch(exception){
+          console.log(exception);
+        }
+        this.leavePage();
+
+      });
+    });
+  }
+
+
 
   public  openAttachment(name:string){
     // var browser = new InAppBrowser(url,"_blank");

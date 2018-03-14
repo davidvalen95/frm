@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import {IonicPage, NavController, NavParams, ToastController} from 'ionic-angular';
+import {Alert, IonicPage, NavController, NavParams, Platform, ToastController} from 'ionic-angular';
 import {ApiProvider} from "../../../providers/api/api";
 import {HelperProvider} from "../../../providers/helper/helper";
 import {UserProvider} from "../../../providers/user/user";
 import {RootParamsProvider} from "../../../providers/root-params/root-params";
+import {HomePage} from "../../home/home";
 
 /**
  * Generated class for the ProfileInformationPage page.
@@ -21,7 +22,9 @@ export class ProfileInformationPage {
 
   public profileInformation:ProfileInformationInterface = {profile:"",picture:""};
   public title;
-  constructor( public navCtrl: NavController, public navParams: NavParams,  public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+  public currentAlert: Alert;
+  constructor( public platform:Platform, public navCtrl: NavController, public navParams: NavParams,  public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+    this.setHardwareBackButton();
     this.title="Profile Information";
     this.getData();
   }
@@ -48,6 +51,27 @@ export class ProfileInformationPage {
       this.profileInformation = data;
       this.profileInformation.picture = this.profileInformation.picture && this.profileInformation.picture != '' ? this.apiProvider.hrmUrl + 'pub/' + this.profileInformation.picture : "assets/imgs/profile.png";
     })
+  }
+
+
+  public leavePage() {
+    this.navCtrl.setRoot(HomePage);
+  }
+
+
+  public setHardwareBackButton(){
+    this.platform.ready().then(() => {
+
+      this.platform.registerBackButtonAction(() => {
+        try{
+          this.currentAlert.dismiss();          return;
+        }catch(exception){
+          console.log(exception);
+        }
+        this.leavePage();
+
+      });
+    });
   }
 }
 
