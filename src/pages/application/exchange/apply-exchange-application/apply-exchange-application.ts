@@ -6,7 +6,7 @@ import {
 import {BaseForm, InputType, KeyValue} from "../../../../components/Forms/base-form";
 import {NgForm} from "@angular/forms";
 import {ApiProvider, SuccessMessageInterface, TextValueInterface} from "../../../../providers/api/api";
-import {HelperProvider} from "../../../../providers/helper/helper";
+import {AlertStatusInterface, HelperProvider} from "../../../../providers/helper/helper";
 import {UserProvider} from "../../../../providers/user/user";
 import {BroadcastType, RootParamsProvider} from "../../../../providers/root-params/root-params";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
@@ -49,7 +49,7 @@ export class ApplyExchangeApplicationPage {
   public isCanSubmit: boolean                                    = false;
   public approvalHistories: MatureKeyValueContainer[]            = [];
   public segmentValue: string                                    = "form";
-  public currentAlert: Alert;
+  public currentAlert: AlertStatusInterface;
   @ViewChild(Navbar) navbar: Navbar;
 
   constructor(public platform:Platform,public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController, public httpClient: HttpClient) {

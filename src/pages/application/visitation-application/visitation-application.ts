@@ -85,7 +85,7 @@ export class VisitationApplicationPage {
 
   public formValues: object        = {};
   public categoryCountryRules: any = {}
-  public currentAlert: Alert;
+  public currentAlert: AlertStatusInterface;
 
   constructor(public platform:Platform, public helperProvider:HelperProvider, public inAppBrowser:InAppBrowser, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
 

@@ -15,7 +15,7 @@ import {SectionFloatingInputInterface} from "../../../../components/Forms/sectio
 import {NgForm} from "@angular/forms";
 import {HttpClient} from "@angular/common/http";
 import {ApiProvider, SuccessMessageInterface, TextValueInterface} from "../../../../providers/api/api";
-import {HelperProvider} from "../../../../providers/helper/helper";
+import {AlertStatusInterface, HelperProvider} from "../../../../providers/helper/helper";
 import {UserProvider} from "../../../../providers/user/user";
 import {RootParamsProvider} from "../../../../providers/root-params/root-params";
 import {Observable} from "rxjs/Observable";

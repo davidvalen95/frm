@@ -11,7 +11,7 @@ import {BaseForm, InputType, KeyValue} from "../../../../components/Forms/base-f
 import {ReplaySubject} from "rxjs/ReplaySubject";
 import {AttachmentRuleInterface, DayRuleInterface, LeaveHistoryInterface} from "../../leave/ApiInterface";
 import {HttpClient} from "@angular/common/http";
-import {HelperProvider} from "../../../../providers/helper/helper";
+import {AlertStatusInterface, HelperProvider} from "../../../../providers/helper/helper";
 import {UserProvider} from "../../../../providers/user/user";
 import {RootParamsProvider} from "../../../../providers/root-params/root-params";
 import {ApplyBaseInterface} from "../../../../app/app.component";

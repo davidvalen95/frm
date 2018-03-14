@@ -12,7 +12,7 @@ import {
 import {HomeBaseInterface} from "../../../../app/app.component";
 import {AbsenceRecordListDataInterface, AbsenceRecordListInterface} from "../AbsenceRecordApiInterface2";
 import {HttpClient} from "@angular/common/http";
-import {HelperProvider} from "../../../../providers/helper/helper";
+import {AlertStatusInterface, HelperProvider} from "../../../../providers/helper/helper";
 import {UserProvider} from "../../../../providers/user/user";
 import {RootParamsProvider} from "../../../../providers/root-params/root-params";
 import {AbsenceRecordApplyInterface, AbsenceRecordApplyPage} from "../absence-record-apply/absence-record-apply";

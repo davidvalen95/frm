@@ -9,7 +9,7 @@ import {
   ApiProvider, HistoryBaseInterface, SuccessMessageInterface,
   TextValueInterface
 } from "../../../../providers/api/api";
-import {HelperProvider} from "../../../../providers/helper/helper";
+import {AlertStatusInterface, HelperProvider} from "../../../../providers/helper/helper";
 import {UserProvider} from "../../../../providers/user/user";
 import {BroadcastType, RootParamsProvider} from "../../../../providers/root-params/root-params";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";

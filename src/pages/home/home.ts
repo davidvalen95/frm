@@ -28,7 +28,7 @@ export class HomePage {
 
 
 
-  public currentAlert: Alert;
+  public currentAlert: AlertStatusInterface;
   public circleMenus:CircleMenuInterface[] = [];
   public announcement: AnnouncementListInterface;
   public announcementHomePage = AnnouncementHomePage;

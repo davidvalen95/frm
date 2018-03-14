@@ -22,7 +22,7 @@ export class ProfileInformationPage {
 
   public profileInformation:ProfileInformationInterface = {profile:"",picture:""};
   public title;
-  public currentAlert: Alert;
+  public currentAlert: AlertStatusInterface;
   constructor( public platform:Platform, public navCtrl: NavController, public navParams: NavParams,  public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
     this.setHardwareBackButton();
     this.title="Profile Information";

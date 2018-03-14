@@ -14,7 +14,7 @@ import {ReplaySubject} from "rxjs/ReplaySubject";
 import {MatureKeyValueContainer} from "../../../../components/detail-key-value/detail-key-value";
 import {HttpClient} from "@angular/common/http";
 import {ApiProvider, SuccessMessageInterface, TextValueInterface} from "../../../../providers/api/api";
-import {HelperProvider} from "../../../../providers/helper/helper";
+import {AlertStatusInterface, HelperProvider} from "../../../../providers/helper/helper";
 import {UserProvider} from "../../../../providers/user/user";
 import {RootParamsProvider} from "../../../../providers/root-params/root-params";
 import {NgForm} from "@angular/forms";

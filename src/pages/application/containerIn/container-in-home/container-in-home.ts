@@ -14,7 +14,7 @@ import {
   VisitationFilterApi
 } from "../../../../providers/api/api";
 import {HttpClient} from "@angular/common/http";
-import {HelperProvider} from "../../../../providers/helper/helper";
+import {AlertStatusInterface, HelperProvider} from "../../../../providers/helper/helper";
 import {UserProvider} from "../../../../providers/user/user";
 import {RootParamsProvider} from "../../../../providers/root-params/root-params";
 import {ContainerInApplyPage, ContainerInApplyParam} from "../container-in-apply/container-in-apply";

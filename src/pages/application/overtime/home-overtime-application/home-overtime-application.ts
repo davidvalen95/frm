@@ -13,7 +13,7 @@ import {
 import {UserProvider} from "../../../../providers/user/user";
 import {BroadcastType, RootParamsProvider} from "../../../../providers/root-params/root-params";
 import {Subscription} from "rxjs/Subscription";
-import {HelperProvider} from "../../../../providers/helper/helper";
+import {AlertStatusInterface, HelperProvider} from "../../../../providers/helper/helper";
 
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {isString} from "ionic-angular/util/util";

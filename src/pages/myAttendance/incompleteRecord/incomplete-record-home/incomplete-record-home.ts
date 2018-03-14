@@ -12,7 +12,7 @@ import {
 import {HomeBaseInterface} from "../../../../app/app.component";
 import {IncompleteRecordListDataInterface, IncompleteRecordListInterface} from "../IncompleteRecordApiInterface";
 import {HttpClient} from "@angular/common/http";
-import {HelperProvider} from "../../../../providers/helper/helper";
+import {AlertStatusInterface, HelperProvider} from "../../../../providers/helper/helper";
 import {UserProvider} from "../../../../providers/user/user";
 import {RootParamsProvider} from "../../../../providers/root-params/root-params";
 import {
@@ -50,7 +50,7 @@ export class IncompleteRecordHomePage {
 
   public filterRule: VisitationFilterApi = {};
   public eventBroadcaster;
-  public currentAlert: Alert;
+  public currentAlert: AlertStatusInterface;
   @ViewChild('infiniteScroll') public infiniteScroll: InfiniteScroll;
 
   @ViewChild("navbar") navbar: Navbar;
