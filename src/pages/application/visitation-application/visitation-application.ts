@@ -213,13 +213,15 @@ export class VisitationApplicationPage {
   }
 
   alert(message: string, title?: string) {
-    this.alertController.create(
+    var alert = this.alertController.create(
       {
         title: title || "",
         subTitle: message,
         buttons: ['Ok']
       }
-    ).present();
+    );
+    alert.present();
+    return alert;
   }
 
   completionFormSubmit(form: NgForm,pageForm:PageForm = null) {
@@ -241,7 +243,7 @@ export class VisitationApplicationPage {
           if(form.value.mobile_no === "" && form.value.visitor_no === "") {
             // pageForm.baseForms[1].rules.isRequired = true; //#mobileNO
             // pageForm.baseForms[2].rules.isRequired = true; //# icNo visitor_no
-            this.alert("<p>Please fulfill at least one of these</p><p>Mobile No OR IC No</p>", "Attention");
+            this.currentAlert = this.alert("<p>Please fulfill at least one of these</p><p>Mobile No OR IC No</p>", "Attention");
             return;
           }
         }
@@ -278,7 +280,7 @@ export class VisitationApplicationPage {
 
     }
     else {
-      this.alert("<span style='color:red'>Please check field(s) mark in red</span>");
+      this.currentAlert = this.alert("<span style='color:red'>Please check field(s) mark in red</span>");
       console.log('formNotValid', form.value);
     }
 
@@ -559,8 +561,8 @@ export class VisitationApplicationPage {
 
 
     } else {
-      // this.alert("Field(s) is not valid");
-      this.alert("Please check field(s) mark in red");
+      // this.currentAlert = this.alert("Field(s) is not valid");
+      this.currentAlert = this.alert("Please check field(s) mark in red");
 
     }
 
@@ -894,7 +896,7 @@ export class VisitationApplicationPage {
 
 
 
-      // this.alert(`"${data.value}"`, "Value");
+      // this.currentAlert = this.alert(`"${data.value}"`, "Value");
 
       console.log('visitorCategoryChanged', data);
       // console.log('visitorcategorySelect', data.value, 'tes: visitorCountry.value',visitorCategory.value,'visitorId:',visitorId.value);
@@ -1860,14 +1862,14 @@ export class VisitationApplicationPage {
           this.helperProvider.presentToast(message);
 
         }else{
-          this.alert(message,"Info");
+          this.currentAlert = this.alert(message,"Info");
 
         }
 
       }).catch(rejected => {
         message = rejected["message"]
         console.log('submit rejected', rejected);
-        this.alert(message,"Submit Exception");
+        this.currentAlert = this.alert(message,"Submit Exception");
 
       }).finally(() => {
         loading.dismiss();
@@ -1926,6 +1928,7 @@ export class VisitationApplicationPage {
 
           }]
       });
+      this.currentAlert = alert;
       console.log("extraHostClick",data.value);
       //# get the deatil
       this.apiProvider.getEmployeeInformation(data.value, true).then((serverResponse: EmployeeInformationInterface) => {
@@ -1989,6 +1992,7 @@ export class VisitationApplicationPage {
         }
       ]
     })
+    this.currentAlert = alert;
     alert.present();
     return alert;
   }
@@ -2095,11 +2099,16 @@ export class VisitationApplicationPage {
 
       this.platform.registerBackButtonAction(() => {
         try{
-          this.currentAlert.dismiss();          return;
+          this.currentAlert.dismiss().then(()=>{}).catch(()=>{        this.leavePage();});          return;
         }catch(exception){
           console.log(exception);
         }
-        this.leavePage();
+        if(this.formSlides.isBeginning()){
+          this.leavePage();
+        }
+
+
+        this.slidePrevious();
 
       });
     });

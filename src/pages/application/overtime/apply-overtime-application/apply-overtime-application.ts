@@ -264,7 +264,7 @@ export class ApplyOvertimeApplicationPage {
         })
       })
     } else {
-      this.helperProvider.showAlert("Please check field(s) mark in red", "");
+      this.currentAlert = this.helperProvider.showAlert("Please check field(s) mark in red", "");
     }
 
 
@@ -307,7 +307,7 @@ export class ApplyOvertimeApplicationPage {
         this.apiExecuteSubmitApplication(json);
       });
     } else {
-      this.helperProvider.showAlert("Please check field(s) mark in red", "");
+      this.currentAlert = this.helperProvider.showAlert("Please check field(s) mark in red", "");
     }
 
   }
@@ -341,7 +341,7 @@ export class ApplyOvertimeApplicationPage {
 
       this.platform.registerBackButtonAction(() => {
         try{
-          this.currentAlert.dismiss();          return;
+          this.currentAlert.dismiss().then(()=>{}).catch(()=>{        this.leavePage();});          return;
         }catch(exception){
           console.log(exception);
         }
@@ -454,7 +454,7 @@ export class ApplyOvertimeApplicationPage {
 
         }, 500)
       } else {
-        this.helperProvider.showAlert(message);
+        this.currentAlert = this.helperProvider.showAlert(message);
       }
 
     });

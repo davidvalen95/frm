@@ -279,7 +279,7 @@ export class ContainerInHomePage {
 
       this.platform.registerBackButtonAction(() => {
         try{
-          this.currentAlert.dismiss();          return;
+          this.currentAlert.dismiss().then(()=>{}).catch(()=>{        this.leavePage();});          return;
         }catch(exception){
           console.log(exception);
         }
