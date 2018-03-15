@@ -33,13 +33,10 @@
                 </ion-list>
 
 
-                <ion-list class="form-approval"  *ngIf="pageParam.isApproval">
-                  <ion-item no-padding="">
-                    <h3 class="form-approval-title" text-center="">For Your Approval</h3>
-                  </ion-item>
-                  <floating-input  *ngFor="let currentBaseForm of this.approvalBaseForms" [parentForm]="parentForm" [baseForm]="currentBaseForm"></floating-input>
-                </ion-list>
 
+
+
+              <section-floating-input [parentForm]="parentForm" [container]="this.approvalBaseForms"></section-floating-input>
 
 
 
