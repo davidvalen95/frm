@@ -44,9 +44,9 @@ export class StatusColorDirective {
   // ngOnInit
   ngAfterContentInit() {
     setTimeout(() => {
-      console.log('statusColorDirective', this.color, this.elementRef, this.color, this.elementRef.nativeElement.textContent)
+      console.log('statusColorDirective', this.color, this.elementRef, this.color, this.elementRef.nativeElement.innerHTML)
       this.convertColor();
-    }, 300)
+    }, 400)
 
   }
 
@@ -56,7 +56,7 @@ export class StatusColorDirective {
     for(var key in this.color){
       var currentData:string[] = this.color[key];
       var isContain = false;
-      var textContent = this.elementRef.nativeElement.textContent.toLowerCase();
+      var textContent = this.elementRef.nativeElement.innerHTML.toLowerCase();
       currentData.forEach(data=>{
         if(textContent.indexOf(data) >-1){
           this.elementColor = key;

@@ -85,7 +85,6 @@ export class ApplyExchangeApplicationPage {
   setupApprovalForms() {
 
     var status = new BaseForm("Status", "status")
-      .setValue(this.applyRule.data.status)
       .setInputTypeSelect([
         {key: 'Approve', value: "AP"},
         {key: 'Reject', value: "RE"}
@@ -162,8 +161,12 @@ export class ApplyExchangeApplicationPage {
     exchange_date_from.changeListener.subscribe((data) => {
       // exchange_date_to.value = data.value;
       exchange_date_to.value           = data.value;
-      exchange_date_to.dateSetting.min = BaseForm.getAdvanceDate(-1 * +this.applyRule.exchange_date_day, new Date(exchange_date_from.value)).toISOString();
-      exchange_date_to.dateSetting.max = BaseForm.getAdvanceDate(+this.applyRule.exchange_date_day, new Date(exchange_date_from.value)).toISOString();
+
+      if(this.applyRule.exchange_date_day){
+        exchange_date_to.dateSetting.min = BaseForm.getAdvanceDate(-1 * +this.applyRule.exchange_date_day, new Date(exchange_date_from.value)).toISOString();
+        exchange_date_to.dateSetting.max = BaseForm.getAdvanceDate(+this.applyRule.exchange_date_day, new Date(exchange_date_from.value)).toISOString();
+      }
+
 
       console.log('exchangeDateTo', exchange_date_to.dateSetting, this.applyRule, new Date(exchange_date_from.value), exchange_date_from.value);
 
