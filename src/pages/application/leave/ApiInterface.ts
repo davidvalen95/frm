@@ -210,7 +210,7 @@ export interface DayRuleInterface{
   time_out_afternoon:string;
   time_out_morning:string;
   total_available_rl :number;
-  total_day: number;
+  totalLeavePeriod: number;
 
 
   leaveDates?:LeaveDateInterface[];

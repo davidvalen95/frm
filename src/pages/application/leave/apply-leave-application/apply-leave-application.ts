@@ -1,6 +1,6 @@
 import {Component, ViewChild} from '@angular/core';
 import {
-  Alert, AlertController, IonicPage, Navbar, NavController, NavParams, Platform,
+  Alert, AlertController, Content, IonicPage, Navbar, NavController, NavParams, Platform,
   ToastController
 } from 'ionic-angular';
 import {BaseForm, InputType, KeyValue} from "../../../../components/Forms/base-form";
@@ -67,6 +67,7 @@ export class ApplyLeaveApplicationPage {
   }
   public currentAlert:AlertStatusInterface;
 
+  @ViewChild(Content) public content: Content;
 
   @ViewChild(Navbar) navbar: Navbar;
 
@@ -250,8 +251,9 @@ export class ApplyLeaveApplicationPage {
 
 
 
-    var totalApply        = new BaseForm("Total Apply Day(s)", "total_day");
-    totalApply.isReadOnly = true;
+    var totalDay        = new BaseForm("Total Apply Day(s)", "totalLeavePeriod");
+    totalDay.isReadOnly = true;
+
 
 
     var leaveType = new BaseForm("leave Type", "leave_type");
@@ -341,8 +343,8 @@ export class ApplyLeaveApplicationPage {
 
       });
 
-      this.apiExecuteGetDayRule(dateFrom, dateTo, availableReplacement, totalApply, leaveType.value,(data)=>{
-        this.setHalfDayForm(data, halfdaySection);
+      this.apiExecuteGetDayRule(dateFrom, dateTo, availableReplacement, totalDay, leaveType.value,(data)=>{
+        this.setHalfDayForm(data, halfdaySection,totalDay);
 
       });
 
@@ -356,11 +358,8 @@ export class ApplyLeaveApplicationPage {
       if (new Date(dateTo.value) < new Date(dateFrom.value)) {
         dateTo.value = dateFrom.value;
       } else {
-        this.apiExecuteGetDayRule(dateFrom, dateTo, availableReplacement, totalApply, leaveType.value, (data)=>{
-          this.setHalfDayForm(data, halfdaySection);
-
-
-
+        this.apiExecuteGetDayRule(dateFrom, dateTo, availableReplacement, totalDay, leaveType.value, (data)=>{
+          this.setHalfDayForm(data, halfdaySection,totalDay);
         });
 
         // totalApply.value = this.helperProvider.getDifferentDay(dateFrom.value, dateTo.value) + 1;
@@ -374,8 +373,8 @@ export class ApplyLeaveApplicationPage {
     dateTo.changeListener.subscribe((data: BaseForm) => {
 
       // totalApply.value = this.helperProvider.getDifferentDay(dateFrom.value, dateTo.value) + 1;
-      this.apiExecuteGetDayRule(dateFrom, dateTo, availableReplacement, totalApply, leaveType.value, (data)=>{
-        this.setHalfDayForm(data, halfdaySection);
+      this.apiExecuteGetDayRule(dateFrom, dateTo, availableReplacement, totalDay, leaveType.value, (data)=>{
+        this.setHalfDayForm(data, halfdaySection,totalDay);
 
       });
 
@@ -391,11 +390,13 @@ export class ApplyLeaveApplicationPage {
     }],true);
     isHalfDay.changeListener.subscribe((data)=>{
       halfdaySection.isHidden = data.value != "yes";
+      this.content.scrollTo(0, this.content.contentHeight + 100);
+
     });
 
     // var loader = this.helperProvider.presentLoadingV2("Retrieving half day");
 
-    isHalfDay.value = this.setHalfDayForm(this.applyRule.leaveDates, halfdaySection) ? "yes" : "no";
+    isHalfDay.value = this.setHalfDayForm(this.applyRule.leaveDates, halfdaySection,totalDay) ? "yes" : "no";
     setTimeout(()=>{
       //# buat getDayRule waktu mau masuk getHalfDay
       this.isFinishedFormInit = true;
@@ -406,7 +407,7 @@ export class ApplyLeaveApplicationPage {
     this.baseForms.push({
       name:"General Information",
       isHidden: false,
-      baseForms: [name, dateFrom, dateTo, leaveType, totalApply, availableReplacement, isHalfDay, hospital, notifiedTo, attachment1, attachment2, attachment3, attachment4, remark],
+      baseForms: [name, dateFrom, dateTo, leaveType, totalDay, availableReplacement, isHalfDay, hospital, notifiedTo, attachment1, attachment2, attachment3, attachment4, remark],
       description: "",
       isOpen: true
     });
@@ -424,13 +425,31 @@ export class ApplyLeaveApplicationPage {
   }
 
 
+  private setTotalDayForm(halfdaySection: SectionFloatingInputInterface, totalDayForm:BaseForm){
+    var totalDay = 0;
+    console.log('totalDayFormBefore',halfdaySection, totalDayForm);
+    halfdaySection.baseForms.forEach((data)=>{
+
+      if(data.label == ""){
+        return;
+      }
+      if(data.value.toLowerCase().indexOf('full') > -1){
+        totalDay +=1;
+      }else{
+        totalDay +=0.5;
+      }
+    })
+    totalDayForm.value = totalDay;
+
+  }
+
   /**
    * return boolean isHalfDay
    * @param {LeaveDateInterface[]} leaveDates
    * @param {SectionFloatingInputInterface} halfdaySection
    * @returns {boolean}
    */
-  private setHalfDayForm(leaveDates:LeaveDateInterface[], halfdaySection: SectionFloatingInputInterface):boolean{
+  private setHalfDayForm(leaveDates:LeaveDateInterface[], halfdaySection: SectionFloatingInputInterface, totalDayForm:BaseForm):boolean{
     var bankLeaveDate:BaseForm[] = [];
 
     var isHalfDay = false;
@@ -451,7 +470,10 @@ export class ApplyLeaveApplicationPage {
       },{
         key:`(Half day PM) ${data.time_out_morning} - ${data.time_out_afternoon}`,
         value:"afternoon"
-      }])
+      }]);
+      leaveDate.changeListener.subscribe(data=>{
+        this.setTotalDayForm(halfdaySection,totalDayForm);
+      })
       leaveDate.placeholder = "Set time for this day"
       leaveDate.value = data.leave_period;
       bankLeaveDate.push(leaveDate);
@@ -464,6 +486,8 @@ export class ApplyLeaveApplicationPage {
 
     });
     halfdaySection.baseForms = bankLeaveDate;
+
+    this.setTotalDayForm(halfdaySection,totalDayForm);
 
     return isHalfDay;
 
@@ -739,7 +763,6 @@ export class ApplyLeaveApplicationPage {
       withCredentials: true
     }).toPromise().then((data: DayRuleInterface) => {
       availableReplacement.value = data.total_available_rl;
-      totalDay.value             = data.total_day;
     }).finally(() => {
       // loader.dismiss();
     });
@@ -769,8 +792,9 @@ export class ApplyLeaveApplicationPage {
       if(onFinished){
         onFinished(data.leaveDates);
       }
-    }).catch(()=>{
+    }).catch((rejected)=>{
       this.helperProvider.presentToast("Cannot load half day configuration");
+      console.log(rejected)
     }).finally(() => {
       // loader.dismiss();
 

@@ -15,16 +15,6 @@ import {Directive, ElementRef, HostBinding, Renderer, Renderer2} from '@angular/
 export class StatusColorDirective {
 
 
-  public red: string[] = [
-    'lateness',
-    'early leaving',
-    'pending',
-  ]
-
-  public black: string[] = [
-    'submitted'
-  ]
-
 
   public color: {} = {
 

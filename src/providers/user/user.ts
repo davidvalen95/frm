@@ -115,7 +115,7 @@ export class UserProvider {
         return this.api.getMenu(this.userSession.empId);
       }
       return new Promise((resolve, reject) => {
-        reject("Wrong username or password");
+        reject(data["message"] || "Invalid User ID / Password / Secure Code / Allowed Access!");
       })
     }).then((data: { parent_menu: ApiMenuInterface[] }) => {
 

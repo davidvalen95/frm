@@ -154,8 +154,10 @@ export class ApplyExchangeApplicationPage {
 
     var exchange_date_to = new BaseForm("Exchange Date With", "exchange_date_to");
     exchange_date_to.setInputTypeDate({});
-    exchange_date_to.value      = (this.pageParam.dateFrom || BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.exchange_date_to))).toISOString();
-    exchange_date_to.isReadOnly = !this.applyRule.changeDate;
+    setTimeout(()=>{
+      exchange_date_to.value      = (this.pageParam.dateFrom || BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.exchange_date_to))).toISOString();
+    },500)
+    exchange_date_to.isReadOnly = !this.applyRule.changeDate || this.pageParam.isFromAbsenceRecord;
 
     exchange_date_from.changeListener.subscribe((data) => {
       // exchange_date_to.value = data.value;

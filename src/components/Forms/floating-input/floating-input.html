@@ -126,7 +126,7 @@
 <!--ngModel="t"-->
 
 
-<ion-list #ionRadioModel="ngModel" [hidden]="this.inputType!='radio'" [name]="baseForm.name" radio-group [(ngModel)]="baseForm.value">
+<ion-list #ionRadioModel="ngModel" (ionChange)="broadcast('ionradio')" [hidden]="this.inputType!='radio'" [name]="baseForm.name" radio-group [(ngModel)]="baseForm.value">
 
   <ion-item *ngFor="let selectOption of baseForm.selectOptions">
     <ion-label>{{selectOption.key}}</ion-label>
