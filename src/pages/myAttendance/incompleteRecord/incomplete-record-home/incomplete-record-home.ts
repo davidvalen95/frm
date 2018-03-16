@@ -64,7 +64,6 @@ export class IncompleteRecordHomePage {
     this.title = this.pageParam.isApproval ? "Attendance Approval" :  "Attendance Record";
 
     this.getFilter();
-    this.getList();
 
 
   }
@@ -89,6 +88,7 @@ export class IncompleteRecordHomePage {
 
 
   ionViewDidEnter() {//didleave
+    this.getList();
 
 
   }
@@ -112,9 +112,7 @@ export class IncompleteRecordHomePage {
       isEditing:true,isApply:false,
       isApproval: this.pageParam.isApproval,
       list: currentList,
-      onDidLeave: ()=>{
-        this.getList();
-      },
+      onDidLeave: ()=>{},
       title: this.title,
     }
     this.navCtrl.push(IncompleteRecordApplyPage, param);

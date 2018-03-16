@@ -70,7 +70,6 @@ export class HomeOvertimeApplicationPage {
     this.pageParam = this.rootParam.homeOvertimeApplicationParam;
     this.title = this.pageParam.isApproval ? "Overtime Approval" : "Overtime Application";
 
-    this.getList();
     this.getFilter();
 
 
@@ -117,6 +116,7 @@ export class HomeOvertimeApplicationPage {
 
   ionViewDidEnter() {//didleave
 
+    this.getList();
 
   }
 
@@ -140,9 +140,7 @@ export class HomeOvertimeApplicationPage {
       isApproval: this.pageParam.isApproval,
       list: currentList,
       title: this.title,
-      onDidLeave: ()=>{
-        this.getList();
-      }
+      onDidLeave: ()=>{},
     }
     this.navCtrl.push(ApplyOvertimeApplicationPage, param);
   }
@@ -215,9 +213,7 @@ export class HomeOvertimeApplicationPage {
       isApply: true,isEditing: false,
       isApproval:this.pageParam.isApproval,
       title: this.title,
-      onDidLeave: ()=>{
-        this.getList();
-      }
+      onDidLeave: ()=>{},
 
     };
     this.navCtrl.push(ApplyOvertimeApplicationPage, param)

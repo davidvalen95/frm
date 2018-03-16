@@ -81,7 +81,6 @@ export class HomeLeaveApplicationPage {
     //# for filter too
     this.apiExecuteGetSummary();
 
-    this.getList();
 
 
   }
@@ -123,6 +122,7 @@ export class HomeLeaveApplicationPage {
 
 
   ionViewDidEnter() {//didleave
+    this.getList();
 
 
   }
@@ -164,9 +164,7 @@ export class HomeLeaveApplicationPage {
       isApproval: this.pageParam.isApproval,
       list: currentList,
       title:this.title,
-      onDidLeave: ()=>{
-        this.getList();
-      }
+      onDidLeave: ()=>{},
     }
     this.navCtrl.push(ApplyLeaveApplicationPage, param);
   }
@@ -262,9 +260,7 @@ export class HomeLeaveApplicationPage {
       isApproval: this.pageParam.isApproval,
       isApply: true,
       title: this.title,
-      onDidLeave: ()=>{
-        this.getList();
-      },
+      onDidLeave: ()=>{},
     };
     this.navCtrl.push(ApplyLeaveApplicationPage, param)
   }

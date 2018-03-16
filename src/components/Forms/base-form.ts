@@ -515,18 +515,29 @@ export class BaseForm {
 
 
 
-  public closeDatetimeIonicPicker(){
-    var cancelButton = document.getElementsByClassName("picker-button")[0];
-    console.log('cancelButton',cancelButton);
-    if(cancelButton){
-      // Create a click event to be triggered
-      var clickEvent = new MouseEvent("click", {
-        "view": window,
-        "bubbles": true,
-        "cancelable": false
-      });
-      cancelButton.dispatchEvent(clickEvent);
-    }
+  public static closeDatetimeIonicPicker(){
+    var i =0;
+    var interval = setInterval(()=>{
+      var cancelButton = document.getElementsByClassName("picker-button")[0];
+      console.log('cancelButton',i,cancelButton);
+      if(cancelButton){
+        // Create a click event to be triggered
+        var clickEvent = new MouseEvent("click", {
+          "view": window,
+          "bubbles": true,
+          "cancelable": false
+        });
+          cancelButton.dispatchEvent(clickEvent);
+
+      }
+      i++;
+      if(i>20){
+        clearInterval(interval);
+
+      }
+    },25);
+
+
   }
 
 

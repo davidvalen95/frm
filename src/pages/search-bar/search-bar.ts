@@ -1,8 +1,9 @@
 import {Component, ViewChild} from '@angular/core';
-import {IonicPage, NavController, NavParams, Searchbar} from 'ionic-angular';
+import {IonicPage, NavController, NavParams, Platform, Searchbar} from 'ionic-angular';
 import {BaseForm, SearchBarSetting, KeyValue} from "../../components/Forms/base-form";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {ApiProvider} from "../../providers/api/api";
+import {AlertStatusInterface} from "../../providers/helper/helper";
 
 /**
  * Generated class for the SearchBarPage page.
@@ -23,10 +24,10 @@ export class SearchBarPage {
   public selectOptions: KeyValue[];
   public previousInterval: number = -1;
   public pageParam: SearchBarParam;
-
+  public currentAlert: AlertStatusInterface;
   @ViewChild('ionSearchbar') public ionSearchbar: Searchbar
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public httpClient: HttpClient) {
+  constructor(public platform:Platform, public navCtrl: NavController, public navParams: NavParams, public httpClient: HttpClient) {
     this.baseForm = navParams.get("baseForm");
     this.pageParam = navParams.data;
 
@@ -58,6 +59,30 @@ export class SearchBarPage {
     this.baseForm.value = selected.value
 
     this.navCtrl.pop();
+  }
+
+
+
+  public leavePage() {
+    this.navCtrl.pop();
+  }
+
+  ionViewWillEnter(){
+    this.setHardwareBackButton();
+  }
+  public setHardwareBackButton(){
+    this.platform.ready().then(() => {
+
+      this.platform.registerBackButtonAction(() => {
+        try{
+          if(this.currentAlert.isPresent){this.currentAlert.alert.dismiss(); return;}
+        }catch(exception){
+          console.log(exception);
+        }
+        this.leavePage();
+
+      });
+    });
   }
 }
 

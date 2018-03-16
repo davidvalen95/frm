@@ -68,7 +68,6 @@ export class ContainerInHomePage {
     this.title = this.pageParam.isApproval ? `Container Approval` : `Container ${inOut} Application`;
 
     this.getFilter();
-    this.getList();
 
 
 
@@ -97,6 +96,7 @@ export class ContainerInHomePage {
 
 
   ionViewDidEnter() {//didleave
+    this.getList();
 
 
   }
@@ -122,9 +122,7 @@ export class ContainerInHomePage {
       list: currentList,
       title: this.title,
       isContainerIn: this.pageParam.isApproval ? currentList.container_out != 't' : this.pageParam.isContainerIn,
-      onDidLeave: ()=>{
-        this.getList();
-      }
+      onDidLeave: ()=>{},
     }
     this.navCtrl.push(ContainerInApplyPage, param);
   }
@@ -206,9 +204,7 @@ export class ContainerInHomePage {
       title: this.title,
       isContainerIn: this.pageParam.isContainerIn,
 
-      onDidLeave: ()=>{
-        this.getList();
-      }
+      onDidLeave: ()=>{},
     };
     this.navCtrl.push(ContainerInApplyPage, param)
   }

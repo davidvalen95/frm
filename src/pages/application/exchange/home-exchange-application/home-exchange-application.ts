@@ -86,7 +86,6 @@ export class HomeExchangeApplicationPage {
     this.getFilter();
 
 
-    this.getList()
   }
 
 
@@ -118,6 +117,7 @@ export class HomeExchangeApplicationPage {
 
   ionViewDidEnter() {//didleave
 
+    this.getList();
 
   }
 

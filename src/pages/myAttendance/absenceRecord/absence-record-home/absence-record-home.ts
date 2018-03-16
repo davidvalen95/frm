@@ -114,9 +114,7 @@ export class AbsenceRecordHomePage {
       isEditing:true,isApply:false,
       isApproval: this.pageParam.isApproval,
       list: currentList,
-      onDidLeave: ()=>{
-        this.getList();
-      }
+      onDidLeave: ()=>{},
     }
     this.navCtrl.push(AbsenceRecordApplyPage, param);
   }
@@ -209,9 +207,7 @@ export class AbsenceRecordHomePage {
       isApproval:this.pageParam.isApproval,
       title: title,
       isFromAbsenceRecord: true,
-      onDidLeave: ()=>{
-        this.getList();
-      }
+      onDidLeave: ()=>{},
     };
 
     param["dateFrom"] = BaseForm.getAdvanceDate(1,new Date(record.absence_date));

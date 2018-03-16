@@ -66,7 +66,6 @@ export class WorkoutsideHomePage {
     this.title = this.pageParam.isApproval ? "Work Outside Approval" : "Work Outside Application";
 
     this.getFilter();
-    this.getList();
 
 
   }
@@ -91,7 +90,7 @@ export class WorkoutsideHomePage {
 
 
   ionViewDidEnter() {//didleave
-
+    this.getList();
 
   }
 
@@ -115,7 +114,6 @@ export class WorkoutsideHomePage {
       isApproval: this.pageParam.isApproval,
       list: currentList,
       onDidLeave: ()=>{
-        this.getList();
       },
       title: this.title,
     }
@@ -189,7 +187,6 @@ export class WorkoutsideHomePage {
       isApply: true,isEditing: false,
       isApproval:this.pageParam.isApproval,
       onDidLeave: ()=>{
-        this.getList();
       },
       title: this.title,
     };

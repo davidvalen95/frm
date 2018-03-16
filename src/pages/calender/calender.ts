@@ -74,9 +74,10 @@ export class CalenderPage {
   // }
 
   constructor(public viewController:ViewController, public platform:Platform, public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
-    console.log("visitationApplicationBadge", this.rootParam.visitationApplicationParam);
 
-    this.pageParam = navParams.data;
+    this.pageParam = this.navParams.data;
+    console.log("visitationApplicationBadge", this.pageParam);
+
     this.setHardwareBackButton();
 
 
@@ -105,7 +106,9 @@ export class CalenderPage {
 
   ionViewDidEnter() {//didleave
 
-
+    setTimeout(()=>{
+      // BaseForm.closeDatetimeIonicPicker();
+    },200);
   }
 
 
@@ -257,11 +260,10 @@ export class CalenderPage {
   ionViewWillEnter(){
     this.setHardwareBackButton();
   }
+
   public setHardwareBackButton(){
 
-    if(this.pageParam.pickerSetting){
-      return;
-    }
+
 
     this.platform.ready().then(() => {
 

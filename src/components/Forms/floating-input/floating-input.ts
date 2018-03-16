@@ -147,26 +147,34 @@ export class FloatingInputComponent {
 
   public showCalendarPage(){
 
-    var param:CalenderParamInterface = {
-      isApproval: false,
-      pickerSetting: {
-        baseForm: this.baseForm,
-        onActivityResult:(date:Date)=>{
-          if(date){
-            this.baseForm.value = date.toISOString();
+    BaseForm.closeDatetimeIonicPicker();
+
+
+    setTimeout(()=>{
+      var param:CalenderParamInterface = {
+        isApproval: false,
+        pickerSetting: {
+          baseForm: this.baseForm,
+          onActivityResult:(date:Date)=>{
+            if(date){
+              this.baseForm.value = date.toISOString();
+
+            }
 
           }
-
         }
       }
-    }
-    var calenderModal = this.modalController.create(CalenderPage,param,{ showBackdrop: false, enableBackdropDismiss:false });
-    calenderModal.onDidDismiss(()=>{
-      setTimeout(()=>{
-        this.baseForm.closeDatetimeIonicPicker();
-      },25);
-    })
-    calenderModal.present();
+
+      // var calenderModal = this.modalController.create(CalenderPage,param,{ showBackdrop: false, enableBackdropDismiss:false });
+      // calenderModal.onDidDismiss(()=>{
+      //   setTimeout(()=>{
+      //     this.baseForm.closeDatetimeIonicPicker();
+      //   },25);
+      // })
+      // calenderModal.present();
+      this.navController.push(CalenderPage,param);
+    },200);
+
 
 
 
