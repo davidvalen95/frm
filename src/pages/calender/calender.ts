@@ -254,7 +254,9 @@ export class CalenderPage {
     }
 
   }
-
+  ionViewWillEnter(){
+    this.setHardwareBackButton();
+  }
   public setHardwareBackButton(){
     this.platform.ready().then(() => {
 

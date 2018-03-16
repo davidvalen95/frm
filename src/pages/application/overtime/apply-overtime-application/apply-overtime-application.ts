@@ -335,7 +335,9 @@ export class ApplyOvertimeApplicationPage {
     })
   }
 
-
+  ionViewWillEnter(){
+    this.setHardwareBackButton();
+  }
   public setHardwareBackButton(){
     this.platform.ready().then(() => {
 

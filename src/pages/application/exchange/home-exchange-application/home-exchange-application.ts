@@ -100,6 +100,8 @@ export class HomeExchangeApplicationPage {
     ).present();
   }
 
+
+
   doInfinite(infinite: InfiniteScroll) {
   }
 
@@ -126,7 +128,7 @@ export class HomeExchangeApplicationPage {
 
   ionViewDidLoad() {
 
-
+    console.log('ionviewdidload');
     //
     // //# overide back button
     // if(this.pageParam.isEditing || this.pageParam.isApply){
@@ -145,6 +147,10 @@ export class HomeExchangeApplicationPage {
 
   }
 
+
+  ionViewWillEnter(){
+    this.setHardwareBackButton();
+  }
   pushDetailPage(currentExchangeList: ExchangeListInterface) {
     if (this.pageParam.isApproval) {
       currentExchangeList.id = currentExchangeList.tid;

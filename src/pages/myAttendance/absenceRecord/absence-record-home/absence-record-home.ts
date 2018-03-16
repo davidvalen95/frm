@@ -278,7 +278,9 @@ export class AbsenceRecordHomePage {
     this.navCtrl.setRoot(HomePage);
   }
 
-
+  ionViewWillEnter(){
+    this.setHardwareBackButton();
+  }
   public setHardwareBackButton(){
     this.platform.ready().then(() => {
 

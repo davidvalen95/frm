@@ -476,7 +476,9 @@ export class IncompleteRecordApplyPage {
       });
     })
   }
-
+  ionViewWillEnter(){
+    this.setHardwareBackButton();
+  }
 
   public setHardwareBackButton(){
     this.platform.ready().then(() => {

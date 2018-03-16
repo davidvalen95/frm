@@ -101,7 +101,9 @@ export class LoginPage {
       this.platform.exitApp();
     })
   }
-
+  ionViewWillEnter(){
+    this.setHardwareBackButton();
+  }
 
   public setHardwareBackButton(){
     this.platform.ready().then(() => {

@@ -209,7 +209,9 @@ export class HomePage {
       this.platform.exitApp();
     })
   }
-
+  ionViewWillEnter(){
+    this.setHardwareBackButton();
+  }
 
   public setHardwareBackButton(){
     this.platform.ready().then(() => {

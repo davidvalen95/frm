@@ -631,7 +631,9 @@ export class ApplyLeaveApplicationPage {
       });
     })
   }
-
+  ionViewWillEnter(){
+    this.setHardwareBackButton();
+  }
 
   public setHardwareBackButton(){
     this.platform.ready().then(() => {
