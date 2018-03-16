@@ -26,8 +26,8 @@ export class CalenderComponent {
   daysInNextMonth: any;
   monthNames: string[] = ["January","February","March","April","May","June","July","August","September","October","November","December"];
   currentMonth: any;
-  currentYear: any;
-  currentDate:number = new Date().getDate();
+  currentYear: string;
+  currentDate:Date = new Date();
   eventList: any = [];
   selectedEvent: any;
   isSelected: any;
@@ -79,7 +79,7 @@ export class CalenderComponent {
     this.daysInNextMonth = [];
 
     this.currentMonth    = this.monthNames[+this.filter.cmbMonth-1];
-    this.currentYear     = +this.filter.cmbYear;
+    this.currentYear     = this.filter.cmbYear;
 
     this.selectDate(this.filter.selectedDay);
 

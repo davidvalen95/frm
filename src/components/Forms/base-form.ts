@@ -358,7 +358,7 @@ export class BaseForm {
     //# kalo ga set hours, jadi 00:00:00 ikut tanggal nya pas
     //# kalo di set hours, tanggal jadi hari ssetelah nya jadi harus -1
     from.setDate(from.getDate() + advance -1);
-    from.setHours(7);
+    from.setHours(12);
     return from;
   }
 
