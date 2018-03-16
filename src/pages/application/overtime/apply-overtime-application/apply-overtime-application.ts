@@ -336,6 +336,7 @@ export class ApplyOvertimeApplicationPage {
   }
 
   ionViewWillEnter(){
+    console.log('ionviewwillenter');
     this.setHardwareBackButton();
   }
   public setHardwareBackButton(){
