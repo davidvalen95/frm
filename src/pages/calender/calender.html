@@ -6,7 +6,7 @@
 -->
 <ion-header >
   <ion-navbar #navbar  >
-    <button ion-button menuToggle *ngIf="!this.rootParam.isPartial" >
+    <button ion-button menuToggle *ngIf="!this.pageParam.pickerSetting" >
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title text-center="" >{{title}}
@@ -18,30 +18,12 @@
 </ion-header>
 
 
-<ion-content padding="" [ngClass]="{'partial':this.rootParam.isPartial}">
+<ion-content class="has-user-action" padding="" [ngClass]="{'partial':this.rootParam.isPartial}">
 
   <!---->
 
-  <div  [ngSwitch]="segmentValue">
 
-
-
-
-    <div *ngIf="segmentValue == 'apply'">
-      <ion-grid >
-        <ion-row >
-
-        </ion-row>
-      </ion-grid>
-    </div>
-
-
-  </div>
-
-
-
-
-
+  <p text-center="" *ngIf="this.pageParam.pickerSetting">Please select date for <b>{{this.pageParam.pickerSetting.baseForm.label}}</b></p>
 
 
 
@@ -52,7 +34,7 @@
 
     <ion-list style="border: 1px solid #C4C4C4; border-radius:5px;">
 
-      <ion-item  (click)="filter.isOpen = !filter.isOpen">
+      <ion-item  (click)="filter.isOpen = !filter.isOpen" >
         <h3>Search for {{title}}</h3>
         <span item-end="">
               <ion-icon name="arrow-down" *ngIf="filter.isOpen"></ion-icon>
@@ -86,7 +68,7 @@
 
     </ion-list>
 
-    <calender [nextButton]="this.nextButton" [previousButton]="this.previousButton"   [targetYear]="filter.cmbYear" *ngIf="this.calenderEvents" [targetMonth]="(filter.cmbMonth -1 )" [calenderEvents]="this.calenderEvents"></calender>
+    <calender [filter]="this.filter" [nextButton]="this.nextButton" [previousButton]="this.previousButton"    [calenderEvents]="this.calenderEvents"></calender>
 
     <!--<ion-infinite-scroll [enabled]="this.isInfiniteEnable" (ionInfinite)="doInfinite($event)">-->
     <!--<ion-infinite-scroll-content>Loading</ion-infinite-scroll-content>-->
@@ -96,3 +78,17 @@
 
 
 </ion-content>
+
+
+
+
+<div  class="user-action" *ngIf="this.pageParam.pickerSetting">
+
+  <div class="action-container" >
+    <button  (click)="this.cancelDatePicker()" ion-button=""  type="button" (click)="leavePage()" color="warning">Cancel</button>
+    <button  (click)="this.selectDatePicker()"  ion-button=""  type="button"  color="primary">Select</button>
+  </div>
+
+
+
+</div>

@@ -2,7 +2,7 @@ import {Component, ViewChild} from '@angular/core';
 import {
   Alert,
   AlertController, Content, InfiniteScroll, IonicPage, Navbar, NavController, NavParams, Platform,
-  ToastController
+  ToastController, ViewController
 } from 'ionic-angular';
 import {
   ApiGetConfigInterface, ApiProvider, BadgeApiInterface, VisitationDataApiInterface,
@@ -16,8 +16,9 @@ import {UserProvider} from "../../providers/user/user";
 import {RootParamsProvider} from "../../providers/root-params/root-params";
 import {WorkoutsideListInterface} from "../application/workoutside/WorkoutsideApiInterface";
 import {CalenderEventInterface} from "../../components/calender/calender";
-import {BaseForm} from "../../components/Forms/base-form";
+import {BaseForm, DateSettingInterface} from "../../components/Forms/base-form";
 import {HomePage} from "../home/home";
+import {DatePickerProvider} from "ionic2-date-picker";
 
 /**
  * Generated class for the CalenderPage page.
@@ -38,7 +39,7 @@ export class CalenderPage {
   public visitationData: VisitationDataApiInterface[] = [];
 
   public segmentValue: string        = "list";
-  public filter: VisitationFilterApi = new VisitationFilterApi();
+  public filter: CalenderFilter = new CalenderFilter();
   public isInfiniteEnable: boolean   = true;
 
   public pageParam: CalenderParamInterface = {isApproval: false};
@@ -47,10 +48,11 @@ export class CalenderPage {
 
   public listData: CalenderListInterface;
 
-  public filterRule: VisitationFilterApi          = {};
-  public calenderEvents: CalenderEventInterface[];
+  public filterRule: CalenderFilter          = new CalenderFilter();
+  public calenderEvents: CalenderEventInterface[] = [];
   public eventBroadcaster
   public currentAlert:AlertStatusInterface;
+
   @ViewChild('infiniteScroll') public infiniteScroll: InfiniteScroll;
 
   @ViewChild("navbar") navbar: Navbar;
@@ -66,12 +68,20 @@ export class CalenderPage {
     this.getArrowCalender(-1,onFinish);
 
   }
-  constructor(public platform:Platform, public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
+
+  // public selectDay = (dayNumber:number)=>{
+  //   // this.filter.selectedDay = dayNumber;
+  // }
+
+  constructor(public viewController:ViewController, public platform:Platform, public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
     this.setHardwareBackButton();
     console.log("visitationApplicationBadge", this.rootParam.visitationApplicationParam);
 
-    this.pageParam = this.rootParam.homeOvertimeApplicationParam;
-    this.title     = "Calendar"
+    this.pageParam = navParams.data;
+
+
+
+    this.title     = this.pageParam.pickerSetting ? "Select Date" : "Calendar";
     this.getFilter();
     this.getList(()=>{});
 
@@ -141,7 +151,7 @@ export class CalenderPage {
 
   }
 
-  public getList(onFinish:()=>void) {
+  public getList(onFinish?:()=>void) {
 
     // st2/s/DXNCalendarAjax?reqtype=calendar&month=2&year=2018&seltype=0&user_id=MY040001
 
@@ -168,9 +178,16 @@ export class CalenderPage {
       params['searchBy']  = this.filter.cmbSearch;
     }
 
+    var isHideLoader = false;
+
+    if(this.pageParam.pickerSetting){
+      isHideLoader = true;
+    }
+
     var config: ApiGetConfigInterface = {
       url: url,
       params: params,
+      isHideLoader: isHideLoader
     };
 
 
@@ -218,13 +235,18 @@ export class CalenderPage {
       if(onFinish){
         setTimeout(()=>{
           onFinish();
-
-        },500)
+        },50)
       }
     });
   }
 
   public leavePage(){
+
+    if(this.pageParam.pickerSetting){
+      this.viewController.dismiss();
+      return;
+    }
+
     if(this.navCtrl.canGoBack()){
       this.navCtrl.pop();
     }else{
@@ -288,25 +310,15 @@ export class CalenderPage {
     this.filter.cmbMonth = `${new Date().getMonth() + 1}`;
 
 
-    // http://hrms.dxn2u.com:8888/hrm_test2/s/OvertimeApplication_top?mobile=true&cmd=filter&user_id=MY080127&callback=Ext.data.JsonP
-    //
-    //
-    // var url = `${ ApiProvider.HRM_URL }${this.pageParam.isApproval ? "s/OvertimeApplicationApproval_top" : "s/OvertimeApplication_top"}`;
-    //
-    //
-    // var params = {
-    //   mobile: "true",
-    //   cmd: "filter",
-    //   user_id: this.userProvider.userSession.empId
-    // }
-    //
-    // var config: ApiGetConfigInterface = {
-    //   url: url,
-    //   params: params
-    // }
-    // this.apiProvider.get<VisitationFilterApi>(config, (data: VisitationFilterApi) => {
-    //   this.filterRule = data;
-    // })
+    //# ngikutin value datetime dari form
+    if(this.pageParam.pickerSetting){
+      console.log('getFilterCalender',date, this.pageParam.pickerSetting.baseForm.value);
+
+      var date:Date =  new Date( this.pageParam.pickerSetting.baseForm.value);
+      this.filter.selectedDay = date.getDate();
+    }
+
+
 
   }
 
@@ -322,7 +334,7 @@ export class CalenderPage {
     var filterDate = new Date();
     filterDate.setMonth(+this.filter.cmbMonth -1);
     filterDate.setFullYear(+this.filter.cmbYear);
-    filterDate.setDate(15);
+    filterDate.setDate(this.filter.selectedDay);
 
     console.log('getArrowCalenderBefore', filterDate,this.filter.cmbMonth);
     filterDate = BaseForm.getAdvanceDate(advanceMonth * 30, filterDate);
@@ -331,7 +343,38 @@ export class CalenderPage {
     this.filter.cmbMonth = ""+(filterDate.getMonth() + 1);
     this.filter.cmbYear = ""+filterDate.getFullYear();
 
-    this.getList(onFinish);
+
+    //# tanpa nunggu list
+    if(this.pageParam.pickerSetting){
+      if(onFinish){
+        setTimeout(()=>{
+          this.calenderEvents = [];
+          onFinish();
+        },50);
+      }
+    }
+    this.getList();
+
+  }
+
+  public selectDatePicker(){
+
+
+    if(this.pageParam.pickerSetting){
+      var filterDate = new Date();
+      filterDate.setMonth(+this.filter.cmbMonth -1);
+      filterDate.setFullYear(+this.filter.cmbYear);
+      filterDate.setDate(this.filter.selectedDay);
+      console.log('selectedDayPage',filterDate, this.filter.selectedDay);
+
+      this.pageParam.pickerSetting.onActivityResult(filterDate);
+    }
+    this.viewController.dismiss();
+
+  }
+
+  public cancelDatePicker(){
+    // this.pageParam.pickerSetting.onActivityResult(null);
 
   }
 }
@@ -339,4 +382,22 @@ export class CalenderPage {
 
 export interface CalenderParamInterface extends HomeBaseInterface {
 
+  pickerSetting?:CalenderPickerSettingInterface;
+
+}
+
+
+export interface CalenderPickerSettingInterface{
+  baseForm?: BaseForm;
+  onActivityResult: (date:Date)=>void;
+}
+
+
+export class CalenderFilter extends VisitationFilterApi{
+
+  selectedDay:number = new Date().getDate();
+
+  public constructor(){
+    super();
+  }
 }

@@ -307,21 +307,21 @@ export class ContainerInApplyPage {
 
     //# containerOut
     var specifyReason = new BaseForm("Please Specify reason", "sealno_reason");
-    specifyReason.toggleHidden(true, true);
+    specifyReason.setHidden(true, true);
     specifyReason.value = this.applyRule.data.sealno_reason;
 
     var isWithoutContainerSealNo = new BaseForm("Without Container Seal no", "isWithoutContainerSealNo");
-    isWithoutContainerSealNo.toggleHidden(this.pageParam.isContainerIn, false);
+    isWithoutContainerSealNo.setHidden(this.pageParam.isContainerIn, false);
     isWithoutContainerSealNo.setInputTypeSelectTrueFalse();
     isWithoutContainerSealNo.value = "false";
     isWithoutContainerSealNo.changeListener.subscribe((data) => {
       var isWithout = this.helperProvider.parseBoolean(data.value);
-      containerSealNo.toggleHidden(isWithout, true);
-      specifyReason.toggleHidden(!isWithout, true);
+      containerSealNo.setHidden(isWithout, true);
+      specifyReason.setHidden(!isWithout, true);
     })
     //============
     var inspectorSealNo = new BaseForm("Inspector Seal no.", "inspector_sealno");
-    inspectorSealNo.toggleHidden(this.pageParam.isContainerIn, false);
+    inspectorSealNo.setHidden(this.pageParam.isContainerIn, false);
     inspectorSealNo.value = this.applyRule.data.inspector_sealno;
 
     var dxnSealno   = new BaseForm("Dxn Seal no.", "dxn_sealno");
@@ -336,7 +336,7 @@ export class ContainerInApplyPage {
       })
       return keyValue;
     })
-    dxnSealno.toggleHidden(this.pageParam.isContainerIn, true);
+    dxnSealno.setHidden(this.pageParam.isContainerIn, true);
 
     var transportationCompany   = new BaseForm("Transportation company", "outsider_code");
     transportationCompany.value = this.applyRule.data.outsider_code;
@@ -349,7 +349,7 @@ export class ContainerInApplyPage {
 
     var referenceNo   = new BaseForm("Reference No", 'visitor_id');
     referenceNo.value = this.applyRule.data.visitor_id;
-    // referenceNo.toggleHidden(true,false);
+    // referenceNo.setHidden(true,false);
 
     var portName   = new BaseForm("port name", "port_name");
     portName.value = this.applyRule.data.port_name;
@@ -364,24 +364,24 @@ export class ContainerInApplyPage {
 
     deliveryType.changeListener.subscribe(data => {
 
-      referenceNo.toggleHidden(false, true);
-      containerName.toggleHidden(false, true);
-      containerSize.toggleHidden(false, true);
-      containerNo.toggleHidden(false, true);
-      containerSealNo.toggleHidden(false, true);
-      transportationCompany.toggleHidden(false, true);
-      portName.toggleHidden(false, true)
+      referenceNo.setHidden(false, true);
+      containerName.setHidden(false, true);
+      containerSize.setHidden(false, true);
+      containerNo.setHidden(false, true);
+      containerSealNo.setHidden(false, true);
+      transportationCompany.setHidden(false, true);
+      portName.setHidden(false, true)
 
 
       if (data.value.toLowerCase() == "import" ) {
-        referenceNo.toggleHidden(true);
-        portName.toggleHidden(true);
+        referenceNo.setHidden(true);
+        portName.setHidden(true);
 
       }
 
       if (data.value.toLowerCase() == 'export' && this.pageParam.isContainerIn) {
-        containerSealNo.toggleHidden(true);
-        containerNo.toggleHidden(true);
+        containerSealNo.setHidden(true);
+        containerNo.setHidden(true);
       }
 
 
@@ -392,11 +392,11 @@ export class ContainerInApplyPage {
 
 
         inspectorSealNo.isReadOnly = true;
-        isWithoutContainerSealNo.toggleHidden(true);
-        inspectorSealNo.toggleHidden(true);
-        dxnSealno.toggleHidden(true);
-        referenceNo.toggleHidden(true);
-        portName.toggleHidden(true);
+        isWithoutContainerSealNo.setHidden(true);
+        inspectorSealNo.setHidden(true);
+        dxnSealno.setHidden(true);
+        referenceNo.setHidden(true);
+        portName.setHidden(true);
       }
 
 
@@ -450,14 +450,14 @@ export class ContainerInApplyPage {
 
       return keyValue;
     });
-    purpose.toggleHidden(true, false);
+    purpose.setHidden(true, false);
 
 
 
     var purposeSpecify   = new BaseForm("Please Specify Purpose", "purpose_specify");
     purposeSpecify.value = this.applyRule.data.purpose_specify;
-    // purposeSpecify.toggleHidden(true, true);
-    purposeSpecify.toggleHidden(true, false);
+    // purposeSpecify.setHidden(true, true);
+    purposeSpecify.setHidden(true, false);
 
 
     purpose.changeListener.subscribe((data) => {
@@ -466,7 +466,7 @@ export class ContainerInApplyPage {
         return;
       }
       var isSpecify: boolean = keyValue.originJson["specify"];
-      purposeSpecify.toggleHidden(!isSpecify, true);
+      purposeSpecify.setHidden(!isSpecify, true);
     })
 
 
@@ -484,11 +484,11 @@ export class ContainerInApplyPage {
 
       return keyValue;
     });
-    destination.toggleHidden(true,false);
+    destination.setHidden(true,false);
 
     var destinationSpecify   = new BaseForm("Please Specify destination", "destination_specify");
     destinationSpecify.value = this.applyRule.data.destination_specify
-    destinationSpecify.toggleHidden(true, false);
+    destinationSpecify.setHidden(true, false);
 
 
     destination.changeListener.subscribe((data) => {
@@ -497,14 +497,14 @@ export class ContainerInApplyPage {
         return;
       }
       var isSpecify: boolean = keyValue.originJson["specify"];
-      destinationSpecify.toggleHidden(!isSpecify, true);
+      destinationSpecify.setHidden(!isSpecify, true);
     })
 
 
-    var attachment1 = new BaseForm("Attachment 1", "attachment1").setInputTypeFile(this.attachmentValueContainer).toggleHidden();
-    var attachment2 = new BaseForm("Attachment 2", "attachment2").setInputTypeFile(this.attachmentValueContainer).toggleHidden();
-    var attachment3 = new BaseForm("Attachment 3", "attachment3").setInputTypeFile(this.attachmentValueContainer).toggleHidden();
-    var attachment4 = new BaseForm("Attachment 4", "attachment4").setInputTypeFile(this.attachmentValueContainer).toggleHidden();
+    var attachment1 = new BaseForm("Attachment 1", "attachment1").setInputTypeFile(this.attachmentValueContainer).setHidden();
+    var attachment2 = new BaseForm("Attachment 2", "attachment2").setInputTypeFile(this.attachmentValueContainer).setHidden();
+    var attachment3 = new BaseForm("Attachment 3", "attachment3").setInputTypeFile(this.attachmentValueContainer).setHidden();
+    var attachment4 = new BaseForm("Attachment 4", "attachment4").setInputTypeFile(this.attachmentValueContainer).setHidden();
     this.setAttachmentData(this.applyRule, [attachment1, attachment2, attachment3, attachment4]);
 
 

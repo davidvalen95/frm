@@ -1,6 +1,9 @@
 import {Component, Injectable, Input} from '@angular/core';
 import {Calendar} from "@ionic-native/calendar";
 import {AlertStatusInterface, HelperProvider} from "../../providers/helper/helper";
+import {IncompleteRecordFilterInterface} from "../../pages/myAttendance/incompleteRecord/IncompleteRecordApiInterface";
+import {VisitationFilterApi} from "../../providers/api/api";
+import {CalenderFilter} from "../../pages/calender/calender";
 
 /**
  * Generated class for the CalenderComponent component.
@@ -16,20 +19,20 @@ import {AlertStatusInterface, HelperProvider} from "../../providers/helper/helpe
 export class CalenderComponent {
 
 
-  selectedDay = -1;
   bottomDescription:string = "";
   date: any = new Date();
-  daysInThisMonth: any;
+  daysInThisMonth: number[];
   daysInLastMonth: any;
   daysInNextMonth: any;
   monthNames: string[] = ["January","February","March","April","May","June","July","August","September","October","November","December"];
   currentMonth: any;
   currentYear: any;
-  currentDate: any;
+  currentDate:number = new Date().getDate();
   eventList: any = [];
   selectedEvent: any;
   isSelected: any;
-  color:string[]= ["#00008b", "#008b8b","#a9a9a9","#006400","#bdb76b","#FFBBDA","#556b2f","#ff8c00","#9932cc","#8b0000","#e9967a"]
+  color:string[]= ["#00008b", "#008b8b","#a9a9a9","#006400","#bdb76b","#FFBBDA","#556b2f","#ff8c00","#9932cc","#8b0000","#e9967a"];
+
   // darkblue: "#00008b",
   // darkcyan: "#008b8b",
   // darkgrey: "#a9a9a9",
@@ -50,13 +53,11 @@ export class CalenderComponent {
     })
 
     this.calenderEvents = calenderEvents;
-    console.log('calenderEvent',this.targetMonth);
     this.getDaysOfMonth();
   }
   calenderEvents:CalenderEventInterface[] = [];
 
-  @Input('targetMonth') targetMonth:number = 1;
-  @Input('targetYear') targetYear:number = new Date().getFullYear();
+  @Input('filter') filter:CalenderFilter = new CalenderFilter();
   @Input('nextButton') nextButton:(onFinish:()=>void)=>void;
   @Input('previousButton') previousButton:(onFinish:()=>void)=>void;
 
@@ -67,6 +68,7 @@ export class CalenderComponent {
 
   ngAfterContentInit(){
 
+
     this.getDaysOfMonth();
 
   }
@@ -75,28 +77,26 @@ export class CalenderComponent {
     this.daysInThisMonth = [];
     this.daysInLastMonth = [];
     this.daysInNextMonth = [];
-    this.currentMonth    = this.monthNames[this.targetMonth];
-    this.currentYear     = this.targetYear;
-    if (this.targetMonth === new Date().getMonth()) {
-      this.currentDate = new Date().getDate();
-      this.selectDate(this.currentDate);
-    } else {
-      this.currentDate = 999;
-    }
 
-    var firstDayThisMonth = new Date(this.targetYear, this.targetMonth, 1).getDay();
-    var prevNumOfDays     = new Date(this.targetYear, this.targetMonth, 0).getDate();
+    this.currentMonth    = this.monthNames[+this.filter.cmbMonth-1];
+    this.currentYear     = +this.filter.cmbYear;
+
+    this.selectDate(this.filter.selectedDay);
+
+
+    var firstDayThisMonth = new Date(+this.filter.cmbYear, +this.filter.cmbMonth-1, 1).getDay();
+    var prevNumOfDays     = new Date(+this.filter.cmbYear, +this.filter.cmbMonth-1, 0).getDate();
     for (var i = prevNumOfDays - (firstDayThisMonth - 1); i <= prevNumOfDays; i++) {
       this.daysInLastMonth.push(i);
     }
 
-    var thisNumOfDays = new Date(this.targetYear, this.targetMonth + 1, 0).getDate();
+    var thisNumOfDays = new Date(+this.filter.cmbYear, +this.filter.cmbMonth-1 + 1, 0).getDate();
     for (var i = 0; i < thisNumOfDays; i++) {
       this.daysInThisMonth.push(i + 1);
     }
 
-    var lastDayThisMonth = new Date(this.targetYear, this.targetMonth + 1, 0).getDay();
-    var nextNumOfDays    = new Date(this.targetYear, this.targetMonth + 2, 0).getDate();
+    var lastDayThisMonth = new Date(+this.filter.cmbYear, +this.filter.cmbMonth-1 + 1, 0).getDay();
+    var nextNumOfDays    = new Date(+this.filter.cmbYear, +this.filter.cmbMonth-1 + 2, 0).getDate();
     for (var i = 0; i < (6 - lastDayThisMonth); i++) {
       this.daysInNextMonth.push(i + 1);
     }
@@ -113,10 +113,10 @@ export class CalenderComponent {
   goToLastMonth() {
 
     this.previousButton(()=>{
-      this.selectDate(this.date.getDate());
+      this.selectDate(this.filter.selectedDay);
 
     });
-    // this.date = new Date(this.targetYear, this.targetMonth, 0);
+    // this.date = new Date(+this.filter.cmbYear, +this.filter.cmbMonth-1, 0);
 
     // this.getDaysOfMonth();
 
@@ -124,9 +124,9 @@ export class CalenderComponent {
 
   goToNextMonth() {
 
-    this.nextButton(()=>{
-      this.selectDate(this.date.getDate());
 
+    this.nextButton(()=>{
+      this.selectDate(this.filter.selectedDay);
     });
 
   }
@@ -134,8 +134,8 @@ export class CalenderComponent {
 
   loadEventThisMonth() {
     this.eventList = new Array();
-    var startDate = new Date(this.targetYear, this.targetMonth, 1);
-    var endDate = new Date(this.targetYear, this.targetMonth+1, 0);
+    var startDate = new Date(+this.filter.cmbYear, +this.filter.cmbMonth-1, 1);
+    var endDate = new Date(+this.filter.cmbYear, +this.filter.cmbMonth-1+1, 0);
     this.calendar.listEventsInRange(startDate, endDate).then(
       (msg) => {
         msg.forEach(item => {
@@ -150,8 +150,8 @@ export class CalenderComponent {
 
   checkEvent(day) {
     var hasEvent = false;
-    var thisDate1 = this.targetYear+"-"+(this.targetMonth+1)+"-"+day+" 00:00:00";
-    var thisDate2 = this.targetYear+"-"+(this.targetMonth+1)+"-"+day+" 23:59:59";
+    var thisDate1 = +this.filter.cmbYear+"-"+(+this.filter.cmbMonth-1+1)+"-"+day+" 00:00:00";
+    var thisDate2 = +this.filter.cmbYear+"-"+(+this.filter.cmbMonth-1+1)+"-"+day+" 23:59:59";
     this.eventList.forEach(event => {
       if(((event.startDate >= thisDate1) && (event.startDate <= thisDate2)) || ((event.endDate >= thisDate1) && (event.endDate <= thisDate2))) {
         hasEvent = true;
@@ -163,9 +163,18 @@ export class CalenderComponent {
   selectDate(day) {//start at 1
     var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
 
-    this.selectedDay = day;
+    if(day<1){
+      return;
+    }
+    this.filter.selectedDay = day;
+    this.filter.selectedDay = day;
+    console.log('selectedDayComponent',this.filter.selectedDay, this.filter.selectedDay);
     var currentDescription:CalenderDescriptionInterface[] = []
 
+
+    if(!this.calenderEvents){
+      return;
+    }
 
     this.calenderEvents.forEach((currentEvent:CalenderEventInterface)=>{
       console.log(currentEvent);

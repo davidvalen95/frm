@@ -198,6 +198,7 @@ export interface AttachmentRuleInterface{
   reqAttachDesc3: string;
   reqAttachDesc4: string;
   req_birth_days: boolean;
+  enable_halfday:boolean;
 }
 
 

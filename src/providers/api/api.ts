@@ -1,6 +1,6 @@
 import {HttpClient, HttpEventType, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Alert, AlertController, LoadingController, ToastController, ToastOptions} from "ionic-angular";
+import {Alert, AlertController, Loading, LoadingController, ToastController, ToastOptions} from "ionic-angular";
 import {HomeNotificationInterface, UserProvider} from "../user/user";
 import {Observable} from "rxjs/Observable";
 import {Http} from "@angular/http";
@@ -202,8 +202,6 @@ export class ApiProvider {
   public get<T>(config: ApiGetConfigInterface, onFinished: (response: T) => void) {
 
     var url = `${config.url}`;
-
-
     var promise: Promise<T> = this.httpClient.get<T>(url, {
       withCredentials: true,
       params: config.params
@@ -211,8 +209,11 @@ export class ApiProvider {
 
 
     var message = config.loaderMessage ? config.loaderMessage : "Loading data";
-    var loader  = this.helperProvider.presentLoadingV2(message);
+    var loader:Loading;
+    if(!config.isHideLoader){
+      loader = this.helperProvider.presentLoadingV2(message);
 
+    }
     promise.then((data: T) => {
 
 
@@ -222,7 +223,10 @@ export class ApiProvider {
       console.log('apigetsummaryandlist', rejected);
       this.helperProvider.presentToast("Something error on loading data");
     }).finally(() => {
-      loader.dismiss();
+      if(loader){
+        loader.dismiss();
+
+      }
     })
 
   }
@@ -643,9 +647,10 @@ export interface SuccessMessageInterface {
 
 
 export interface ApiGetConfigInterface {
-  url: string,
-  params: any,
-  loaderMessage?: string
+  url: string;
+  params: any;
+  loaderMessage?: string;
+  isHideLoader?:boolean;
 }
 
 

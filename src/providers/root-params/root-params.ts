@@ -11,6 +11,7 @@ import {ContainerInHomeParam} from "../../pages/application/containerIn/containe
 import {AbsenceRecordHomeInterface} from "../../pages/myAttendance/absenceRecord/absence-record-home/absence-record-home";
 import {IncompleteRecordHomeInterface} from "../../pages/myAttendance/incompleteRecord/incomplete-record-home/incomplete-record-home";
 import {AnnouncementHomeParamInterface} from "../../pages/announcement/announcement-home/announcement-home";
+import {CalenderParamInterface} from "../../pages/calender/calender";
 
 /*
   Generated class for the RootParamsProvider provider.

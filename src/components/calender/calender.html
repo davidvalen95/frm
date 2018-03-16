@@ -23,7 +23,7 @@
     <ion-row class="calendar-date">
       <ion-col col-1 *ngFor="let lastDay of daysInLastMonth" class="last-month" (click)="goToLastMonth()">{{lastDay}}
       </ion-col>
-      <ion-col col-1 *ngFor="let day of daysInThisMonth; let i = index" (click)="selectDate(day)"><span [ngClass]="{'currentDate':currentDate===day,'otherDate':currentDate!==day,'selected':day==this.selectedDay}"><div *ngIf="day==this.selectedDay" style="display: inline-block; height: 100%; width: 0px; vertical-align:  middle"></div>{{day}}</span>
+      <ion-col col-1 *ngFor="let day of daysInThisMonth; let i = index" (click)="selectDate(day)"><span [ngClass]="{'currentDate':currentDate===day,'otherDate':currentDate!==day,'selected':day==this.filter.selectedDay}"><div *ngIf="day==this.filter.selectedDay" style="display: inline-block; height: 100%; width: 0px; vertical-align:  middle"></div>{{day}}</span>
 
         <div>
             <span *ngFor="let event of calenderEvents"><div *ngFor="let currentDescription of event.description" style="display: inline-block;margin:0;"><div *ngIf="currentDescription.dateIndex == i" [ngStyle]="{background:event.color}" class="event-bullet"></div></div></span>
@@ -65,7 +65,7 @@
 <!--</div>-->
 
 
-<h5 *ngIf="selectedDay > 0"> {{this.selectedDay}} {{currentMonth}} {{currentYear}}</h5>
+<h5 *ngIf="filter.selectedDay > 0"> {{this.filter.selectedDay}} {{currentMonth}} {{currentYear}}</h5>
 <div [innerHtml]="this.bottomDescription | keepAsHtml">
 
 </div>

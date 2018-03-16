@@ -8,6 +8,7 @@ import {DateTime, Label, ModalController, NavController} from "ionic-angular";
 import {SearchBarParam, SearchBarPage} from "../../../pages/search-bar/search-bar";
 import {isDefined} from "ionic-angular/util/util";
 import {DatePickerProvider} from "ionic2-date-picker";
+import {CalenderPage, CalenderParamInterface} from "../../../pages/calender/calender";
 
 /**
  * Generated class for the FloatingInputComponent component.
@@ -42,7 +43,7 @@ export class FloatingInputComponent {
   public inputType;
   public labelType;
   public allowedBroadcast;
-  constructor(public navController:NavController, public datePickerProvider:DatePickerProvider,public modalCtrl: ModalController,) {
+  constructor(public navController:NavController, public datePickerProvider:DatePickerProvider,public modalController: ModalController) {
     this.baseForm = null;
   }
   ngOnInit(){
@@ -127,6 +128,7 @@ export class FloatingInputComponent {
 
     if(this.baseForm.inputType == InputType.date){
       // this.showCalendar();
+      this.showCalendarPage();
     }
     this.baseForm.inputClickListener.next(model);
   }
@@ -139,12 +141,41 @@ export class FloatingInputComponent {
       this.baseForm.broadcastIonChange(origin);
     }
 
+
+  }
+
+
+  public showCalendarPage(){
+
+    var param:CalenderParamInterface = {
+      isApproval: false,
+      pickerSetting: {
+        baseForm: this.baseForm,
+        onActivityResult:(date:Date)=>{
+          if(date){
+            this.baseForm.value = date.toISOString();
+
+          }
+
+        }
+      }
+    }
+    var calenderModal = this.modalController.create(CalenderPage,param);
+    calenderModal.onDidDismiss(()=>{
+      setTimeout(()=>{
+        this.baseForm.closeDatetimeIonicPicker();
+      },25);
+    })
+    calenderModal.present();
+
+
+
   }
 
 
   showCalendar() {
     const dateSelected =
-            this.datePickerProvider.showCalendar(this.modalCtrl,{});
+            this.datePickerProvider.showCalendar(this.modalController,{});
 
     // this.datePickerProvider.
 

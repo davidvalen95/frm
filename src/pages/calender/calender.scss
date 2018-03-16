@@ -1,3 +1,15 @@
 page-calender {
 
+  .has-user-action {
+
+    .scroll-content{
+      >*:last-child{
+        display:inline-block;
+        padding-bottom: 7rem !important;
+
+      }
+
+    }
+  }
+
 }

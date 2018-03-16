@@ -219,6 +219,8 @@ export class ApplyLeaveApplicationPage {
     // this.isCanSubmit  = !this.pageParam.isEditing || ( this.pageParam.isEditing && this.applyRule.approved == 0 && !isBackDate);
     this.isCanSubmit  = !this.pageParam.isEditing || ( this.pageParam.isEditing && this.applyRule.approved == 0);
     this.isCanApprove = this.pageParam.isApproval && this.applyRule.allowEdit;
+
+    console.log(this.isCanSubmit, !this.pageParam.isEditing , this.pageParam.isEditing,  this.applyRule.approved == 0,(this.isCanSubmit && !this.pageParam.isApproval), !this.pageParam.isApproval);
   }
 
 
@@ -279,15 +281,15 @@ export class ApplyLeaveApplicationPage {
     });
 
 
-    var attachment1 = new BaseForm("Attachment 1", "attachment1").setInputTypeFile(this.attachmentValueContainer).toggleHidden();
-    var attachment2 = new BaseForm("Attachment 2", "attachment2").setInputTypeFile(this.attachmentValueContainer).toggleHidden();
-    var attachment3 = new BaseForm("Attachment 3", "attachment3").setInputTypeFile(this.attachmentValueContainer).toggleHidden();
-    var attachment4 = new BaseForm("Attachment 4", "attachment4").setInputTypeFile(this.attachmentValueContainer).toggleHidden();
+    var attachment1 = new BaseForm("Attachment 1", "attachment1").setInputTypeFile(this.attachmentValueContainer).setHidden();
+    var attachment2 = new BaseForm("Attachment 2", "attachment2").setInputTypeFile(this.attachmentValueContainer).setHidden();
+    var attachment3 = new BaseForm("Attachment 3", "attachment3").setInputTypeFile(this.attachmentValueContainer).setHidden();
+    var attachment4 = new BaseForm("Attachment 4", "attachment4").setInputTypeFile(this.attachmentValueContainer).setHidden();
     this.setAttachmentData(this.applyRule, [attachment1, attachment2, attachment3, attachment4]);
 
 
     var hospital = new BaseForm("Hospital Name", "hospital_name");
-    hospital.toggleHidden(true);
+    hospital.setHidden(true);
     hospital.value = this.applyRule.data.hospital_name;
 
 
@@ -303,7 +305,7 @@ export class ApplyLeaveApplicationPage {
 
     var notifiedTo              = new BaseForm("Notified to", "notified_to");
     notifiedTo.rules.isRequired = false;
-    notifiedTo.toggleHidden(true);
+    notifiedTo.setHidden(true);
     notifiedTo.value = this.applyRule.data.notified_to;
 
     leaveType.changeListener.subscribe((data: BaseForm) => {
@@ -320,11 +322,12 @@ export class ApplyLeaveApplicationPage {
 
         var value = data.value.toLowerCase();
 
+        isHalfDay.setHidden(!attachmentRule.enable_halfday,true);
 
-        hospital.toggleHidden(value != 'sl', true);
-        notifiedTo.toggleHidden(value == 'al' || value == 'alh');
+        hospital.setHidden(value != 'sl', true);
+        notifiedTo.setHidden(value == 'al' || value == 'alh');
         if (value == 'rl') {
-          availableReplacement.toggleHidden(false);
+          availableReplacement.setHidden(false);
           this.apiGetApplyRule().subscribe((data: LeaveApplicationTopInterface) => {
             if (data.enableHalfday) {
               //# halfdate di display
@@ -335,7 +338,7 @@ export class ApplyLeaveApplicationPage {
           //# replacement leave taken
 
         } else {
-          availableReplacement.toggleHidden(true);
+          availableReplacement.setHidden(true);
           //# halfdate hidden
           //# overtime hideen
           //# leave taken hidden
@@ -394,6 +397,7 @@ export class ApplyLeaveApplicationPage {
       this.content.scrollTo(0, this.content.contentHeight + 100);
 
     });
+    isHalfDay.setHidden(!this.applyRule.enableHalfday,true);
 
     // var loader = this.helperProvider.presentLoadingV2("Retrieving half day");
 

@@ -261,11 +261,11 @@ export class HostFormComponent {
 
     var otherHostField   = new BaseForm("", this.formSetting.otherHostContainerName);
     otherHostField.value = "";
-    otherHostField.toggleHidden(true, false);
+    otherHostField.setHidden(true, false);
 
     var flag   = new BaseForm("", this.formSetting.flagName);
     flag.value = "f";
-    flag.toggleHidden(true, false);
+    flag.setHidden(true, false);
     this.flag = flag;
 
     this.otherHostField = otherHostField

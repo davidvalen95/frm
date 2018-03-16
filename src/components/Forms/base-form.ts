@@ -20,7 +20,7 @@ export class BaseForm {
   public styling: InputStyle                              = {};
   public value: any                                       = "";
   public isReadOnly: boolean                              = false;
-  public dateSetting: DateSetting                         = {min: "1900-01-01"};
+  public dateSetting: DateSettingInterface                = {min: "1900-01-01"};
   public changeListener: ReplaySubject<BaseForm>          = new ReplaySubject(0);
   public inputClickListener: ReplaySubject<BaseForm>      = new ReplaySubject(0);
   public labelClickListener: ReplaySubject<BaseForm>      = new ReplaySubject(0);
@@ -83,7 +83,7 @@ export class BaseForm {
     this.inputType = InputType.password;
   }
 
-  public toggleHidden(isHidden: boolean = null, isRequiredWhenVisible: boolean = false) {
+  public setHidden(isHidden: boolean = null, isRequiredWhenVisible: boolean = false) {
     var logic = isHidden != null ? isHidden : !this.isHidden;
 
     this.isHidden = logic;
@@ -125,7 +125,7 @@ export class BaseForm {
 
   }
 
-  public setInputTypeDate(dateSetting: DateSetting) {
+  public setInputTypeDate(dateSetting: DateSettingInterface) {
     this.placeholder = `Select ${this.label}`;
     this.inputType   = InputType.date;
     // Return today's date and time
@@ -168,14 +168,14 @@ export class BaseForm {
   public setInputTypeTime() {
     this.placeholder = `Select ${this.label}`;
 
-    var dateSetting: DateSetting = {};
-    dateSetting.displayFormat    = "HH:mm";
-    this.inputType               = InputType.datetime;
-    dateSetting.min              = '00:00';
-    dateSetting.max              = "23:59";
-    dateSetting.hourValues       = "";
-    dateSetting.isTime           = true;
-    var prefix                   = "";
+    var dateSetting: DateSettingInterface = {};
+    dateSetting.displayFormat             = "HH:mm";
+    this.inputType                        = InputType.datetime;
+    dateSetting.min                       = '00:00';
+    dateSetting.max                       = "23:59";
+    dateSetting.hourValues                = "";
+    dateSetting.isTime                    = true;
+    var prefix                            = "";
 
     for (var i = 0; i < 24; i++) {
       dateSetting.hourValues += prefix;
@@ -354,8 +354,11 @@ export class BaseForm {
 
 
   public static getAdvanceDate(advance: number, from = new Date(),) {
-    from.setDate(from.getDate() + advance);
 
+    //# kalo ga set hours, jadi 00:00:00 ikut tanggal nya pas
+    //# kalo di set hours, tanggal jadi hari ssetelah nya jadi harus -1
+    from.setDate(from.getDate() + advance -1);
+    from.setHours(7);
     return from;
   }
 
@@ -511,6 +514,22 @@ export class BaseForm {
   }
 
 
+
+  public closeDatetimeIonicPicker(){
+    var cancelButton = document.getElementsByClassName("picker-button")[0];
+    console.log('cancelButton',cancelButton);
+    if(cancelButton){
+      // Create a click event to be triggered
+      var clickEvent = new MouseEvent("click", {
+        "view": window,
+        "bubbles": true,
+        "cancelable": false
+      });
+      cancelButton.dispatchEvent(clickEvent);
+    }
+  }
+
+
 }
 
 export interface KeyValue {
@@ -546,7 +565,7 @@ export enum LabelType {
 
 }
 
-export interface DateSetting {
+export interface DateSettingInterface {
   min?: string | Date;
   max?: string | Date;
   displayFormat?: string;
