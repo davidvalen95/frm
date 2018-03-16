@@ -74,10 +74,10 @@ export class CalenderPage {
   // }
 
   constructor(public viewController:ViewController, public platform:Platform, public httpClient: HttpClient, public navCtrl: NavController, public navParams: NavParams, public alertController: AlertController, public apiProvider: ApiProvider, public helperProvider: HelperProvider, public userProvider: UserProvider, public rootParam: RootParamsProvider, public toastController: ToastController) {
-    this.setHardwareBackButton();
     console.log("visitationApplicationBadge", this.rootParam.visitationApplicationParam);
 
     this.pageParam = navParams.data;
+    this.setHardwareBackButton();
 
 
 

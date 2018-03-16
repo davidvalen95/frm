@@ -402,7 +402,7 @@ export class UserProvider {
             params: this.oldBadgeApprovalParam(),
           }
         }, {
-          name: "Exchange Alt. Off Approval",
+          name: "Exchange Alt. Off",
           id: "exchangeAltOffApproval",
           menu: [],
           isOpen: false,
