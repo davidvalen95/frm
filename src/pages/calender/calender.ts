@@ -307,17 +307,17 @@ export class CalenderPage {
   // }
 
   public getFilter() {
-    this.filter.cmbMonth = `${new Date().getMonth() + 1}`;
 
 
-    //# ngikutin value datetime dari form
-    if(this.pageParam.pickerSetting){
-      console.log('getFilterCalender',date, this.pageParam.pickerSetting.baseForm.value);
+    var date:Date =  this.pageParam.pickerSetting ? new Date(this.pageParam.pickerSetting.baseForm.value) : new Date();
 
-      var date:Date =  new Date( this.pageParam.pickerSetting.baseForm.value);
-      this.filter.selectedDay = date.getDate();
-    }
+    this.filter.cmbMonth = "" + (date.getMonth() + 1);
 
+
+
+    this.filter.selectedDay = date.getDate();
+
+    this.filter.cmbYear = "" +  date.getFullYear();
 
 
   }

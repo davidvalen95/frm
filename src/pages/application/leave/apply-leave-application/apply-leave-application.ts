@@ -228,7 +228,7 @@ export class ApplyLeaveApplicationPage {
 
 
     var halfdaySection:SectionFloatingInputInterface = {
-      name:"Halfday",
+      name:"Half Day",
       isHidden: true,
       baseForms: [],
       description: "",

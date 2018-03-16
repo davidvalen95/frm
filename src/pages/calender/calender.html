@@ -34,7 +34,7 @@
 
     <ion-list style="border: 1px solid #C4C4C4; border-radius:5px;">
 
-      <ion-item  (click)="filter.isOpen = !filter.isOpen" >
+      <ion-item  (click)="filter.isOpen = !filter.isOpen" *ngIf="!this.pageParam.pickerSetting" >
         <h3>Search for {{title}}</h3>
         <span item-end="">
               <ion-icon name="arrow-down" *ngIf="filter.isOpen"></ion-icon>
