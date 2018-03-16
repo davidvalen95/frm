@@ -105,9 +105,9 @@ export class ApplyOvertimeApplicationPage {
   ionViewDidLoad() {
 
     //#override back button
-    // this.navbar.backButtonClick = (e: UIEvent) => {
-    //   this.leavePage();
-    // }
+    this.navbar.backButtonClick = (e: UIEvent) => {
+      this.leavePage();
+    }
   }
 
   ionViewDidLeave() {
@@ -328,11 +328,9 @@ export class ApplyOvertimeApplicationPage {
 
   public leavePage() {
 
-    this.currentAlert = this.currentAlert = this.helperProvider.showConfirmAlert("leave this page", () => {
       this.navCtrl.pop({}, () => {
 
       });
-    })
   }
 
   ionViewWillEnter(){

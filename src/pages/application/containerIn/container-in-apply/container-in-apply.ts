@@ -121,7 +121,6 @@ export class ContainerInApplyPage {
 
     //#override back button
     this.navbar.backButtonClick = (e: UIEvent) => {
-      this.leavePage();
     }
   }
 
@@ -705,6 +704,7 @@ export class ContainerInApplyPage {
 
     this.currentAlert = this.helperProvider.showConfirmAlert("leave this page", () => {
       this.navCtrl.pop({}, () => {
+        this.leavePage();
 
       });
     })

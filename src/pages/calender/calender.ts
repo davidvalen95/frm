@@ -258,6 +258,11 @@ export class CalenderPage {
     this.setHardwareBackButton();
   }
   public setHardwareBackButton(){
+
+    if(this.pageParam.pickerSetting){
+      return;
+    }
+
     this.platform.ready().then(() => {
 
       this.platform.registerBackButtonAction(() => {

@@ -116,10 +116,10 @@ export class ApplyLeaveApplicationPage {
 
   ionViewDidLoad() {
 
-    //#override back button
-    // this.navbar.backButtonClick = (e: UIEvent) => {
-    //   this.leavePage();
-    // }
+    // #override back button
+    this.navbar.backButtonClick = (e: UIEvent) => {
+      this.leavePage();
+    }
   }
 
   ionViewDidLeave() {
@@ -625,11 +625,9 @@ export class ApplyLeaveApplicationPage {
 
   public leavePage() {
 
-    this.currentAlert = this.currentAlert = this.helperProvider.showConfirmAlert("leave this page", () => {
       this.navCtrl.pop({}, () => {
 
       });
-    })
   }
   ionViewWillEnter(){
     this.setHardwareBackButton();
