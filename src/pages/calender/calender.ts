@@ -245,10 +245,6 @@ export class CalenderPage {
 
   public leavePage(){
 
-    if(this.pageParam.pickerSetting){
-      this.viewController.dismiss();
-      return;
-    }
 
     if(this.navCtrl.canGoBack()){
       this.navCtrl.pop();
