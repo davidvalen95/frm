@@ -103,6 +103,11 @@ input {
 }
 .toolbar-title{
   text-align: center;
+  padding: 0 4.3rem !important;;
+  overflow: visible;
+  white-space: nowrap;
+  text-overflow: clip;
+  width:100% !important;
 
 }
 
@@ -272,15 +277,3 @@ ion-modal{
   background:white;
 }
 
-.toolbar-title{
-  padding: 0 4.3rem !important;;
-}
-
-
-//# di ios di cut text nya
-ion-title{
-  overflow: visible;
-  white-space: nowrap;
-  text-overflow: clip;
-  width:100%;
-}
