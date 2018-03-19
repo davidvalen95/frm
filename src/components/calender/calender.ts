@@ -48,11 +48,13 @@ export class CalenderComponent {
 
   @Input('calenderEvents') set setCalenderEvents(calenderEvents:CalenderEventInterface[]){
 
-    calenderEvents.forEach((current,index)=>{
-      current.color = this.color[index];
-    })
+    if(calenderEvents){
+      calenderEvents.forEach((current,index)=>{
+        current.color = this.color[index];
+      })
+      this.calenderEvents = calenderEvents;
+    }
 
-    this.calenderEvents = calenderEvents;
     this.getDaysOfMonth();
   }
   calenderEvents:CalenderEventInterface[] = [];
@@ -163,12 +165,15 @@ export class CalenderComponent {
   selectDate(day) {//start at 1
     var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
 
+    if(isNaN(this.filter.selectedDay)){
+      this.filter.selectedDay = new Date().getDate();
+    }
     if(day<1){
       return;
     }
     this.filter.selectedDay = day;
     this.filter.selectedDay = day;
-    console.log('selectedDayComponent',this.filter.selectedDay, this.filter.selectedDay);
+    console.log('selectedDayComponent',this.filter);
     var currentDescription:CalenderDescriptionInterface[] = []
 
 

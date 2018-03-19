@@ -172,6 +172,7 @@ export class FloatingInputComponent {
       //   },25);
       // })
       // calenderModal.present();
+      console.log('showCalenderPage', param);
       this.navController.push(CalenderPage,param);
     },200);
 

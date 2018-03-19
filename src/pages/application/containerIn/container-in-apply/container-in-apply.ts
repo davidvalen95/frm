@@ -704,8 +704,6 @@ export class ContainerInApplyPage {
 
     this.currentAlert = this.helperProvider.showConfirmAlert("leave this page", () => {
       this.navCtrl.pop({}, () => {
-        this.leavePage();
-
       });
     })
   }

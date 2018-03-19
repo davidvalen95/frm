@@ -218,16 +218,19 @@ export class CalenderPage {
           }
 
           //# add to description per index
-          currentList.forEach((arrayText, index) => {
-            if (arrayText && arrayText.length != 0) {
-              calenderEvent.description.push({
-                dateIndex: index,
-                text: arrayText,
-                color: '#000',
-              })
-            }
-          });
-          calenderEvents.push((calenderEvent));
+          if(currentList){
+            currentList.forEach((arrayText, index) => {
+              if (arrayText && arrayText.length != 0) {
+                calenderEvent.description.push({
+                  dateIndex: index,
+                  text: arrayText,
+                  color: '#000',
+                })
+              }
+            });
+            calenderEvents.push((calenderEvent));
+          }
+
         }
 
 
@@ -318,13 +321,11 @@ export class CalenderPage {
 
     this.filter.cmbMonth = "" + (date.getMonth() + 1);
 
-
-
     this.filter.selectedDay = date.getDate();
 
     this.filter.cmbYear = "" +  date.getFullYear();
 
-
+    console.log('calenderGetFilter', this.filter);
   }
 
 

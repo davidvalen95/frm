@@ -1527,10 +1527,12 @@ export class VisitationApplicationPage {
     console.log('maxTime', max);
 
     var visitationDate: BaseForm = new BaseForm("Visitation Date", "visitation_date");
-    visitationDate.setInputTypeDate({min: null, max: max,});
+    visitationDate.setInputTypeDate({max: max,});
+    visitationDate.value = new Date().toISOString();
     if (this.pageParam.editData.visitation_date && this.pageParam.editData.visitation_date != "" && this.pageParam.editData.visitation_date != null) {
       visitationDate.setDateAdvanceDay("" + this.pageParam.editData.visitation_date);
     }
+
     // var untilDate = new BaseForm("Until Date", "until_date");
     // untilDate.setInputTypeDate({min: min, max: max})
     // // untilDate.value          = visitationDate.value;
