@@ -75,7 +75,6 @@ export class MyApp {
 
       this.rootPage = LoginPage;
 
-    this.badge.clear().then((data)=>{}).catch((rejected)=>{console.log(rejected)});
     this.apiExecuteCheckVersion();
 
   }
@@ -92,6 +91,10 @@ export class MyApp {
 
   ionViewDidLoad() {
 
+  }
+
+  ionViewDidEnter(){
+    this.badge.clear().then((data)=>{}).catch((rejected)=>{console.log(rejected)});
   }
 
   initializeApp() {
