@@ -38,7 +38,7 @@
 
         <section-floating-input [parentForm]="parentForm" [container]="this.approvalBaseForms"></section-floating-input>
 
-        <section-floating-input *ngFor="let currentContainer of this.sectionDataDetail" [parentForm]="parentForm" [container]="currentContainer" ></section-floating-input>
+        <section-floating-input *ngFor="let currentContainer of this.dataDetailSection" [parentForm]="parentForm" [container]="currentContainer" ></section-floating-input>
 
 
         <!--<open-url *ngFor="let currentAttachment of this.attachmentData " [name]="currentAttachment.key" [url]="currentAttachment.value"></open-url>-->

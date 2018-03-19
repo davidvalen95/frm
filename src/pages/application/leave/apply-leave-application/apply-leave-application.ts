@@ -396,6 +396,14 @@ export class ApplyLeaveApplicationPage {
       halfdaySection.isHidden = data.value != "yes";
       this.content.scrollTo(0, this.content.contentHeight + 100);
 
+      if(data.value == 'no'){
+
+        halfdaySection.baseForms.forEach((baseForm)=>{
+          baseForm.value = 'full';
+        })
+        this.setTotalDayForm(halfdaySection, totalDay);
+      }
+
     });
     isHalfDay.setHidden(!this.applyRule.enableHalfday,true);
 

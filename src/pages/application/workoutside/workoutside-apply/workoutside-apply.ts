@@ -55,9 +55,9 @@ export class WorkoutsideApplyPage {
 
   public approvalHistoriesContainer: MatureKeyValueContainer[] = [];
 
-  public sectionDataDetail: SectionFloatingInputInterface[] = [];
-  public isDoneFetch:boolean = false;
-  public firstDayConfig:string ='false';
+  public dataDetailSection: SectionFloatingInputInterface[] = [];
+  public isDoneFetch:boolean                                = false;
+  public firstDayConfig:string                              ='false';
   public currentAlert:AlertStatusInterface;
 
 
@@ -277,7 +277,7 @@ export class WorkoutsideApplyPage {
       currentBaseForm.isReadOnly = (this.isCanSubmit && !this.pageParam.isApproval) ? currentBaseForm.isReadOnly : true;
     })
 
-    this.sectionDataDetail.forEach(currentInputSection=>{
+    this.dataDetailSection.forEach(currentInputSection=>{
       currentInputSection.baseForms.forEach((currentBaseForm: BaseForm) => {
         currentBaseForm.isReadOnly = (this.isCanSubmit && !this.pageParam.isApproval) ? currentBaseForm.isReadOnly : true;
       })
@@ -334,7 +334,7 @@ export class WorkoutsideApplyPage {
 
     var check:{isValid:boolean,message:string}[] = [];
     var isAllZero = true;
-    this.sectionDataDetail.forEach(data=>{
+    this.dataDetailSection.forEach(data=>{
       var timeIn = data.baseForms[0];
       var restIn = data.baseForms[2];
       var restOut = data.baseForms[1];
@@ -598,7 +598,7 @@ export class WorkoutsideApplyPage {
 
 
 
-        var advancedDate:string = this.helperProvider.getServerDateFormat(BaseForm.getAdvanceDate((i), new Date(dateFrom.value)));
+        var advancedDate:string = this.helperProvider.getServerDateFormat(BaseForm.getAdvanceDate((i+1), new Date(dateFrom.value)));
 
         dataDetail.push({
           work_date: advancedDate,
@@ -615,7 +615,7 @@ export class WorkoutsideApplyPage {
 
 
 
-    this.sectionDataDetail.splice(0, this.sectionDataDetail.length);
+    this.dataDetailSection.splice(0, this.dataDetailSection.length);
 
 
     dataDetail.forEach((currentDataDetail:WorkoutsideDataDetailInterface,index)=>{
@@ -675,7 +675,7 @@ export class WorkoutsideApplyPage {
         baseForms: [timeIn,restOut,restIn,timeOut,workDate],
         isOpen:true,
       };
-      this.sectionDataDetail.push(section);
+      this.dataDetailSection.push(section);
 
       if(dataDetail){
         // console.log
@@ -688,26 +688,26 @@ export class WorkoutsideApplyPage {
         console.log('setDataDetailSection firstDayConfig', data);
 
         if(index>0 && firstDayConfig.value === "true"){
-          var firstTimein = this.sectionDataDetail[0].baseForms[0]
+          var firstTimein = this.dataDetailSection[0].baseForms[0]
           firstTimein.changeListener.subscribe((data)=>{
             if(firstDayConfig.value === "true")
 
               timeIn.value = data.value;
           });
 
-          var firstRestOut = this.sectionDataDetail[0].baseForms[1]
+          var firstRestOut = this.dataDetailSection[0].baseForms[1]
           firstRestOut.changeListener.subscribe((data)=>{
             if(firstDayConfig.value === "true")
               restOut.value = data.value
           });
 
-          var firstRestIn= this.sectionDataDetail[0].baseForms[2]
+          var firstRestIn= this.dataDetailSection[0].baseForms[2]
           firstRestIn.changeListener.subscribe((data)=>{
             if(firstDayConfig.value === "true")
               restIn.value = data.value
           });
 
-          var firstTimeOut = this.sectionDataDetail[0].baseForms[3]
+          var firstTimeOut = this.dataDetailSection[0].baseForms[3]
           firstTimeOut.changeListener.subscribe((data)=>{
             if(firstDayConfig.value === "true")
               timeOut.value = data.value
@@ -730,27 +730,27 @@ export class WorkoutsideApplyPage {
 
       //# other than  0 listen to 0
       if(index>0 && firstDayConfig.value === "true"){
-        var firstTimein = this.sectionDataDetail[0].baseForms[0]
+        var firstTimein = this.dataDetailSection[0].baseForms[0]
         firstTimein.changeListener.subscribe((data)=>{
           if(firstDayConfig.value === "true")
           timeIn.value = data.value
         });
 
-        var firstRestOut = this.sectionDataDetail[0].baseForms[1]
+        var firstRestOut = this.dataDetailSection[0].baseForms[1]
         firstRestOut.changeListener.subscribe((data)=>{
           if(firstDayConfig.value === "true")
 
             restOut.value = data.value
         });
 
-        var firstRestIn= this.sectionDataDetail[0].baseForms[2]
+        var firstRestIn= this.dataDetailSection[0].baseForms[2]
         firstRestIn.changeListener.subscribe((data)=>{
           if(firstDayConfig.value === "true")
 
             restIn.value = data.value
         });
 
-        var firstTimeOut = this.sectionDataDetail[0].baseForms[3]
+        var firstTimeOut = this.dataDetailSection[0].baseForms[3]
         firstTimeOut.changeListener.subscribe((data)=>{
           if(firstDayConfig.value === "true")
 
@@ -772,9 +772,9 @@ export class WorkoutsideApplyPage {
     })
 
 
-    console.log('workoutsideDataDetail',this.applyRule,dataDetail, this.sectionDataDetail)
+    console.log('workoutsideDataDetail',this.applyRule,dataDetail, this.dataDetailSection)
 
-    // this.dataDetailRule.sectionDataDetail = sectionContainer;
+    // this.dataDetailRule.dataDetailSection = sectionContainer;
     this.setNotEditable();
 
   }
@@ -797,7 +797,7 @@ export class WorkoutsideApplyPage {
 
 
     //# copy to json
-    this.sectionDataDetail.forEach((floatingInput:SectionFloatingInputInterface)=>{
+    this.dataDetailSection.forEach((floatingInput:SectionFloatingInputInterface)=>{
       floatingInput.baseForms.forEach((currentBaseForm:BaseForm)=>{
         json[currentBaseForm.name] = currentBaseForm.value;
       })

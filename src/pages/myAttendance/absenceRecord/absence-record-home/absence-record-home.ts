@@ -65,9 +65,9 @@ export class AbsenceRecordHomePage {
     this.setHardwareBackButton();
     this.pageParam = this.rootParam.homeOvertimeApplicationParam;
     this.title = this.pageParam.isApproval ? "Absence Record" : "Absence Record";
-    this.getFilter();
     //# ada di getfilter ketika done
     // this.getList();
+    this.getFilter();
 
 
   }
@@ -92,8 +92,7 @@ export class AbsenceRecordHomePage {
 
 
   ionViewDidEnter() {//didleave
-
-
+    this.getList();
   }
 
 
@@ -261,7 +260,6 @@ export class AbsenceRecordHomePage {
     }
     this.apiProvider.get<VisitationFilterApi>(config,(data:VisitationFilterApi)=>{
       this.filterRule = data;
-      this.getList();
 
     })
 
