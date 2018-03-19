@@ -399,7 +399,9 @@ export class ApplyLeaveApplicationPage {
       if(data.value == 'no'){
 
         halfdaySection.baseForms.forEach((baseForm)=>{
-          baseForm.value = 'full';
+          if(baseForm.name.indexOf('rdLeavePeriod')>-1){
+            baseForm.value = 'full';
+          }
         })
         this.setTotalDayForm(halfdaySection, totalDay);
       }
@@ -492,10 +494,13 @@ export class ApplyLeaveApplicationPage {
       bankLeaveDate.push(leaveDate);
 
 
-      var date = new BaseForm("",`leaveDate${index}`);
-      date.isHidden = true;
-      date.value = data.leaveDate;
-      bankLeaveDate.push(date);
+      var dateValue = new BaseForm("",`leaveDate${index}`);
+      dateValue.value = "" + data.leaveDate;
+      console.log('setHalfdayForm',dateValue, bankLeaveDate, dateValue,data.leaveDate);
+
+      dateValue.isHidden = true;
+
+      bankLeaveDate.push(dateValue);
 
     });
     halfdaySection.baseForms = bankLeaveDate;
