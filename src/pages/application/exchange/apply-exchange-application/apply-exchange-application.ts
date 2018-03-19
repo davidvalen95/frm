@@ -117,7 +117,7 @@ export class ApplyExchangeApplicationPage {
   }
 
   setupButtonLogic() {
-    this.isCanDelete  = this.pageParam.isEditing && this.applyRule.approved == 0;
+    this.isCanDelete  = this.pageParam.isEditing && this.applyRule.approved == 0 && this.applyRule.changeDate;
     this.isCanSubmit  = !this.pageParam.isEditing || (this.pageParam.isEditing && this.applyRule.approved == 0);
     this.isCanApprove = this.applyRule.allowEdit && this.applyRule.status != "CA";
   }

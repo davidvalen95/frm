@@ -100,7 +100,7 @@ export class WorkoutsideApplyPage {
   }
 
   setupButtonLogic() {
-    this.isCanDelete  = this.pageParam.isEditing && this.applyRule.approved == 0;
+    this.isCanDelete  = this.pageParam.isEditing && this.applyRule.approved == 0  && this.applyRule.changeDate;
     this.isCanSubmit  = this.pageParam.isApply || ( this.pageParam.isEditing && this.applyRule.approved == 0);
     this.isCanApprove = this.pageParam.isApproval && this.applyRule.data.status.toLowerCase() != 'ca' && this.applyRule.allowEdit;
   }

@@ -215,7 +215,7 @@ export class ApplyLeaveApplicationPage {
   setupButtonLogic() {
     var dateFrom = BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.leave_date_from));
     var isBackDate = new Date().getTime() > dateFrom.getTime();
-    this.isCanDelete  = this.pageParam.isEditing && this.applyRule.approved == 0 && !isBackDate;
+    this.isCanDelete  = this.pageParam.isEditing && this.applyRule.approved == 0  && this.applyRule.changeDate;
     // this.isCanSubmit  = !this.pageParam.isEditing || ( this.pageParam.isEditing && this.applyRule.approved == 0 && !isBackDate);
     this.isCanSubmit  = !this.pageParam.isEditing || ( this.pageParam.isEditing && this.applyRule.approved == 0);
     this.isCanApprove = this.pageParam.isApproval && this.applyRule.allowEdit;

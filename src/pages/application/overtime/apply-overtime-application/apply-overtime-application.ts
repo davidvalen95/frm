@@ -97,7 +97,7 @@ export class ApplyOvertimeApplicationPage {
   }
 
   setupButtonLogic() {
-    this.isCanDelete  = this.pageParam.isEditing && this.applyRule.approved == 0;
+    this.isCanDelete  = this.pageParam.isEditing && this.applyRule.approved == 0 && this.applyRule.changeDate;
     this.isCanSubmit  = !this.pageParam.isEditing || ( this.pageParam.isEditing && this.applyRule.approved == 0);
     this.isCanApprove = this.pageParam.isApproval && this.applyRule.data.status.toLowerCase() != 'ca' && this.applyRule.allowEdit;
   }
