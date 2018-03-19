@@ -76,7 +76,7 @@ export class WorkoutsideApplyPage {
     this.apiGetApplyRule().toPromise().then((data: WorkoutsideRuleInterface) => {
       this.applyRule      = data;
       this.applyRule.data = this.helperProvider.mergeObject(this.applyRule.data, this.applyRule.datatmp || this.applyRule.data);
-
+      this.applyRule.changeDate = this.helperProvider.parseBoolean(this.applyRule.changeDate);
       this.setupButtonLogic();
 
       this.setupForms();
@@ -100,7 +100,7 @@ export class WorkoutsideApplyPage {
   }
 
   setupButtonLogic() {
-    this.isCanDelete  = this.pageParam.isEditing && this.applyRule.approved == 0  && this.applyRule.changeDate == "true";
+    this.isCanDelete  = this.pageParam.isEditing && this.applyRule.approved == 0  && this.applyRule.changeDate;
     this.isCanSubmit  = this.pageParam.isApply || ( this.pageParam.isEditing && this.applyRule.approved == 0);
     this.isCanApprove = this.pageParam.isApproval && this.applyRule.data.status.toLowerCase() != 'ca' && this.applyRule.allowEdit;
   }
@@ -190,7 +190,7 @@ export class WorkoutsideApplyPage {
     var dateFrom = new BaseForm("date from", "work_date_from");
     dateFrom.setInputTypeDate({});
     dateFrom.value = (this.pageParam.dateFrom || BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.work_date_from))).toISOString();
-    dateFrom.isReadOnly = this.pageParam.isFromAbsenceRecord || this.applyRule.changeDate == 'false';
+    dateFrom.isReadOnly = this.pageParam.isFromAbsenceRecord || !this.applyRule.changeDate;
     dateFrom.changeListener.subscribe((data)=>{
       if (new Date(dateTo.value) < new Date(dateFrom.value)) {
         dateTo.value = dateFrom.value;
@@ -206,7 +206,7 @@ export class WorkoutsideApplyPage {
     var dateTo = new BaseForm("date to", "work_date_to");
     dateTo.setInputTypeDate({});
     dateTo.value = (this.pageParam.dateFrom || BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.work_date_to))).toISOString();
-    dateTo.isReadOnly = this.pageParam.isFromAbsenceRecord || this.applyRule.changeDate == 'false';
+    dateTo.isReadOnly = this.pageParam.isFromAbsenceRecord || !this.applyRule.changeDate;
 
     dateTo.changeListener.subscribe((data: BaseForm) => {
       this.setDataDetailSection(null,dateFrom,dateTo,firstDayConfig);
@@ -629,7 +629,7 @@ export class WorkoutsideApplyPage {
       var timeIn = new BaseForm("Time In",`time_in${index}`);
       timeIn.value = currentDataDetail.time_in;
       timeIn.setInputTypeTime();
-      timeIn.isReadOnly = this.applyRule.changeDate == 'false';
+      timeIn.isReadOnly = !this.applyRule.changeDate;
       timeIn.changeListener.subscribe(data=>{
         if(this.firstDayConfig =='false')
         timeInOldValue = data.value;
@@ -638,7 +638,7 @@ export class WorkoutsideApplyPage {
       restOut.setInputTypeTime();
       restOut.setIsRequired(false);
       restOut.value = currentDataDetail.rest_out;
-      restOut.isReadOnly = this.applyRule.changeDate == 'false';
+      restOut.isReadOnly = !this.applyRule.changeDate;
       restOut.changeListener.subscribe(data=>{
         if(this.firstDayConfig =='false')
           restOutOldValue = data.value;
@@ -648,7 +648,7 @@ export class WorkoutsideApplyPage {
       restIn.setInputTypeTime();
       restIn.setIsRequired(false);
       restIn.value = currentDataDetail.rest_in;
-      restIn.isReadOnly = this.applyRule.changeDate == 'false';
+      restIn.isReadOnly = !this.applyRule.changeDate;
       restIn.changeListener.subscribe(data=>{
         if(this.firstDayConfig =='false')
           restInOldValue = data.value;
@@ -657,7 +657,7 @@ export class WorkoutsideApplyPage {
       var timeOut = new BaseForm("time Out",`time_out${index}`);
       timeOut.setInputTypeTime();
       timeOut.value = currentDataDetail.time_out;
-      timeOut.isReadOnly = this.applyRule.changeDate == 'false';
+      timeOut.isReadOnly = !this.applyRule.changeDate;
       timeOut.changeListener.subscribe(data=>{
         if(this.firstDayConfig =='false')
           timeOutOldValue = data.value;

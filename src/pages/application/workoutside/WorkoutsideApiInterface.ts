@@ -47,7 +47,7 @@ export interface WorkoutsideListDataInterface{
 
 export interface WorkoutsideRuleInterface{
   approved: number;
-  changeDate: string; //"false""true"
+  changeDate: boolean; //"false""true"
   created_date: string;
   cmb_event_type:TextValueInterface[];
 

@@ -73,7 +73,7 @@ export class ApplyOvertimeApplicationPage {
     this.apiGetApplyRule().toPromise().then((data: OvertimeRuleInterface) => {
       this.applyRule = data;
       this.applyRule.data = this.helperProvider.mergeObject(this.applyRule.data, this.applyRule.datatmp || this.applyRule.data);
-
+      this.applyRule.changeDate = this.helperProvider.parseBoolean(this.applyRule.changeDate);
       this.setupButtonLogic();
       this.setupForms();
 
@@ -177,18 +177,22 @@ export class ApplyOvertimeApplicationPage {
     var overtimeDate = new BaseForm("Date overtime", "ot_date");
     overtimeDate.setInputTypeDate({});
     overtimeDate.value = BaseForm.getAdvanceDate(1, new Date(this.applyRule.data.ot_date)).toISOString();
-
+    overtimeDate.isReadOnly = !this.applyRule.changeDate;
     this.applyRule.data.reason
     var overtimeTimeFrom = new BaseForm("Overtime time from", "ot_time_from");
     overtimeTimeFrom.setInputTypeTime();
     overtimeTimeFrom.value =  this.applyRule.data.ot_time_from;
+    overtimeTimeFrom.isReadOnly = !this.applyRule.changeDate;
 
     var overtimeTimeTo = new BaseForm("Overtime time To", "ot_time_to");
     overtimeTimeTo.setInputTypeTime();
     overtimeTimeTo.value = this.applyRule.data.ot_time_to;
+    overtimeTimeTo.isReadOnly = !this.applyRule.changeDate;
 
     var overtimeClaimType   = new BaseForm("Over time clain type", "ot_claim_type");
     overtimeClaimType.value = this.applyRule.data.ot_claim_type;
+    overtimeClaimType.isReadOnly = !this.applyRule.changeDate;
+
     overtimeClaimType.setInputTypeSelectChain(this.apiGetApplyRule(), (data: OvertimeRuleInterface) => {
       var keyValues: KeyValue[] = []
 
@@ -216,6 +220,9 @@ export class ApplyOvertimeApplicationPage {
   }
 
   private setNotEditable() {
+
+    var allowEdit:string[] = [];
+
 
     this.baseForms.forEach((currentBaseForm: BaseForm) => {
       currentBaseForm.isReadOnly = (this.isCanSubmit && !this.pageParam.isApproval) ? currentBaseForm.isReadOnly : true;
