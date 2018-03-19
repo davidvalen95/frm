@@ -74,6 +74,7 @@ export class ApplyOvertimeApplicationPage {
       this.applyRule = data;
       this.applyRule.data = this.helperProvider.mergeObject(this.applyRule.data, this.applyRule.datatmp || this.applyRule.data);
       this.applyRule.changeDate = this.helperProvider.parseBoolean(this.applyRule.changeDate);
+      console.log(this.applyRule);
       this.setupButtonLogic();
       this.setupForms();
 
@@ -97,8 +98,12 @@ export class ApplyOvertimeApplicationPage {
   }
 
   setupButtonLogic() {
+
+    console.log('setupButtonLogin', this.applyRule);
+
     this.isCanDelete  = this.pageParam.isEditing && this.applyRule.approved == 0 && this.applyRule.changeDate;
     this.isCanSubmit  = !this.pageParam.isEditing || ( this.pageParam.isEditing && this.applyRule.approved == 0);
+
     this.isCanApprove = this.pageParam.isApproval && this.applyRule.data.status.toLowerCase() != 'ca' && this.applyRule.allowEdit;
   }
 
@@ -160,8 +165,6 @@ export class ApplyOvertimeApplicationPage {
 
   setupForms() {
 
-    this.isCanDelete = this.pageParam.isEditing && this.applyRule.approved == 0;
-    this.isCanSubmit = !this.pageParam.isEditing || ( this.pageParam.isEditing && this.applyRule.approved == 0);
 
 
     var name: BaseForm = new BaseForm("Employee", "employee");
