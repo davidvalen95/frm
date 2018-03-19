@@ -281,5 +281,6 @@ ion-modal{
 ion-title{
   overflow: visible;
   white-space: nowrap;
-  max-width:100%;
+  text-overflow: clip;
+  width:100%;
 }
