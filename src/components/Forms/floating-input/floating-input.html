@@ -89,6 +89,9 @@
   </ion-select>
 
 
+
+
+
   <ion-datetime
     [disabled] = "baseForm.isDisabled "
     #ionDateModel   = "ngModel"
@@ -116,14 +119,20 @@
 
 
 
-
-
-
-
 </ion-item >
 
 <!--[required]      = "baseForm.rules.isRequired "-->
 <!--ngModel="t"-->
+
+
+
+
+
+<div (click) = "onFieldClicked(ionDateModel)" [ngClass]="{overrideDatepicker:this.inputType == 'date'}">
+
+</div>
+
+
 
 
 <ion-list #ionRadioModel="ngModel" (ionChange)="broadcast('ionradio')" [hidden]="this.inputType!='radio'" [name]="baseForm.name" radio-group [(ngModel)]="baseForm.value">

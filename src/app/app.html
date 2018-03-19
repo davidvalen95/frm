@@ -15,8 +15,8 @@
           <ion-icon item-right="" *ngIf="menu.isOpen" name="arrow-down"></ion-icon>
           <ion-icon  item-right="" *ngIf="!menu.isOpen" name="arrow-up"></ion-icon>
           <img item-left="" style="width:25px;height:25px;" *ngIf="menu.image" src="{{menu.image}}"/>
-          {{menu.name}}
           <ion-badge color="dangerDim1" *ngIf="menu.badge && menu.badge.count && menu.badge.count > 0">{{menu.badge.count}}</ion-badge>
+          {{menu.name}}
 
         </ion-list-header>
 
@@ -25,8 +25,8 @@
            <ion-item menuClose=""  [hidden]="child.isHidden"   *ngFor="let child of menu.menu" (click)="openPage(child.id)">
              <span item-left="">> </span>
              <img item-left="" style="width:25px;height:25px;" *ngIf="menu.image" src="{{menu.image}}"/>
-             {{child.name}}
              <ion-badge color="dangerDim2" *ngIf="child.badge && child.badge.count && child.badge.count > 0">{{child.badge.count}}</ion-badge>
+             {{child.name}}
 
            </ion-item>
         </div>
@@ -36,8 +36,9 @@
         <ion-list-header [hidden]="menu.isHidden" menuClose="" *ngIf="menu.menu.length <= 0" (click)="openPage(menu.id)">
           <!--<img src="menu."/>-->
           <img item-left="" style="width:25px;height:25px;" *ngIf="menu.image" src="{{menu.image}}"/>
-          {{menu.name}}
           <ion-badge color="dangerDim1" *ngIf="menu.badge && menu.badge.count > 0">{{menu.badge.count}}</ion-badge>
+          {{menu.name}}
+
         </ion-list-header>
 
       </ion-list>

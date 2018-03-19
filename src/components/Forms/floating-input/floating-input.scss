@@ -1,5 +1,5 @@
 floating-input {
-
+  position:relative;
   display: block;
   margin-bottom: 18px;
 
@@ -16,6 +16,7 @@ floating-input {
 
   }
   ion-item{
+
     margin-top:-8px;
     fon-size:14px !important;
     background: transparent !important;
@@ -157,5 +158,20 @@ floating-input {
       font-weight: normal;
     }
 
+  }
+
+
+
+  .overrideDatepicker{
+    position: absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom: 0;
+    z-index: 99999;
+    background: transparent;
+    &:after{
+      content: '';
+    }
   }
 }

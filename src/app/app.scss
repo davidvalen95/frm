@@ -275,3 +275,11 @@ ion-modal{
 .toolbar-title{
   padding: 0 4.3rem !important;;
 }
+
+
+//# di ios di cut text nya
+ion-title{
+  overflow: visible;
+  white-space: nowrap;
+  max-width:100%;
+}

@@ -75,6 +75,7 @@ export class MyApp {
 
       this.rootPage = LoginPage;
 
+    this.badge.clear().then((data)=>{}).catch((rejected)=>{console.log(rejected)});
     this.apiExecuteCheckVersion();
 
   }
