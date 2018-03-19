@@ -125,8 +125,8 @@
 
 
 
-
-<div (click) = "onFieldClicked(ionDateModel)" [ngClass]="{overrideDatepicker:this.inputType == 'date'}">
+<!--for capturing calender clicked-->
+<div (click) = "onFieldClicked(ionDateModel)" [ngClass]="{overrideDatepicker:this.inputType == 'date' && !this.baseForm.isReadOnly}">
 
 </div>
 

@@ -278,7 +278,7 @@ export class ApplyLeaveApplicationPage {
       });
 
       return selectKeyValue;
-    });
+    },true);
 
 
     var attachment1 = new BaseForm("Attachment 1", "attachment1").setInputTypeFile(this.attachmentValueContainer).setHidden();
@@ -348,7 +348,7 @@ export class ApplyLeaveApplicationPage {
       });
 
       this.apiExecuteGetDayRule(dateFrom, dateTo, availableReplacement, totalDay, leaveType.value,(data)=>{
-        this.setHalfDayForm(data, halfdaySection,totalDay);
+        isHalfDay.value = this.setHalfDayForm(data, halfdaySection,totalDay) ? "yes" : "no";
 
       });
 
@@ -363,7 +363,8 @@ export class ApplyLeaveApplicationPage {
         dateTo.value = dateFrom.value;
       } else {
         this.apiExecuteGetDayRule(dateFrom, dateTo, availableReplacement, totalDay, leaveType.value, (data)=>{
-          this.setHalfDayForm(data, halfdaySection,totalDay);
+          isHalfDay.value = this.setHalfDayForm(data, halfdaySection,totalDay) ? "yes" : "no";
+
         });
 
         // totalApply.value = this.helperProvider.getDifferentDay(dateFrom.value, dateTo.value) + 1;
@@ -378,7 +379,7 @@ export class ApplyLeaveApplicationPage {
 
       // totalApply.value = this.helperProvider.getDifferentDay(dateFrom.value, dateTo.value) + 1;
       this.apiExecuteGetDayRule(dateFrom, dateTo, availableReplacement, totalDay, leaveType.value, (data)=>{
-        this.setHalfDayForm(data, halfdaySection,totalDay);
+        isHalfDay.value = this.setHalfDayForm(data, halfdaySection,totalDay) ? "yes" : "no";
 
       });
 
@@ -417,12 +418,17 @@ export class ApplyLeaveApplicationPage {
       this.isFinishedFormInit = true;
     },1500);
 
-
+    // Leave Type* Annual Leave
+    // Apply For Half Day Leave* Yes
+    // Leave Period*
+    // Total Apply Days
+    // Attachment
+    // Remark
 
     this.baseForms.push({
       name:"General Information",
       isHidden: false,
-      baseForms: [name, dateFrom, dateTo, leaveType, totalDay, availableReplacement, isHalfDay, hospital, notifiedTo, attachment1, attachment2, attachment3, attachment4, remark],
+      baseForms: [name, leaveType, isHalfDay, dateFrom,dateTo, totalDay ,availableReplacement , hospital, notifiedTo, attachment1, attachment2, attachment3, attachment4, remark],
       description: "",
       isOpen: true
     });
