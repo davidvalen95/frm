@@ -56,7 +56,6 @@ export class MyApp {
 
 
     this.initializeApp();
-    this.headerColor.tint('#112244');
     this.checkPermission();
 
 
@@ -101,8 +100,12 @@ export class MyApp {
     this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
+      this.statusBar.styleLightContent();
+      this.statusBar.overlaysWebView(false);
+      // this.splashScreen.hide();
+
+      this.headerColor.tint('#112244');
+
     });
   }
 

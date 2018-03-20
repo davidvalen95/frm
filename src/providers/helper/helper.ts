@@ -197,11 +197,11 @@ export class HelperProvider {
     var year        = currentTime.getFullYear();
     var mmm = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-    console.log('max date', `${year}-${month}-${day}`)
+    console.log('max date', `${year} ${month} ${day}`)
     if(isIso){
       return currentTime.toISOString()
     }else{
-      return `${day} - ${mmm[currentTime.getMonth()]} - ${year}`;
+      return `${day}  ${mmm[currentTime.getMonth()]}  ${year}`;
     }
   }
 

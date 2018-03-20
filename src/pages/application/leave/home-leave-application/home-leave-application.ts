@@ -379,6 +379,7 @@ export class HomeLeaveApplicationPage {
 
     this.summary.push({key:`Annual Leave Available as of ${this.helperProvider.getCurrentDate(false)}`,value:`${applicationTop.info.available}`});
     this.summary.push({key:`Annual Leave Available as of ${applicationTop.info.nextDate}`,value:`${applicationTop.info.availableNext}`});
+    // this.summary.push({key:`Replacement Leave Available as of ${this.helperProvider.getCurrentDate(false)}`,value:`${applicationTop.info.}`});
 
 
     this.summary.push({key:`Annual Leave Entitlement (for the year)`,value:`${applicationTop.info.entitle}`});
