@@ -46,7 +46,7 @@ export class ProfileInformationPage {
     // this.userProvider.userSession.
 
 
-    this.apiProvider.get<ProfileInformationInterface>({url:url,params:params},(data)=>{
+    this.apiProvider.get<ProfileInformationInterface>({url:url,params:params},(data:ProfileInformationInterface)=>{
       console.log('data',data);
       this.profileInformation = data;
       this.profileInformation.picture = this.profileInformation.picture && this.profileInformation.picture != '' ? this.apiProvider.hrmUrl + 'pub/' + this.profileInformation.picture : "assets/imgs/profile.png";
