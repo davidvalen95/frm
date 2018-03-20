@@ -787,6 +787,7 @@ export class ApplyLeaveApplicationPage {
       withCredentials: true
     }).toPromise().then((data: DayRuleInterface) => {
       availableReplacement.value = data.total_available_rl;
+      availableReplacement.setHidden(data.total_available_rl == 0);
     }).finally(() => {
       // loader.dismiss();
     });
