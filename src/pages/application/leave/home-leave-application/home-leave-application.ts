@@ -375,7 +375,7 @@ export class HomeLeaveApplicationPage {
     if(!applicationTop.info){
       return;
     }
-
+    this.summary.splice(0,this.summary.length);
 
     this.summary.push({key:`Annual Leave Available as of ${this.helperProvider.getCurrentDate(false)}`,value:`${applicationTop.info.available}`});
     this.summary.push({key:`Annual Leave Available as of ${applicationTop.info.nextDate}`,value:`${applicationTop.info.availableNext}`});

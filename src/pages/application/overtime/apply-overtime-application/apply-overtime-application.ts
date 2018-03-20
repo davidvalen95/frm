@@ -192,7 +192,7 @@ export class ApplyOvertimeApplicationPage {
     overtimeTimeTo.value = this.applyRule.data.ot_time_to;
     overtimeTimeTo.isReadOnly = !this.applyRule.changeDate;
 
-    var overtimeClaimType   = new BaseForm("Over time clain type", "ot_claim_type");
+    var overtimeClaimType   = new BaseForm("Over time claim type", "ot_claim_type");
     overtimeClaimType.value = this.applyRule.data.ot_claim_type;
     overtimeClaimType.isReadOnly = !this.applyRule.changeDate;
 
