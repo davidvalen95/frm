@@ -395,7 +395,7 @@ export class ApplyLeaveApplicationPage {
     }],true);
     isHalfDay.changeListener.subscribe((data)=>{
       halfdaySection.isHidden = data.value != "yes";
-      this.content.scrollTo(0, this.content.contentHeight + 100);
+      this.content.scrollTo(0, this.content.contentHeight + 150);
 
       if(data.value == 'no'){
 
@@ -418,17 +418,18 @@ export class ApplyLeaveApplicationPage {
       this.isFinishedFormInit = true;
     },1500);
 
-    // Leave Type* Annual Leave
-    // Apply For Half Day Leave* Yes
-    // Leave Period*
-    // Total Apply Days
-    // Attachment
-    // Remark
+
+    // Leave Date From
+    // Leave Date To
+    // Leave Type
+    // Apply for Half Day Leave
+    // if Yes then show Leave Period
+    // Total Apply Day(s)
 
     this.baseForms.push({
       name:"General Information",
       isHidden: false,
-      baseForms: [name, leaveType, isHalfDay, dateFrom,dateTo, totalDay ,availableReplacement , hospital, notifiedTo, attachment1, attachment2, attachment3, attachment4, remark],
+      baseForms: [name, dateFrom, dateTo,  leaveType, isHalfDay, totalDay ,availableReplacement , hospital, notifiedTo, attachment1, attachment2, attachment3, attachment4, remark],
       description: "",
       isOpen: true
     });
