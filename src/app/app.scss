@@ -278,3 +278,11 @@ ion-modal{
   background:white;
 }
 
+.menuBadge{
+  white-space: normal;
+  text-overflow: clip;
+  ion-label{
+    white-space: normal;
+  }
+}
+

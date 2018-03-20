@@ -1,6 +1,6 @@
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {ApiProvider, MenuInterface, UserSessionApiInterface} from "../api/api";
+import {ApiGetConfigInterface, ApiProvider, MenuInterface, UserSessionApiInterface} from "../api/api";
 import {Loading, NavController} from "ionic-angular";
 import {LoginPage} from "../../pages/login/login";
 import {RootParamsProvider} from "../root-params/root-params";
@@ -36,7 +36,7 @@ export class UserProvider {
 
   public userSession: UserSessionApiInterface = {isLoggedIn: false, isFnFReady: false};
   public watchFnF: ReplaySubject<any>         = new ReplaySubject(5);
-
+  private loginIntervalId;
   private intervalMenu;
   private apiMenu: ApiMenuInterface[];
   public homeNotification: HomeNotificationInterface = {
@@ -94,6 +94,7 @@ export class UserProvider {
     //     console.log('localstorageUserProvider', this.userSession.empId);
     //
     // }
+
   }
 
   login(username: string, password: string, loginListener?: (isLoggedIn: boolean) => void) {
@@ -119,6 +120,10 @@ export class UserProvider {
       })
     }).then((data: { parent_menu: ApiMenuInterface[] }) => {
 
+
+
+      this.intervalLogin(username,password);
+
       this.homeMenu.splice(0, this.homeMenu.length);
       // this.concatArray(this.homeMenu,data["parent_menu"]);
       // this.homeMenu[2].menu.push(
@@ -138,7 +143,9 @@ export class UserProvider {
 
       });
       this.getBadge();
-      loginListener(true);
+      if(loginListener){
+        loginListener(true);
+      }
 
       // this.homeMenu.push({
       //   isOpen: false,
@@ -167,6 +174,8 @@ export class UserProvider {
     this.lastBadgeFetch = null;
 
     this.userPrevilege.isCanApprove = false;
+
+    clearInterval(this.loginIntervalId);
     // localStorage.clear();
   }
 
@@ -785,6 +794,28 @@ export class UserProvider {
     })
   }
 
+
+  private intervalLogin(username:string, password:string){
+
+    if(this.loginIntervalId){
+      clearInterval(this.loginIntervalId);
+    }
+
+    console.log('loginInterval',username,password);
+    var timeout:number = 1000 * 60 * 15;
+    // var timeout:number = 3000;
+    this.loginIntervalId = setInterval(()=>{
+      // this.login(username,password);
+
+      this.api.login(username,password).then((data)=>{
+
+      }).catch((rejected)=>{
+        console.log(rejected);
+        this.helperProvider.presentToast("Please login again");
+      });
+    },timeout);
+
+  }
 
 }
 

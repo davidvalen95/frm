@@ -6,6 +6,7 @@ import {Observable} from "rxjs/Observable";
 import {Http} from "@angular/http";
 import {BaseForm} from "../../components/Forms/base-form";
 import {HelperProvider} from "../helper/helper";
+import {isDefined} from "ionic-angular/util/util";
 
 /*
   Generated class for the ApiProvider provider.
@@ -199,12 +200,13 @@ export class ApiProvider {
   }
 
 
-  public get<T>(config: ApiGetConfigInterface, onFinished: (response: T) => void) {
+  public get<T>(config: ApiGetConfigInterface, onFinished: (response: T | HttpResponse<T>) => void) {
 
     var url = `${config.url}`;
-    var promise: Promise<T> = this.httpClient.get<T>(url, {
-      withCredentials: true,
-      params: config.params
+    var promise: Promise<HttpResponse<T>> = this.httpClient.get<T>(url, {
+      withCredentials: isDefined(config.isWithCredentials) ? config.isWithCredentials : true,
+      params: config.params,
+      observe: "response",
     }).toPromise();
 
 
@@ -214,10 +216,15 @@ export class ApiProvider {
       loader = this.helperProvider.presentLoadingV2(message);
 
     }
-    promise.then((data: T) => {
+    promise.then((httpResponse:HttpResponse<T>) => {
 
 
-      onFinished(data);
+      if(config.isWithHeader){
+        console.log('apiGet',httpResponse);
+        onFinished(httpResponse);
+      }else{
+        onFinished(httpResponse.body);
+      }
 
     }).catch(rejected => {
       console.log('apigetsummaryandlist', rejected);
@@ -651,6 +658,8 @@ export interface ApiGetConfigInterface {
   params: any;
   loaderMessage?: string;
   isHideLoader?:boolean;
+  isWithHeader?:boolean;
+  isWithCredentials?:boolean
 }
 
 
