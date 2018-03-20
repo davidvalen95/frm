@@ -253,6 +253,13 @@ export class WorkoutsideApplyPage {
 
 
     this.baseForms.push(name,createdDate, dateFrom,dateTo,eventType,workLocation,reason ,firstDayConfig);
+
+    // for(var i =0 ;i<100;i++){
+    //   var reason2 = new BaseForm("reason "+i,"reason");
+    //   reason2.value = this.applyRule.data.reason;
+    //   reason2.setInputTypeTextarea();
+    //   this.baseForms.push(reason2);
+    // }
     this.setNotEditable();
 
     setTimeout(()=>{
@@ -341,7 +348,7 @@ export class WorkoutsideApplyPage {
       var timeOut = data.baseForms[3];
       var day = data.name;
       check.push(this.isValidResOutRestIn(day,restOut,restIn));
-      check.push(this.isValidRestOutTimeIn(day,restOut,timeIn));
+      check.push(this.isValidRestOutTimeIn(day,restOut,timeIn,restIn));
       check.push(this.isValidSkipRestin(day, timeIn,timeOut,restOut,restIn));
       check.push(this.isValidTimeOutRestIn(day,timeOut,restIn));
       check.push(this.isValidTimeoutToTimeIn(day, timeOut,timeIn));
@@ -669,12 +676,13 @@ export class WorkoutsideApplyPage {
       workDate.value = currentDataDetail.work_date;
 
       //# siapin sectionFloatings
-      var section: SectionFloatingInputInterface = {
+      var currentDateSection: SectionFloatingInputInterface = {
         name: currentDataDetail.work_date,
         description: "",
         baseForms: [timeIn,restOut,restIn,timeOut,workDate],
         isOpen:true,
       };
+      var section: SectionFloatingInputInterface = currentDateSection;
       this.dataDetailSection.push(section);
 
       if(dataDetail){
@@ -712,12 +720,18 @@ export class WorkoutsideApplyPage {
             if(firstDayConfig.value === "true")
               timeOut.value = data.value
           });
+
+          currentDateSection.isHidden = true;
+          // timeIn.setHidden(true);
+          // restIn.setHidden(true);
+          // restOut.setHidden(true);
+          // timeOut.setHidden(true);
+
+
         }else{
-
-
-          if(this.isDoneFetch){
-            timeIn.value = timeInOldValue;
-            restIn.value = restInOldValue;
+          if(this.isDoneFetch) {
+            timeIn.value  = timeInOldValue;
+            restIn.value  = restInOldValue;
             restOut.value = restOutOldValue;
             timeOut.value = timeOutOldValue;
           }
@@ -756,6 +770,7 @@ export class WorkoutsideApplyPage {
 
             timeOut.value = data.value
         });
+        currentDateSection.isHidden = true;
       }else{
 
 
@@ -877,11 +892,11 @@ export class WorkoutsideApplyPage {
   }
 
 
-  private isValidRestOutTimeIn(date, a:BaseForm, b:BaseForm):{isValid:boolean,message:string}{
+  private isValidRestOutTimeIn(date, a:BaseForm, b:BaseForm, restIn:BaseForm):{isValid:boolean,message:string}{
     var aDate = new Date("2018-01-01T"+a.value);
     var bDate = new Date("2018-01-01T"+b.value);
 
-    var isValid = aDate.getTime() >= bDate.getTime();
+    var isValid = (aDate.getTime() >= bDate.getTime()) || (a.value == "00:00" && restIn.value == "00:00");
     var message = isValid ? "" :  `Rest Out cannot less than Time In!  <b style="color:red">(${date})</b> `;
 
     return {isValid:isValid,message:message};

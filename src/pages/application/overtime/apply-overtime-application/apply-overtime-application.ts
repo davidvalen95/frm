@@ -187,6 +187,7 @@ export class ApplyOvertimeApplicationPage {
     overtimeTimeFrom.value =  this.applyRule.data.ot_time_from;
     overtimeTimeFrom.isReadOnly = !this.applyRule.changeDate;
 
+
     var overtimeTimeTo = new BaseForm("Overtime time To", "ot_time_to");
     overtimeTimeTo.setInputTypeTime();
     overtimeTimeTo.value = this.applyRule.data.ot_time_to;
@@ -195,6 +196,8 @@ export class ApplyOvertimeApplicationPage {
     var overtimeClaimType   = new BaseForm("Over time claim type", "ot_claim_type");
     overtimeClaimType.value = this.applyRule.data.ot_claim_type;
     overtimeClaimType.isReadOnly = !this.applyRule.changeDate;
+
+
 
     overtimeClaimType.setInputTypeSelectChain(this.apiGetApplyRule(), (data: OvertimeRuleInterface) => {
       var keyValues: KeyValue[] = []

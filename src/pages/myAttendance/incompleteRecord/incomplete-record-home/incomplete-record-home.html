@@ -192,14 +192,15 @@
           <ion-card>
             <ion-card-header (click)="record.isOpen = !record.isOpen">
               <ion-item no-padding="">
-                <h2>{{helperProvider.ucWord(pageParam.isApproval ? record.data4 : record.att_date_str |
+                <h2>{{helperProvider.ucWord(pageParam.isApproval ? record.data1 : record.att_date_str |
                   ifEmptyThenDash)}}</h2>
                 <span item-right="">
                 <ion-icon name="arrow-down" *ngIf="record.isOpen"></ion-icon>
                 <ion-icon name="arrow-up" *ngIf="!record.isOpen"></ion-icon>
                 </span>
 
-                <p status-color="" [innerHtml]="pageParam.isApproval ? record.data6 : record.status | keepAsHtml "></p>
+                <p status-color="" [innerHtml]="pageParam.isApproval ? record.data3 : record.status | keepAsHtml "></p>
+                <p *ngIf="!pageParam.isApproval" style="color:black;" [innerHtml]="'Attendance Date:' + (pageParam.isApproval ? record.data6 : record.att_date_str) | keepAsHtml "></p>
               </ion-item>
               <!--<p><small>{{record.status}}</small></p>-->
             </ion-card-header>
@@ -211,8 +212,7 @@
               <ion-list class="visitationMini" ngClass="ionContent">
                 <ion-item>
                   Record Type
-                  <span status-color=""
-                    item-end="">{{(pageParam.isApproval ? record.data2 : record.record_type_str) | ifEmptyThenDash}}</span>
+                  <span status-color="" item-end="">{{(pageParam.isApproval ? record.data2 : record.record_type_str) | ifEmptyThenDash}}</span>
                 </ion-item>
 
                 <ion-item *ngIf="pageParam.isApproval">
@@ -222,16 +222,11 @@
                 </ion-item>
 
 
-                <ion-item *ngIf="pageParam.isApproval">
-                  Status
-                  <span status-color=""
-                    item-end="">{{record.data3 | ifEmptyThenDash}}</span>
-                </ion-item>
 
-                <ion-item>
+                <ion-item *ngIf="pageParam.isApproval">
                   Reason
                   <span
-                    item-end="">{{record.reason | ifEmptyThenDash}}</span>
+                    item-end="">{{record.data4 | ifEmptyThenDash}}</span>
                 </ion-item>
 
 

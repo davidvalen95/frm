@@ -256,7 +256,8 @@ export class ContainerInHomePage {
 
     var config:ApiGetConfigInterface = {
       url: url,
-      params: params
+      params: params,
+      isHideLoader: true,
     }
     this.apiProvider.get<VisitationFilterApi>(config,(data:VisitationFilterApi)=>{
       this.filterRule = data;

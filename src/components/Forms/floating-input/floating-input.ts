@@ -147,7 +147,7 @@ export class FloatingInputComponent {
 
   public showCalendarPage(){
 
-    BaseForm.closeDatetimeIonicPicker();
+    BaseForm.closePicker();
 
 
     setTimeout(()=>{
@@ -168,7 +168,7 @@ export class FloatingInputComponent {
       // var calenderModal = this.modalController.create(CalenderPage,param,{ showBackdrop: false, enableBackdropDismiss:false });
       // calenderModal.onDidDismiss(()=>{
       //   setTimeout(()=>{
-      //     this.baseForm.closeDatetimeIonicPicker();
+      //     this.baseForm.closePicker();
       //   },25);
       // })
       // calenderModal.present();

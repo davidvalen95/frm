@@ -107,6 +107,7 @@
                 <ion-icon name="arrow-up" *ngIf="!record.isOpen"></ion-icon>
                 </span>
 
+                <small [innerHtml]="'Post date: ' +record.postdate | keepAsHtml "></small><br/>
                 <small [innerHtml]="record.description | keepAsHtml "></small>
               </ion-item>
               <!--<p><small>{{record.status}}</small></p>-->

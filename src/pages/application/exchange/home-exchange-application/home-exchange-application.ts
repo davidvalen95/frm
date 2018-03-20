@@ -369,7 +369,8 @@ export class HomeExchangeApplicationPage {
 
     var config: ApiGetConfigInterface = {
       url: url,
-      params: params
+      params: params,
+      isHideLoader: true,
     }
     this.apiProvider.get<VisitationFilterApi>(config, (data: VisitationFilterApi) => {
       this.filterRule = data;
@@ -379,7 +380,7 @@ export class HomeExchangeApplicationPage {
   }
 
   public getList() {
-    var loader = this.helperProvider.presentLoadingV2("Retrieving leave data");
+    var loader = this.helperProvider.presentLoadingV2("Retrieving exchange data");
     this.apiGetApplicationActive().toPromise().then((data: ExchangeApplicationActiveInterface) => {
       this.listData = data;
       this.listData.data.forEach((currentExchangeList: ExchangeListInterface) => {

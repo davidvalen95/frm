@@ -107,7 +107,7 @@ export class CalenderPage {
   ionViewDidEnter() {//didleave
 
     setTimeout(()=>{
-      // BaseForm.closeDatetimeIonicPicker();
+      // BaseForm.closePicker();
     },200);
   }
 

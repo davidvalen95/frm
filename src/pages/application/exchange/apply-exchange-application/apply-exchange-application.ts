@@ -132,7 +132,7 @@ export class ApplyExchangeApplicationPage {
 
   ionViewDidLeave() {
     if (this.pageParam.onDidLeave) {
-      this.pageParam.onDidLeave();
+      // this.pageParam.onDidLeave();
     }
   }
 
@@ -160,19 +160,19 @@ export class ApplyExchangeApplicationPage {
 
     exchange_date_from.changeListener.subscribe((data) => {
       // exchange_date_to.value = data.value;
+      //
+      // if(!exchange_date_to.isReadOnly){
+      //   exchange_date_to.value           = data.value;
+      //
+      // }
+      //
+      // if(this.applyRule.exchange_date_day){
+      //   exchange_date_to.dateSetting.min = BaseForm.getAdvanceDate(-1 * +this.applyRule.exchange_date_day, new Date(exchange_date_from.value)).toISOString();
+      //   exchange_date_to.dateSetting.max = BaseForm.getAdvanceDate(+this.applyRule.exchange_date_day, new Date(exchange_date_from.value)).toISOString();
+      // }
 
-      if(!exchange_date_to.isReadOnly){
-        exchange_date_to.value           = data.value;
 
-      }
-
-      if(this.applyRule.exchange_date_day){
-        exchange_date_to.dateSetting.min = BaseForm.getAdvanceDate(-1 * +this.applyRule.exchange_date_day, new Date(exchange_date_from.value)).toISOString();
-        exchange_date_to.dateSetting.max = BaseForm.getAdvanceDate(+this.applyRule.exchange_date_day, new Date(exchange_date_from.value)).toISOString();
-      }
-
-
-      console.log('exchangeDateTo', exchange_date_to.dateSetting, this.applyRule, new Date(exchange_date_from.value), exchange_date_from.value);
+      // console.log('exchangeDateTo', exchange_date_to.dateSetting, this.applyRule, new Date(exchange_date_from.value), exchange_date_from.value);
 
     });
 

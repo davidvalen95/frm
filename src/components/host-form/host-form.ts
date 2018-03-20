@@ -365,7 +365,7 @@ export class HostFormComponent {
 
       }).finally(() => {
       })
-      console.log('labelClickListener');
+      console.log('ionItemClickListener');
 
     });
 

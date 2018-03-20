@@ -121,6 +121,7 @@ export class ContainerInApplyPage {
 
     //#override back button
     this.navbar.backButtonClick = (e: UIEvent) => {
+      this.leavePage();
     }
   }
 

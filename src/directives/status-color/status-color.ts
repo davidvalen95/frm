@@ -21,7 +21,7 @@ export class StatusColorDirective {
     black: ['submitted'],
     red: ['lateness',
           'early leaving',
-          'pending','incomplete',
+          'pending',
     ],
     "#449D44":[//green
       'approved','acknowledge'
@@ -59,6 +59,7 @@ export class StatusColorDirective {
       var textContent = this.elementRef.nativeElement.innerHTML.toLowerCase();
       currentData.forEach(data=>{
         if(textContent.indexOf(data) >-1){
+          console.log('convertColor', textContent);
           this.elementColor = key;
         }
       })

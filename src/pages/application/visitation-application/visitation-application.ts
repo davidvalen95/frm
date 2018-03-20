@@ -203,7 +203,8 @@ export class VisitationApplicationPage {
 
     var config:ApiGetConfigInterface = {
       url: url,
-      params: params
+      params: params,
+      isHideLoader: true,
     }
     this.apiProvider.get<VisitationFilterApi>(config,(data:VisitationFilterApi)=>{
       this.filterRule = data;
@@ -1973,7 +1974,7 @@ export class VisitationApplicationPage {
 
       }).finally(() => {
       })
-      console.log('labelClickListener');
+      console.log('ionItemClickListener');
 
     });
 

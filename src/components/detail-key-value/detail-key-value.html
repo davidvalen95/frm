@@ -14,7 +14,7 @@
 
 
           <div ion-grid="">
-            <ion-row class="keyValue"  *ngFor="let currentDetail of currentContainer.keyValue">
+            <ion-row class="keyValue"  *ngFor="let currentDetail of currentContainer.keyValue" [hidden]="currentDetail.isHidden">
               <ion-col class="key" style="" col-4="" >{{currentDetail.key | ucWord}}</ion-col>
               <ion-col class="value" col-8=""  >{{currentDetail.value | ifEmptyThenDash}}</ion-col>
 

@@ -55,7 +55,12 @@
         <!--</ion-list>-->
 
 
-        <section-floating-input *ngFor="let baseForm of this.baseForms" [parentForm]="parentForm"  [container]="baseForm"> </section-floating-input>
+        <ion-list>
+          <floating-input *ngFor="let baseForm of this.baseFormsFirst" [parentForm]="parentForm" [baseForm]="baseForm"></floating-input>
+          <floating-input *ngFor="let baseForm of this.halfDayForms" [parentForm]="parentForm" [baseForm]="baseForm"></floating-input>
+          <floating-input *ngFor="let baseForm of this.baseFormsSecond" [parentForm]="parentForm" [baseForm]="baseForm"></floating-input>
+        </ion-list>
+        <!--<section-floating-input *ngFor="let baseForm of this.baseForms" [parentForm]="parentForm"  [container]="baseForm"> </section-floating-input>-->
         <section-floating-input [parentForm]="parentForm"  [container]="this.approvalBaseForms"> </section-floating-input>
 
 

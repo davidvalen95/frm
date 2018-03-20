@@ -286,3 +286,9 @@ ion-modal{
   }
 }
 
+
+ion-list[radio-group]{
+  ion-label{
+    white-space: normal;
+  }
+}

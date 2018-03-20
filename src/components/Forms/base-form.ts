@@ -23,7 +23,7 @@ export class BaseForm {
   public dateSetting: DateSettingInterface                = {min: "1900-01-01"};
   public changeListener: ReplaySubject<BaseForm>          = new ReplaySubject(0);
   public inputClickListener: ReplaySubject<BaseForm>      = new ReplaySubject(0);
-  public labelClickListener: ReplaySubject<BaseForm>      = new ReplaySubject(0);
+  public ionItemClickListener: ReplaySubject<BaseForm>    = new ReplaySubject(0);
   public buttonRightClickListener: ReplaySubject<NgModel> = new ReplaySubject(0);
   public searchBarSetting?: SearchBarSetting              = null;
   public isSearchBar: boolean                             = false;
@@ -83,13 +83,15 @@ export class BaseForm {
     this.inputType = InputType.password;
   }
 
-  public setHidden(isHidden: boolean = null, isRequiredWhenVisible: boolean = false) {
+  public setHidden(isHidden: boolean = null, isRequiredWhenVisible: boolean = false, isKeepValue:boolean = false) {
     var logic = isHidden != null ? isHidden : !this.isHidden;
 
     this.isHidden = logic;
 
     if (this.isHidden) {
-      this.value            = '';
+      if(!isKeepValue){
+        this.value            = '';
+      }
       this.rules.isRequired = false;
     } else {
       this.rules.isRequired = isRequiredWhenVisible;
@@ -167,7 +169,7 @@ export class BaseForm {
 
   public setInputTypeTime() {
     this.placeholder = `Select ${this.label}`;
-
+    this.label = `${this.label} (hh:mm)`
     var dateSetting: DateSettingInterface = {};
     dateSetting.displayFormat             = "HH:mm";
     this.inputType                        = InputType.datetime;
@@ -187,6 +189,10 @@ export class BaseForm {
     console.log('timesetting', dateSetting);
     this.dateSetting = dateSetting;
 
+    this.ionItemClickListener.subscribe((data)=>{
+      console.log('setinputtypetime');
+      BaseForm.closePicker();
+    })
     return this;
   }
 
@@ -515,28 +521,31 @@ export class BaseForm {
 
 
 
-  public static closeDatetimeIonicPicker(){
-    //
-    // var i =0;
-    // var interval = setInterval(()=>{
-    //   var cancelButton = document.getElementsByClassName("picker-button")[0];
-    //   console.log('cancelButton',i,cancelButton);
-    //   if(cancelButton){
-    //     // Create a click event to be triggered
-    //     var clickEvent = new MouseEvent("click", {
-    //       "view": window,
-    //       "bubbles": true,
-    //       "cancelable": false
-    //     });
-    //       cancelButton.dispatchEvent(clickEvent);
-    //
-    //   }
-    //   i++;
-    //   if(i>20){
-    //     clearInterval(interval);
-    //
-    //   }
-    // },25);
+  public static closePicker(){
+
+
+    //https://forum.ionicframework.com/t/hard-back-button-on-ion-select-does-not-close-pop-up-android/77295/4
+    var i =0;
+    var interval = setInterval(()=>{
+      var cancelDatetime = document.getElementsByClassName("picker-button")[0];
+      var cancelSelect = document.getElementsByClassName("action-sheet-cancel")[0];
+      var clickEvent = new MouseEvent("click", {
+        "view": window,
+        "bubbles": true,
+        "cancelable": false
+      });
+      if(cancelSelect){
+        cancelSelect.dispatchEvent(clickEvent);
+      }
+      if(cancelDatetime){
+        cancelDatetime.dispatchEvent(clickEvent);
+      }
+      i++;
+      if(i>20){
+        clearInterval(interval);
+
+      }
+    },25);
 
 
   }
@@ -549,6 +558,7 @@ export interface KeyValue {
   key: string,
   order?: number,
   originJson?:any;
+  isHidden?:boolean;
 }
 
 export interface InputRules {
